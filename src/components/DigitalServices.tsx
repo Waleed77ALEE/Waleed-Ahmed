@@ -36,9 +36,10 @@ import {
 interface DigitalServicesProps {
   onSelectService: (service: ServiceItem) => void;
   whatsappNumber: string;
+  onAddToCart?: (service: ServiceItem) => void;
 }
 
-export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectService, whatsappNumber }) => {
+export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectService, whatsappNumber, onAddToCart }) => {
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('All');
@@ -257,24 +258,35 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="grid grid-cols-3 gap-1.5">
                       <button
                         onClick={() => onSelectService(service)}
-                        className="w-full py-2.5 px-3 text-xs font-semibold text-slate-200 bg-slate-800/80 hover:bg-slate-700/80 rounded-xl border border-slate-700 transition-all text-center"
+                        className="w-full py-2.5 px-2 text-[11px] font-semibold text-slate-200 bg-slate-800/80 hover:bg-slate-700/80 rounded-xl border border-slate-700 transition-all text-center truncate"
                       >
-                        View Details
+                        Details
                       </button>
+
+                      {onAddToCart && (
+                        <button
+                          onClick={() => onAddToCart(service)}
+                          className="w-full py-2.5 px-2 text-[11px] font-bold text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 rounded-xl transition-all flex items-center justify-center gap-1 truncate"
+                        >
+                          <ShoppingBag className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                          <span>+Cart</span>
+                        </button>
+                      )}
 
                       <a
                         href={getWhatsAppBuyUrl(service)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full py-2.5 px-3 text-xs font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5"
+                        className="w-full py-2.5 px-2 text-[11px] font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 rounded-xl shadow-md transition-all flex items-center justify-center gap-1 truncate"
                       >
-                        <MessageSquare className="w-3.5 h-3.5 fill-slate-950" />
+                        <MessageSquare className="w-3.5 h-3.5 fill-slate-950 shrink-0" />
                         <span>Buy Now</span>
                       </a>
                     </div>
+
                   </div>
                 </div>
               ))}
@@ -468,24 +480,35 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      onClick={() => onSelectService(service)}
-                      className="w-full py-2 px-3 text-xs font-semibold text-slate-200 bg-slate-950 hover:bg-slate-800 rounded-xl border border-slate-800 transition-all text-center"
-                    >
-                      View Details
-                    </button>
+                    <div className="grid grid-cols-3 gap-1.5">
+                      <button
+                        onClick={() => onSelectService(service)}
+                        className="w-full py-2 px-2 text-[11px] font-semibold text-slate-200 bg-slate-950 hover:bg-slate-800 rounded-xl border border-slate-800 transition-all text-center truncate"
+                      >
+                        Details
+                      </button>
 
-                    <a
-                      href={getWhatsAppBuyUrl(service)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full py-2 px-3 text-xs font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5"
-                    >
-                      <MessageSquare className="w-3.5 h-3.5 fill-slate-950" />
-                      <span>Buy Now</span>
-                    </a>
-                  </div>
+                      {onAddToCart && (
+                        <button
+                          onClick={() => onAddToCart(service)}
+                          className="w-full py-2 px-2 text-[11px] font-bold text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 rounded-xl transition-all flex items-center justify-center gap-1 truncate"
+                          title="Add to Supabase Cart"
+                        >
+                          <ShoppingBag className="w-3 h-3 text-cyan-400 shrink-0" />
+                          <span>+Cart</span>
+                        </button>
+                      )}
+
+                      <a
+                        href={getWhatsAppBuyUrl(service)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-2 px-2 text-[11px] font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 rounded-xl shadow-md transition-all flex items-center justify-center gap-1 truncate"
+                      >
+                        <MessageSquare className="w-3 h-3 fill-slate-950 shrink-0" />
+                        <span>Buy</span>
+                      </a>
+                    </div>
                 </div>
               </div>
             ))}

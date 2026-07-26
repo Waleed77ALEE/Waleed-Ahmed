@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { FAQS } from '../data/portfolioData';
 import { MessageSquare, Mail, Send, Check, Copy, ChevronDown, ChevronUp, Clock, Globe, ShieldAlert, Sparkles, PhoneCall } from 'lucide-react';
 import { SocialLinks } from './SocialLinks';
+import { submitContactMessageDB } from '../lib/supabase';
 
 interface ContactProps {
   whatsappNumber: string;
+  user?: any;
 }
 
-export const Contact: React.FC<ContactProps> = ({ whatsappNumber }) => {
+export const Contact: React.FC<ContactProps> = ({ whatsappNumber, user }) => {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [formData, setFormData] = useState({
@@ -26,9 +28,20 @@ export const Contact: React.FC<ContactProps> = ({ whatsappNumber }) => {
     setTimeout(() => setCopiedEmail(false), 2500);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.message) return;
+
+    // Record message into Supabase contact_messages table
+    await submitContactMessageDB({
+      user_id: user?.id || null,
+      name: formData.name,
+      email: formData.email,
+      whatsapp: '',
+      service_requested: formData.serviceType,
+      message: formData.message,
+      status: 'New'
+    });
 
     // Direct WhatsApp message construct as fallback
     const text = `Hi Waleed!\nName: ${formData.name}\nEmail: ${formData.email}\nInquiry: ${formData.serviceType}\nMessage: ${formData.message}`;
@@ -37,6 +50,7 @@ export const Contact: React.FC<ContactProps> = ({ whatsappNumber }) => {
     setFormSubmitted(true);
     window.open(waUrl, '_blank');
   };
+
 
   return (
     <section id="contact" className="py-20 bg-slate-900/60 relative border-t border-slate-800">
