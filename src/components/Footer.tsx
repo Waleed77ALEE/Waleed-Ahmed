@@ -99,7 +99,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, whatsappNumber, onOp
             </p>
             <div className="mb-4">
               <a
-                href="https://wa.link/6128mm"
+                href={`https://wa.me/${(whatsappNumber || '+923416860077').replace(/[^0-9]/g, '')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold hover:bg-emerald-500/20 transition-all"

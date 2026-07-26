@@ -98,7 +98,7 @@ export const AboutMeEnd: React.FC<AboutMeEndProps> = ({ whatsappNumber, onContac
             {/* Quick Action Button */}
             <div className="mt-8 pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center gap-3">
               <a
-                href="https://wa.link/6128mm"
+                href={`https://wa.me/${(whatsappNumber || '+923416860077').replace(/[^0-9]/g, '')}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 font-bold text-xs hover:from-emerald-300 hover:to-teal-300 shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2"
@@ -179,7 +179,7 @@ export const AboutMeEnd: React.FC<AboutMeEndProps> = ({ whatsappNumber, onContac
             </div>
 
             <a
-              href="https://wa.link/6128mm"
+              href={`https://wa.me/${(whatsappNumber || '+923416860077').replace(/[^0-9]/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold hover:bg-emerald-500/20 transition-all shrink-0"

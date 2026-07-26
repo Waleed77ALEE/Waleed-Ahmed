@@ -198,7 +198,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                       </div>
 
                       <a
-                        href="https://wa.link/6128mm"
+                        href={`https://wa.me/${(whatsappNumber || '+923416860077').replace(/[^0-9]/g, '')}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold hover:bg-emerald-500/20 transition-all shrink-0"

@@ -210,7 +210,7 @@ export const CartModal: React.FC<CartModalProps> = ({
                   </button>
 
                   <a
-                    href="https://wa.link/6128mm"
+                    href={`https://wa.me/${(whatsappNumber || '+923416860077').replace(/[^0-9]/g, '')}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="py-3 px-4 rounded-xl bg-slate-800 border border-slate-700 text-emerald-400 font-bold text-xs hover:bg-slate-700 transition-all flex items-center justify-center gap-2"
@@ -241,7 +241,7 @@ export const CartModal: React.FC<CartModalProps> = ({
                 required
                 value={contactWhatsapp}
                 onChange={(e) => setContactWhatsapp(e.target.value)}
-                placeholder="+92 300 0000000 or wa.link/6128mm"
+                placeholder="+92 341 6860077 or wa.me/923416860077"
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
@@ -257,7 +257,7 @@ export const CartModal: React.FC<CartModalProps> = ({
                   Payoneer Email Transfer (waleedkhanafridi7@gmail.com)
                 </option>
                 <option value="USDT / Crypto (Binance Pay)">Binance Pay (Pay ID / User ID: 787445946)</option>
-                <option value="WhatsApp Direct Contact (wa.link/6128mm)">WhatsApp Direct (wa.link/6128mm)</option>
+                <option value="WhatsApp Direct Contact (+923416860077)">WhatsApp Direct (+92 341 6860077)</option>
                 <option value="Bank Transfer / Wise / Wire">Bank Transfer / Wise / Wire</option>
               </select>
             </div>
@@ -438,7 +438,7 @@ export const CartModal: React.FC<CartModalProps> = ({
             </p>
 
             <a
-              href="https://wa.link/6128mm"
+              href={`https://wa.me/${(whatsappNumber || '+923416860077').replace(/[^0-9]/g, '')}`}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-emerald-400 text-slate-950 font-black text-xs hover:bg-emerald-300 transition-all shadow-xl shadow-emerald-500/20"

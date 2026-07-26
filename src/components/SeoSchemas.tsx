@@ -29,7 +29,7 @@ export const SeoSchemas: React.FC = () => {
         name: 'Waleed Khan Afridi Digital Services'
       },
       sameAs: [
-        'https://wa.link/6128mm',
+        'https://wa.me/923416860077',
         'https://www.instagram.com/malikdeenkhail/',
         'https://github.com/waleedkhanafridi',
         'https://waleedkhanafridi.online'

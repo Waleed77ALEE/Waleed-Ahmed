@@ -2,7 +2,7 @@
   "merchant": {
     "name": "Waleed Khan Afridi",
     "email": "waleedkhanafridi7@gmail.com",
-    "whatsappLink": "https://wa.link/6128mm",
+    "whatsappLink": "https://wa.me/923416860077",
     "binancePayId": "787445946"
   },
   "paymentMethods": [
@@ -47,8 +47,8 @@
       "title": "Direct WhatsApp Payment",
       "badge": "Direct Handover",
       "icon": "message-square",
-      "whatsappLink": "https://wa.link/6128mm",
-      "whatsappNumber": "+923000000000",
+      "whatsappLink": "https://wa.me/923416860077",
+      "whatsappNumber": "+923416860077",
       "fee": "Direct Confirmation",
       "currencies": ["USD", "PKR", "USDT", "Bank Transfer"],
       "instructions": [

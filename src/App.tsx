@@ -49,7 +49,7 @@ export default function App() {
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
 
   // Direct WhatsApp contact number for Waleed Khan Afridi
-  const whatsappNumber = '923000000000';
+  const whatsappNumber = '+923416860077';
 
   useEffect(() => {
     // 1. Initial Supabase Auth Check

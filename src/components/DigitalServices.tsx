@@ -137,8 +137,9 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
     }
   };
 
-  const getWhatsAppBuyUrl = (_service: ServiceItem) => {
-    return 'https://wa.link/6128mm';
+  const getWhatsAppBuyUrl = (service: ServiceItem) => {
+    const waClean = (whatsappNumber || '+923416860077').replace(/[^0-9]/g, '');
+    return `https://wa.me/${waClean}?text=${encodeURIComponent(`Hi Waleed! I would like to order: ${service.title} ($${service.price})`)}`;
   };
 
   return (

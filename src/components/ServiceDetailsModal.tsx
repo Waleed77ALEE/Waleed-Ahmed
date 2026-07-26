@@ -75,7 +75,8 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
 
   if (!service) return null;
 
-  const buyUrl = 'https://wa.link/6128mm';
+  const waClean = (whatsappNumber || '+923416860077').replace(/[^0-9]/g, '');
+  const buyUrl = `https://wa.me/${waClean}?text=${encodeURIComponent(`Hi Waleed! I would like to buy: ${service.title} ($${service.price})`)}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">

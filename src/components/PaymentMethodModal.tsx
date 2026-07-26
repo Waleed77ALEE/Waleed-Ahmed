@@ -15,6 +15,7 @@ export interface PaymentMethodModalProps {
 export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
   isOpen,
   onClose,
+  whatsappNumber,
   totalAmount = 0,
   orderNumber = '',
   serviceTitle = '',
@@ -284,7 +285,7 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
                     Connect directly with <strong className="text-white">Waleed Khan Afridi</strong> on WhatsApp to pay via Local Bank Transfer, EasyPaisa, JazzCash, Wise, or custom arrangements.
                   </p>
                   <a
-                    href={`https://wa.me/923000000000?text=${encodeURIComponent(`Hi Waleed! I would like to buy ${serviceTitle ? serviceTitle : 'a digital service'} ($${totalAmount.toFixed(2)}) via WhatsApp Direct Payment.`)}`}
+                    href={`https://wa.me/${(whatsappNumber || '+923416860077').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hi Waleed! I would like to buy ${serviceTitle ? serviceTitle : 'a digital service'} ($${totalAmount.toFixed(2)}) via WhatsApp Direct Payment.`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full py-3 px-6 rounded-xl text-xs font-black text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
@@ -454,7 +455,7 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
             rel="noopener noreferrer"
             className="text-amber-400 hover:underline font-bold flex items-center gap-1"
           >
-            <span>Direct WhatsApp Support: wa.link/6128mm</span>
+            <span>Direct WhatsApp Support: +92 341 6860077</span>
           </a>
           <span>100% Secure Transaction</span>
         </div>

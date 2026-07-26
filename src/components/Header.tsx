@@ -58,7 +58,8 @@ export const Header: React.FC<HeaderProps> = ({
     setMobileMenuOpen(false);
   };
 
-  const whatsappUrl = 'https://wa.link/6128mm';
+  const waClean = (whatsappNumber || '+923416860077').replace(/[^0-9]/g, '');
+  const whatsappUrl = `https://wa.me/${waClean}`;
 
   return (
     <header
