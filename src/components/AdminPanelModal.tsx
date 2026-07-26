@@ -95,12 +95,12 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (passcode === 'admin123' || passcode === 'waleed2026' || passcode === 'admin') {
+    if (passcode === 'Alee772002') {
       setIsAuthenticated(true);
       localStorage.setItem('wka_admin_authed', 'true');
       setAuthError('');
     } else {
-      setAuthError('Invalid Admin Passcode. Default passcode is admin123');
+      setAuthError('Invalid Admin Passcode.');
     }
   };
 
@@ -280,7 +280,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
             <form onSubmit={handleLogin} className="w-full max-w-sm flex flex-col gap-3">
               <input
                 type="password"
-                placeholder="Enter admin passcode (e.g. admin123)"
+                placeholder="Enter admin passcode"
                 value={passcode}
                 onChange={(e) => setPasscode(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:outline-none focus:border-cyan-500"
@@ -294,7 +294,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                 Authenticate Portal
               </button>
               <span className="text-[11px] text-slate-500 mt-2">
-                Default security passcode: <code className="text-cyan-400">admin123</code>
+                Protected Admin Access Portal
               </span>
             </form>
           </div>
