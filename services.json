@@ -1,0 +1,458 @@
+[
+  {
+    "id": "heygen-creator-1m",
+    "title": "HeyGen Creator Plan (1 Month)",
+    "category": "AI Subscriptions",
+    "subCategory": "AI Video",
+    "price": 20,
+    "delivery": "Instant Delivery",
+    "description": "Unlock premium AI video creation with 15 credits/month, 120+ avatar options, and fast rendering speeds.",
+    "features": [
+      "15 Credits per month",
+      "Access to 120+ AI Avatars",
+      "40+ Languages supported",
+      "No Watermark on video exports",
+      "Commercial Usage License",
+      "Full 30-Day Replacement Warranty"
+    ],
+    "icon": "Video",
+    "featured": true,
+    "rating": 4.9,
+    "ordersCount": 184,
+    "badge": "Best Seller"
+  },
+  {
+    "id": "heygen-team-1m",
+    "title": "HeyGen Team Plan (1 Month)",
+    "category": "AI Subscriptions",
+    "subCategory": "AI Video",
+    "price": 50,
+    "delivery": "1 - 3 Hours",
+    "description": "Full team access for multi-user AI video production, 30 credits/mo, team collaboration space, and 4K rendering.",
+    "features": [
+      "30 Credits per month",
+      "Multi-user team workspace",
+      "4K Export quality",
+      "Priority rendering queue",
+      "Custom avatar creation access",
+      "Dedicated account warranty"
+    ],
+    "icon": "Users",
+    "featured": false,
+    "rating": 5.0,
+    "ordersCount": 72,
+    "badge": "Popular"
+  },
+  {
+    "id": "kling-ai-premier",
+    "title": "Kling AI Premier Pass (Monthly)",
+    "category": "AI Subscriptions",
+    "subCategory": "AI Video",
+    "price": 35,
+    "delivery": "Instant",
+    "description": "High-tier Chinese & Global AI Video Generator access with maximum generation speed and extended motion controls.",
+    "features": [
+      "Premier Tier Unlocked",
+      "Fast-track generation queue",
+      "1080p / 60fps video generation",
+      "Professional motion brush tool",
+      "Extended video duration mode"
+    ],
+    "icon": "Sparkles",
+    "featured": true,
+    "rating": 4.9,
+    "ordersCount": 128,
+    "badge": "Trending"
+  },
+  {
+    "id": "kling-ai-credits-500",
+    "title": "Kling AI 500 Credits Package",
+    "category": "AI Subscriptions",
+    "subCategory": "AI Credits",
+    "price": 25,
+    "delivery": "Instant",
+    "description": "500 bonus credits for Kling AI. Generate realistic video clips with text-to-video and image-to-video tools.",
+    "features": [
+      "500 Direct Credits",
+      "Valid for 60 Days",
+      "Works with Image & Text prompt models",
+      "High resolution output support"
+    ],
+    "icon": "Coins",
+    "featured": false,
+    "rating": 4.8,
+    "ordersCount": 95,
+    "badge": "Hot"
+  },
+  {
+    "id": "openai-api-credits-100",
+    "title": "OpenAI API Credits ($100 Balance Account)",
+    "category": "AI Subscriptions",
+    "subCategory": "Developer API",
+    "price": 35,
+    "delivery": "Instant",
+    "description": "Fully active OpenAI Developer Account pre-loaded with $100 API credits. Supports GPT-4o, o1, DALL-E 3 & Whisper API.",
+    "features": [
+      "$100 API Usage Balance",
+      "Supports GPT-4o, GPT-4o-mini & o1 models",
+      "High Rate Limit (Tier 2/3 enabled)",
+      "Includes Private API Key",
+      "Full Mail & Account Access Provided"
+    ],
+    "icon": "Bot",
+    "featured": true,
+    "rating": 5.0,
+    "ordersCount": 240,
+    "badge": "Top Rated"
+  },
+  {
+    "id": "claude-pro-1m",
+    "title": "Claude Pro Subscription (1 Month)",
+    "category": "AI Subscriptions",
+    "subCategory": "AI Chat",
+    "price": 20,
+    "delivery": "1 Hour",
+    "description": "5x more usage for Claude 3.5 Sonnet, Claude 3 Opus, Artifacts feature, and priority access during peak hours.",
+    "features": [
+      "5x standard usage limits",
+      "Access to Claude 3.5 Sonnet & Opus",
+      "Artifacts interactive workspace",
+      "Projects & custom system prompt features",
+      "30-day replacement guarantee"
+    ],
+    "icon": "Cpu",
+    "featured": false,
+    "rating": 4.9,
+    "ordersCount": 160,
+    "badge": "Verified"
+  },
+  {
+    "id": "ms-365-family-1y",
+    "title": "Microsoft 365 Personal/Family (1 Year)",
+    "category": "AI Subscriptions",
+    "subCategory": "Productivity",
+    "price": 25,
+    "delivery": "Instant",
+    "description": "Official 1-Year Microsoft 365 License with 1TB OneDrive Cloud Storage, Word, Excel, PowerPoint, and Copilot AI integration.",
+    "features": [
+      "1TB Private OneDrive Storage",
+      "Word, Excel, PowerPoint, Outlook",
+      "Copilot AI assistance",
+      "Use on up to 5 devices simultaneously",
+      "Official Microsoft License"
+    ],
+    "icon": "FileText",
+    "featured": false,
+    "rating": 5.0,
+    "ordersCount": 310,
+    "badge": "Official"
+  },
+  {
+    "id": "ig-followers-1k",
+    "title": "Instagram Non-Drop Real Followers (1,000 HQ)",
+    "category": "Social Media Growth",
+    "subCategory": "Instagram",
+    "price": 9,
+    "delivery": "0 - 12 Hours",
+    "description": "High-quality real Instagram profile followers with profile pictures, posts, and 30-day auto-refill guarantee.",
+    "features": [
+      "1,000 High-Quality Followers",
+      "30-Day Auto Refill Guarantee",
+      "Safe Delivery Speed (Natural Growth)",
+      "No Password Required (Username only)",
+      "100% Safe for Account"
+    ],
+    "icon": "Instagram",
+    "featured": true,
+    "rating": 4.9,
+    "ordersCount": 512,
+    "badge": "Best Seller"
+  },
+  {
+    "id": "ig-likes-5k",
+    "title": "Instagram Instant Likes Package (5,000 Likes)",
+    "category": "Social Media Growth",
+    "subCategory": "Instagram",
+    "price": 5,
+    "delivery": "Instant",
+    "description": "Spread 5,000 real likes across up to 5 posts or reels. Boosts algorithm reach and Explore Page impression chances.",
+    "features": [
+      "5,000 Likes total",
+      "Split across up to 5 posts",
+      "Instant start upon order",
+      "High retention & real profiles",
+      "No password required"
+    ],
+    "icon": "Heart",
+    "featured": false,
+    "rating": 4.8,
+    "ordersCount": 380,
+    "badge": "Instant"
+  },
+  {
+    "id": "ig-views-50k",
+    "title": "Instagram Reels Viral Views (50,000 Views)",
+    "category": "Social Media Growth",
+    "subCategory": "Instagram",
+    "price": 7,
+    "delivery": "Instant",
+    "description": "Boost your Instagram Reels to the viral algorithm with 50K high-retention views, impressions, and profile reaches.",
+    "features": [
+      "50,000 High-retention Views",
+      "Includes Impressions & Reach boost",
+      "Supports multiple Reel URLs",
+      "Safe & smooth ramp-up speed"
+    ],
+    "icon": "Eye",
+    "featured": false,
+    "rating": 4.9,
+    "ordersCount": 290,
+    "badge": "Viral"
+  },
+  {
+    "id": "fb-followers-5k",
+    "title": "Facebook Page & Profile Followers (5,000 Non-Drop)",
+    "category": "Social Media Growth",
+    "subCategory": "Facebook",
+    "price": 20,
+    "delivery": "24 Hours",
+    "description": "Grow your Facebook Business Page or personal profile credibility with 5,000 organic-like followers.",
+    "features": [
+      "5,000 Non-Drop Followers",
+      "60-Day Refill Guarantee",
+      "Works for Pages & Profiles",
+      "Helps unlock Facebook Monetization"
+    ],
+    "icon": "Facebook",
+    "featured": true,
+    "rating": 4.9,
+    "ordersCount": 320,
+    "badge": "Top Choice"
+  },
+  {
+    "id": "fb-watchtime-60k",
+    "title": "Facebook 60,000 Minutes Watch Time (Monetization Pack)",
+    "category": "Social Media Growth",
+    "subCategory": "Facebook",
+    "price": 35,
+    "delivery": "1 - 3 Days",
+    "description": "Complete requirement for Facebook In-Stream Ads monetization! 60,000 eligible video watch time minutes.",
+    "features": [
+      "60,000 Minutes Watch Time",
+      "100% Meets In-Stream Ads policy",
+      "Requires 1 x 30+ min video on page",
+      "High retention & full safety guarantee"
+    ],
+    "icon": "Clock",
+    "featured": false,
+    "rating": 5.0,
+    "ordersCount": 195,
+    "badge": "Monetization"
+  },
+  {
+    "id": "yt-subscribers-1k",
+    "title": "YouTube Monetization Subscribers (1,000 HQ)",
+    "category": "Social Media Growth",
+    "subCategory": "YouTube",
+    "price": 35,
+    "delivery": "24 - 48 Hours",
+    "description": "1,000 organic-looking YouTube Subscribers to help reach YouTube Partner Program monetization eligibility.",
+    "features": [
+      "1,000 Permanent Subscribers",
+      "Lifetime Non-Drop Guarantee",
+      "Safe organic drip-feed speed",
+      "Monetization compliant",
+      "Channel Link only needed"
+    ],
+    "icon": "Youtube",
+    "featured": true,
+    "rating": 4.9,
+    "ordersCount": 410,
+    "badge": "Must Have"
+  },
+  {
+    "id": "yt-watchtime-4000h",
+    "title": "YouTube 4,000 Hours Watch Time Package",
+    "category": "Social Media Growth",
+    "subCategory": "YouTube",
+    "price": 102,
+    "delivery": "3 - 5 Days",
+    "description": "Full 4,000 Public Watch Hours package required to monetize your YouTube channel with AdSense.",
+    "features": [
+      "4,000 High-retention Watch Hours",
+      "AdSense Monetization Guaranteed",
+      "Requires 1+ Hour video on channel",
+      "Safe drip delivery to prevent drops",
+      "Includes channel review support"
+    ],
+    "icon": "PlayCircle",
+    "featured": true,
+    "rating": 5.0,
+    "ordersCount": 215,
+    "badge": "Complete Pack"
+  },
+  {
+    "id": "linkedin-followers-1k",
+    "title": "LinkedIn Profile & Company Page Followers (1,000 HQ)",
+    "category": "Social Media Growth",
+    "subCategory": "LinkedIn",
+    "price": 25,
+    "delivery": "24 Hours",
+    "description": "Enhance your executive presence or startup authority with 1,000 high-quality professional LinkedIn followers.",
+    "features": [
+      "1,000 Professional Profiles",
+      "Works for Personal Profiles or Company Pages",
+      "Boosts recruiter & client trust",
+      "Non-drop 30-day warranty"
+    ],
+    "icon": "Linkedin",
+    "featured": false,
+    "rating": 4.9,
+    "ordersCount": 140,
+    "badge": "Pro Trust"
+  },
+  {
+    "id": "acc-instagram-aged",
+    "title": "Aged Instagram Account (2018 - 2021 PVA)",
+    "category": "Accounts",
+    "subCategory": "Aged Social",
+    "price": 15,
+    "delivery": "Instant",
+    "description": "Phone-verified aged Instagram account created between 2018-2021. High trust score, ideal for business branding & ads.",
+    "features": [
+      "Created 2018-2021 (Aged 3-6+ Years)",
+      "Phone Verified (PVA)",
+      "Includes Original Email Access",
+      "High Shadowban Resistance",
+      "Cookies / Session backup provided"
+    ],
+    "icon": "ShieldCheck",
+    "featured": false,
+    "rating": 4.9,
+    "ordersCount": 310,
+    "badge": "High Trust"
+  },
+  {
+    "id": "acc-hotmail-bulk-100",
+    "title": "Hotmail / Outlook Fresh PVA Accounts (Pack of 100)",
+    "category": "Accounts",
+    "subCategory": "Email Accounts",
+    "price": 12,
+    "delivery": "Instant",
+    "description": "100 Phone Verified Outlook/Hotmail accounts with POP3/IMAP enabled for marketing, automation, and signups.",
+    "features": [
+      "100 Hotmail / Outlook Accounts",
+      "IMAP & POP3 Active",
+      "Phone Verified (PVA)",
+      "Clean Residential IP Created",
+      "Formatted text/CSV delivery"
+    ],
+    "icon": "Mail",
+    "featured": false,
+    "rating": 4.8,
+    "ordersCount": 420,
+    "badge": "Bulk Value"
+  },
+  {
+    "id": "acc-verified-email-gmail",
+    "title": "Google / Gmail PVA Accounts (Aged 1 Year+)",
+    "category": "Accounts",
+    "subCategory": "Email Accounts",
+    "price": 3,
+    "delivery": "Instant",
+    "description": "Real Phone-Verified Gmail Account aged 1+ Year. Perfect for YouTube channels, Google Ads, and developer logins.",
+    "features": [
+      "Phone Verified Gmail Account",
+      "1+ Year Aged",
+      "Recovery Email Included",
+      "Supports 2FA Setup",
+      "Clean IP Creation history"
+    ],
+    "icon": "CheckCircle2",
+    "featured": false,
+    "rating": 4.9,
+    "ordersCount": 650,
+    "badge": "Popular"
+  },
+  {
+    "id": "acc-pubg-conqueror",
+    "title": "PUBG Mobile Account (Glacier M416 / Mythic Outfits)",
+    "category": "Accounts",
+    "subCategory": "Gaming Accounts",
+    "price": 200,
+    "delivery": "Instant Handover",
+    "description": "Premium PUBG Mobile Level 72 account with M416 Glacier (Max / On-Hit Effect), 15+ Mythic Outfits, and Twitter/FB unbind.",
+    "features": [
+      "M416 Glacier Upgraded",
+      "Level 72 Account Rank",
+      "15+ Mythic Outfits & Emotes",
+      "Clean Account Unlinked (Single Login)",
+      "Full Email Handover Guaranteed"
+    ],
+    "icon": "Gamepad2",
+    "featured": true,
+    "rating": 5.0,
+    "ordersCount": 48,
+    "badge": "Premium"
+  },
+  {
+    "id": "gc-amazon-100",
+    "title": "Amazon Gift Card ($100 Digital Code)",
+    "category": "Gift Cards",
+    "subCategory": "Vouchers",
+    "price": 95,
+    "delivery": "Instant",
+    "description": "Official $100 Amazon eGift Card Code redeemable on Amazon US/Global store. 100% legit digital code.",
+    "features": [
+      "$100 Balance Code",
+      "Instant Code Claim",
+      "Never expires",
+      "Guaranteed zero chargeback"
+    ],
+    "icon": "Gift",
+    "featured": false,
+    "rating": 5.0,
+    "ordersCount": 180,
+    "badge": "5% OFF"
+  },
+  {
+    "id": "gc-gcash-transfer",
+    "title": "GCash Direct Cash-In / Balance Voucher ($50 Value)",
+    "category": "Gift Cards",
+    "subCategory": "E-Wallet",
+    "price": 50,
+    "delivery": "5 Minutes",
+    "description": "Instant GCash digital fund transfer or balance code for Philippines e-wallet users.",
+    "features": [
+      "Direct GCash Transfer / Remittance",
+      "Zero Transaction Fees",
+      "Instant SMS Confirmation",
+      "Secure Verified Agent Handover"
+    ],
+    "icon": "CreditCard",
+    "featured": false,
+    "rating": 4.9,
+    "ordersCount": 210,
+    "badge": "E-Wallet"
+  },
+  {
+    "id": "gc-bank-rewards",
+    "title": "Bank Transfer Rewards Voucher ($100 Cash Credit)",
+    "category": "Gift Cards",
+    "subCategory": "Bank Transfer",
+    "price": 98,
+    "delivery": "10 - 30 Mins",
+    "description": "Global direct wire/Wise/Payoneer/Bank payout reward code for freelance & marketplace order settlements.",
+    "features": [
+      "$100 Equivalent Direct Payout",
+      "Supports Wise, Payoneer & Wire",
+      "Fast processing speed",
+      "Verified digital proof receipt"
+    ],
+    "icon": "Building2",
+    "featured": false,
+    "rating": 5.0,
+    "ordersCount": 135,
+    "badge": "Rewards"
+  }
+]
