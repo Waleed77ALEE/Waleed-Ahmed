@@ -39,8 +39,7 @@ export const CartModal: React.FC<CartModalProps> = ({
 
   const payoneerEmail = 'waleedkhanafridi7@gmail.com';
   const payoneerName = 'Waleed Khan Afridi';
-  const binancePayId = '284910523';
-  const trc20Address = 'TY3x9v284910523910293849120398';
+  const binancePayId = '787445946';
 
   if (!isOpen) return null;
 
@@ -257,7 +256,7 @@ export const CartModal: React.FC<CartModalProps> = ({
                 <option value="Payoneer Email Transfer (waleedkhanafridi7@gmail.com)">
                   Payoneer Email Transfer (waleedkhanafridi7@gmail.com)
                 </option>
-                <option value="USDT / Crypto (Binance Pay)">USDT / Crypto (Binance Pay ID: 284910523)</option>
+                <option value="USDT / Crypto (Binance Pay)">Binance Pay (Pay ID / User ID: 787445946)</option>
                 <option value="WhatsApp Direct Contact (wa.link/6128mm)">WhatsApp Direct (wa.link/6128mm)</option>
                 <option value="Bank Transfer / Wise / Wire">Bank Transfer / Wise / Wire</option>
               </select>

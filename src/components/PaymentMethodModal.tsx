@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Copy, Check, QrCode, Upload, ShieldCheck, CheckCircle2, Image as ImageIcon, Sparkles, Key, RefreshCw } from 'lucide-react';
+import { X, Copy, Check, QrCode, Upload, ShieldCheck, CheckCircle2, Image as ImageIcon, Sparkles, Key, RefreshCw, MessageSquare } from 'lucide-react';
 import paymentData from '../data/paymentMethods.json';
 
 export interface PaymentMethodModalProps {
@@ -8,6 +8,7 @@ export interface PaymentMethodModalProps {
   whatsappNumber?: string;
   totalAmount?: number;
   orderNumber?: string;
+  serviceTitle?: string;
   onPaymentSubmitted?: (txId: string, proofUrl: string) => void;
 }
 
@@ -16,10 +17,11 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
   onClose,
   totalAmount = 0,
   orderNumber = '',
+  serviceTitle = '',
   onPaymentSubmitted
 }) => {
   const { merchant, paymentMethods } = paymentData;
-  const [activeTab, setActiveTab] = useState<string>('payoneer');
+  const [activeTab, setActiveTab] = useState<string>('binance_pay');
 
   const [copiedPayId, setCopiedPayId] = useState(false);
   const [copiedPayoneerEmail, setCopiedPayoneerEmail] = useState(false);
@@ -134,12 +136,15 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
                   isActive
                     ? method.id === 'payoneer'
                       ? 'bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 text-white font-black shadow-lg shadow-orange-500/20'
+                      : method.id === 'whatsapp_direct'
+                      ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
                       : 'bg-amber-500 text-slate-950 font-black shadow-lg shadow-amber-500/20'
                     : 'bg-slate-800/80 text-slate-400 hover:text-white'
                 }`}
               >
                 {method.id === 'payoneer' && <Sparkles className="w-4 h-4 text-amber-300" />}
                 {method.id === 'binance_pay' && <ShieldCheck className="w-4 h-4" />}
+                {method.id === 'whatsapp_direct' && <MessageSquare className="w-4 h-4" />}
                 {method.id === 'qr_code' && <QrCode className="w-4 h-4" />}
                 {method.id === 'api_keys' && <Key className="w-4 h-4" />}
                 {method.id.includes('usdt') && <ShieldCheck className="w-4 h-4 text-cyan-400" />}
@@ -151,14 +156,18 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
 
         {/* Dynamic Content */}
         <div className="overflow-y-auto flex-1 pr-1 custom-scrollbar space-y-5">
-          {/* Payable Header if totalAmount > 0 */}
-          {totalAmount > 0 && (
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-red-500/10 via-orange-500/10 to-amber-500/10 border border-orange-500/30 flex items-center justify-between">
+          {/* Payable Header if totalAmount > 0 or serviceTitle */}
+          {(totalAmount > 0 || serviceTitle) && (
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-emerald-500/10 to-amber-500/10 border border-cyan-500/30 flex items-center justify-between">
               <div>
-                <span className="text-[10px] text-orange-300 font-bold uppercase tracking-wider block">Total Payable Amount</span>
-                <span className="text-xs text-slate-300">{orderNumber ? `Order #${orderNumber}` : 'Digital Services / Custom Order'}</span>
+                <span className="text-[10px] text-cyan-300 font-bold uppercase tracking-wider block">
+                  {serviceTitle ? 'Selected Product / Service' : 'Total Payable Amount'}
+                </span>
+                <span className="text-xs font-bold text-white block">
+                  {serviceTitle || (orderNumber ? `Order #${orderNumber}` : 'Digital Services Order')}
+                </span>
               </div>
-              <span className="text-2xl font-black font-mono text-orange-400">${totalAmount.toFixed(2)} USD</span>
+              <span className="text-2xl font-black font-mono text-cyan-400">${totalAmount.toFixed(2)} USD</span>
             </div>
           )}
 
@@ -256,65 +265,50 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
             </div>
           )}
 
-          {/* USDT TRC20 */}
-          {activeTab === 'usdt_trc20' && (
-            <div className="p-5 rounded-2xl bg-slate-950 border border-cyan-500/30 space-y-4">
+          {/* WhatsApp Direct Payment Details */}
+          {activeTab === 'whatsapp_direct' && (
+            <div className="p-5 rounded-2xl bg-slate-950 border border-emerald-500/30 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-black uppercase tracking-wider border border-cyan-500/30">
-                  {currentMethod.badge}
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-black uppercase tracking-wider border border-emerald-500/30">
+                  {currentMethod.badge || 'WhatsApp Direct Handover'}
                 </span>
-                <span className="text-[10px] text-slate-400 font-bold">{currentMethod.fee}</span>
+                <span className="text-[10px] text-emerald-400 font-bold">Instant Support</span>
               </div>
 
               <div className="space-y-2">
                 <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  USDT TRC20 Deposit Address
+                  Direct WhatsApp Contact & Payment Link
                 </label>
-                <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl p-3">
-                  <div className="flex-1 font-mono text-xs font-bold text-white truncate">
-                    {merchant.trc20Address}
-                  </div>
-                  <button
-                    onClick={() => handleCopy(merchant.trc20Address, 'trc20')}
-                    className="px-3 py-1.5 rounded-lg bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/30 text-xs font-bold transition-all flex items-center gap-1.5 shrink-0"
+                <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center space-y-3">
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Connect directly with <strong className="text-white">Waleed Khan Afridi</strong> on WhatsApp to pay via Local Bank Transfer, EasyPaisa, JazzCash, Wise, or custom arrangements.
+                  </p>
+                  <a
+                    href={`https://wa.me/923000000000?text=${encodeURIComponent(`Hi Waleed! I would like to buy ${serviceTitle ? serviceTitle : 'a digital service'} ($${totalAmount.toFixed(2)}) via WhatsApp Direct Payment.`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3 px-6 rounded-xl text-xs font-black text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
                   >
-                    {copiedTrc20 ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedTrc20 ? 'Copied!' : 'Copy TRC20'}</span>
-                  </button>
+                    <MessageSquare className="w-4 h-4 fill-slate-950" />
+                    <span>Pay & Order via Direct WhatsApp</span>
+                  </a>
                 </div>
               </div>
-            </div>
-          )}
 
-          {/* USDT BEP20 */}
-          {activeTab === 'usdt_bep20' && (
-            <div className="p-5 rounded-2xl bg-slate-950 border border-purple-500/30 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-black uppercase tracking-wider border border-purple-500/30">
-                  {currentMethod.badge}
+              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800/80 text-xs space-y-2">
+                <span className="font-bold text-emerald-300 block uppercase tracking-wider text-[11px]">
+                  How to Pay via WhatsApp Direct:
                 </span>
-                <span className="text-[10px] text-slate-400 font-bold">{currentMethod.fee}</span>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  USDT BEP20 Deposit Address
-                </label>
-                <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl p-3">
-                  <div className="flex-1 font-mono text-xs font-bold text-white truncate">
-                    {merchant.bep20Address}
-                  </div>
-                  <button
-                    onClick={() => handleCopy(merchant.bep20Address, 'bep20')}
-                    className="px-3 py-1.5 rounded-lg bg-purple-500/20 border border-purple-500/30 text-purple-300 hover:bg-purple-500/30 text-xs font-bold transition-all flex items-center gap-1.5 shrink-0"
-                  >
-                    {copiedBep20 ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedBep20 ? 'Copied!' : 'Copy BEP20'}</span>
-                  </button>
-                </div>
+                <ol className="list-decimal list-inside space-y-1.5 text-slate-300 text-[11px] leading-relaxed">
+                  {currentMethod.instructions?.map((step, idx) => (
+                    <li key={idx}>{step}</li>
+                  ))}
+                </ol>
               </div>
             </div>
           )}
+
+
 
           {/* QR Code Tab */}
           {activeTab === 'qr_code' && (

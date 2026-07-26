@@ -3,14 +3,29 @@
     "name": "Waleed Khan Afridi",
     "email": "waleedkhanafridi7@gmail.com",
     "whatsappLink": "https://wa.link/6128mm",
-    "binancePayId": "284910523",
-    "trc20Address": "TY3x9v284910523910293849120398",
-    "bep20Address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F"
+    "binancePayId": "787445946"
   },
   "paymentMethods": [
     {
+      "id": "binance_pay",
+      "tabName": "1. Binance Pay",
+      "title": "Binance Pay Direct",
+      "badge": "Zero Fee • Instant",
+      "icon": "shield-check",
+      "payId": "787445946",
+      "merchantEmail": "waleedkhanafridi7@gmail.com",
+      "fee": "0% Fee",
+      "currencies": ["USDT", "BUSD", "BNB", "BTC"],
+      "instructions": [
+        "Open Binance Mobile App.",
+        "Go to Pay → Send -> Select Pay ID / User ID.",
+        "Paste Pay ID / User ID: 787445946",
+        "Confirm payment amount & submit screenshot proof below."
+      ]
+    },
+    {
       "id": "payoneer",
-      "tabName": "Payoneer Account",
+      "tabName": "2. Payoneer Transfer",
       "title": "Payoneer Email Transfer",
       "badge": "Official Email",
       "icon": "sparkles",
@@ -27,50 +42,19 @@
       ]
     },
     {
-      "id": "binance_pay",
-      "tabName": "Binance Pay ID",
-      "title": "Binance Pay Direct",
-      "badge": "Zero Fee • Instant",
-      "icon": "shield-check",
-      "payId": "284910523",
-      "merchantEmail": "waleedkhanafridi7@gmail.com",
-      "fee": "0% Fee",
-      "currencies": ["USDT", "BUSD", "BNB", "BTC"],
+      "id": "whatsapp_direct",
+      "tabName": "3. WhatsApp Direct Payment",
+      "title": "Direct WhatsApp Payment",
+      "badge": "Direct Handover",
+      "icon": "message-square",
+      "whatsappLink": "https://wa.link/6128mm",
+      "whatsappNumber": "+923000000000",
+      "fee": "Direct Confirmation",
+      "currencies": ["USD", "PKR", "USDT", "Bank Transfer"],
       "instructions": [
-        "Open Binance Mobile App.",
-        "Go to Pay → Send -> Select Pay ID.",
-        "Paste Pay ID: 284910523",
-        "Confirm payment amount & submit screenshot proof below."
-      ]
-    },
-    {
-      "id": "usdt_trc20",
-      "tabName": "USDT (TRC20)",
-      "title": "USDT Tron Network",
-      "badge": "TRC20 Network",
-      "icon": "network",
-      "address": "TY3x9v284910523910293849120398",
-      "fee": "Network Fee ~$1",
-      "currencies": ["USDT"],
-      "instructions": [
-        "Copy TRC20 Deposit Address: TY3x9v284910523910293849120398",
-        "Send exact USDT amount from your wallet/exchange (Binance, Bybit, KuCoin, TrustWallet).",
-        "Paste Transaction Hash (TxID) below after sending."
-      ]
-    },
-    {
-      "id": "usdt_bep20",
-      "tabName": "USDT (BEP20)",
-      "title": "USDT BNB Smart Chain",
-      "badge": "BEP20 Network",
-      "icon": "network",
-      "address": "0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
-      "fee": "Network Fee ~$0.15",
-      "currencies": ["USDT", "BNB"],
-      "instructions": [
-        "Copy BEP20 Deposit Address: 0x71C7656EC7ab88b098defB751B7401B5f6d8976F",
-        "Select BNB Smart Chain (BEP20) in your crypto wallet.",
-        "Submit TxID and screenshot proof below for fast confirmation."
+        "Click the 'Pay & Order via WhatsApp' button below.",
+        "Send your service details directly to Waleed Khan Afridi on WhatsApp.",
+        "Get direct payment instructions (Bank Transfer, EasyPaisa, JazzCash, Wise, etc.) and instant delivery."
       ]
     },
     {
@@ -79,7 +63,7 @@
       "title": "Binance Pay QR Code Scanner",
       "badge": "Instant Scan",
       "icon": "qr-code",
-      "payId": "284910523",
+      "payId": "787445946",
       "instructions": [
         "Open Binance Mobile App.",
         "Tap the QR Code Scanner icon in top right.",

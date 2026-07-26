@@ -7,13 +7,15 @@ interface ServiceDetailsModalProps {
   onClose: () => void;
   whatsappNumber: string;
   onContactClick: () => void;
+  onBuyNow?: (service: ServiceItem) => void;
 }
 
 export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
   service,
   onClose,
   whatsappNumber,
-  onContactClick
+  onContactClick,
+  onBuyNow
 }) => {
   useEffect(() => {
     if (!service) return;
@@ -163,15 +165,18 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row items-center gap-3">
-          <a
-            href={buyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={() => {
+              if (onBuyNow) {
+                onBuyNow(service);
+              }
+              onClose();
+            }}
             className="w-full sm:flex-1 py-3.5 px-6 rounded-xl text-sm font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 shadow-xl shadow-emerald-500/20 transition-all flex items-center justify-center gap-2"
           >
-            <MessageSquare className="w-4 h-4 fill-slate-950" />
-            <span>Buy Now via WhatsApp</span>
-          </a>
+            <ShoppingBag className="w-4 h-4 text-slate-950" />
+            <span>Buy Now (Select Payment Method)</span>
+          </button>
 
           <button
             onClick={() => {

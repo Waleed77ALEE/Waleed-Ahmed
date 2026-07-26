@@ -38,9 +38,10 @@ interface DigitalServicesProps {
   onSelectService: (service: ServiceItem) => void;
   whatsappNumber: string;
   onAddToCart?: (service: ServiceItem) => void;
+  onBuyNow?: (service: ServiceItem) => void;
 }
 
-export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectService, whatsappNumber, onAddToCart }) => {
+export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectService, whatsappNumber, onAddToCart, onBuyNow }) => {
   const [services, setServices] = useState<ExtendedProductItem[]>([]);
   const [dynamicCategories, setDynamicCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -260,15 +261,13 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
                         </button>
                       )}
 
-                      <a
-                        href={getWhatsAppBuyUrl(service)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => onBuyNow ? onBuyNow(service) : onSelectService(service)}
                         className="w-full py-2.5 px-2 text-[11px] font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 rounded-xl shadow-md transition-all flex items-center justify-center gap-1 truncate"
                       >
-                        <MessageSquare className="w-3.5 h-3.5 fill-slate-950 shrink-0" />
+                        <ShoppingBag className="w-3.5 h-3.5 text-slate-950 shrink-0" />
                         <span>Buy Now</span>
-                      </a>
+                      </button>
                     </div>
 
                   </div>
@@ -483,15 +482,13 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
                         </button>
                       )}
 
-                      <a
-                        href={getWhatsAppBuyUrl(service)}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => onBuyNow ? onBuyNow(service) : onSelectService(service)}
                         className="w-full py-2 px-2 text-[11px] font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 rounded-xl shadow-md transition-all flex items-center justify-center gap-1 truncate"
                       >
-                        <MessageSquare className="w-3 h-3 fill-slate-950 shrink-0" />
+                        <ShoppingBag className="w-3 h-3 text-slate-950 shrink-0" />
                         <span>Buy</span>
-                      </a>
+                      </button>
                     </div>
                 </div>
               </div>

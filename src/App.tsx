@@ -33,6 +33,7 @@ import {
 export default function App() {
   const [activeSection, setActiveSection] = useState<string>('hero');
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
+  const [selectedServiceForPayment, setSelectedServiceForPayment] = useState<ServiceItem | null>(null);
 
   // Supabase State
   const [user, setUser] = useState<any>(null);
@@ -167,6 +168,11 @@ export default function App() {
 
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+  const handleBuyNow = (service: ServiceItem) => {
+    setSelectedServiceForPayment(service);
+    setIsBinanceModalOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-slate-950">
       {/* Dynamic SEO JSON-LD Schemas */}
@@ -204,6 +210,7 @@ export default function App() {
           onSelectService={(service) => setSelectedService(service)}
           whatsappNumber={whatsappNumber}
           onAddToCart={handleAddToCart}
+          onBuyNow={handleBuyNow}
         />
 
         {/* 5. Featured Portfolio Projects Section */}
@@ -235,6 +242,7 @@ export default function App() {
         onClose={() => setSelectedService(null)}
         whatsappNumber={whatsappNumber}
         onContactClick={() => scrollToSection('contact')}
+        onBuyNow={handleBuyNow}
       />
 
       {/* Supabase Authentication Modal */}
@@ -286,6 +294,8 @@ export default function App() {
         isOpen={isBinanceModalOpen}
         onClose={() => setIsBinanceModalOpen(false)}
         whatsappNumber={whatsappNumber}
+        totalAmount={selectedServiceForPayment ? selectedServiceForPayment.price : 0}
+        serviceTitle={selectedServiceForPayment ? selectedServiceForPayment.title : ''}
       />
 
       {/* Admin Product & Store Management Portal Modal */}
