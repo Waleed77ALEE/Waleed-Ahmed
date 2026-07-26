@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database } from 'lucide-react';
+import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck } from 'lucide-react';
 import { UserProfile } from '../lib/supabase';
 import brandLogoImg from '../assets/images/brand_logo_1785031049165.jpg';
 
@@ -15,6 +15,7 @@ interface HeaderProps {
   onOpenCart: () => void;
   onOpenSql: () => void;
   onOpenBinancePay?: () => void;
+  onOpenAdmin?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -28,7 +29,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAccount,
   onOpenCart,
   onOpenSql,
-  onOpenBinancePay
+  onOpenBinancePay,
+  onOpenAdmin
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -177,6 +179,17 @@ export const Header: React.FC<HeaderProps> = ({
               <Database className="w-4 h-4 text-cyan-400" />
             </button>
 
+            {/* Admin Portal Button */}
+            {onOpenAdmin && (
+              <button
+                onClick={onOpenAdmin}
+                className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-300 hover:border-cyan-500/40 transition-colors hidden lg:flex items-center gap-1"
+                title="Admin Product & Store Management Portal (Ctrl+Shift+A)"
+              >
+                <ShieldCheck className="w-4 h-4 text-cyan-400" />
+              </button>
+            )}
+
             {/* WhatsApp Link */}
             <a
               href={whatsappUrl}
@@ -249,6 +262,21 @@ export const Header: React.FC<HeaderProps> = ({
                 <span>Supabase SQL Tables Schema</span>
               </span>
             </button>
+
+            {onOpenAdmin && (
+              <button
+                onClick={() => { onOpenAdmin(); setMobileMenuOpen(false); }}
+                className="w-full px-4 py-3 text-left text-xs font-bold rounded-xl text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-between"
+              >
+                <span className="flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                  <span>Admin Store Management Portal</span>
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-cyan-500 text-slate-950 font-mono text-[9px]">
+                  Ctrl+Shift+A
+                </span>
+              </button>
+            )}
 
             <div className="pt-3 border-t border-slate-800/80 mt-2 flex flex-col gap-2">
               <a

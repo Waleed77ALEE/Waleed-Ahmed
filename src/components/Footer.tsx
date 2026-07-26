@@ -5,9 +5,10 @@ import { SocialLinks } from './SocialLinks';
 interface FooterProps {
   onNavigate: (sectionId: string) => void;
   whatsappNumber: string;
+  onOpenAdmin?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate, whatsappNumber }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigate, whatsappNumber, onOpenAdmin }) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -80,6 +81,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, whatsappNumber }) =>
                   Contact & Orders
                 </button>
               </li>
+              {onOpenAdmin && (
+                <li>
+                  <button onClick={onOpenAdmin} className="hover:text-cyan-400 transition-colors text-slate-500 font-mono text-[10px]">
+                    ⚙️ Admin Portal
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
 

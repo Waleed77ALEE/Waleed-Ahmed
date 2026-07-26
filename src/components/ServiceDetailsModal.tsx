@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ServiceItem } from '../types';
-import { X, Check, Clock, ShieldCheck, MessageSquare, Star, ArrowRight, ShoppingBag, Info, Award } from 'lucide-react';
+import { X, Check, Clock, ShieldCheck, MessageSquare, ShoppingBag, Info, Award } from 'lucide-react';
 
 interface ServiceDetailsModalProps {
   service: ServiceItem | null;
@@ -15,6 +15,62 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
   whatsappNumber,
   onContactClick
 }) => {
+  useEffect(() => {
+    if (!service) return;
+
+    const schemaId = `product-modal-schema-${service.id}`;
+    let script = document.getElementById(schemaId) as HTMLScriptElement;
+    if (!script) {
+      script = document.createElement('script');
+      script.id = schemaId;
+      script.type = 'application/ld+json';
+      document.head.appendChild(script);
+    }
+
+    const productSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      '@id': `https://waleedkhanafridi.online/#product-${service.id}`,
+      name: service.title,
+      description: service.description,
+      category: service.category,
+      image: 'https://waleedkhanafridi.online/brand-logo.jpg',
+      brand: {
+        '@type': 'Brand',
+        name: 'Waleed Khan Afridi Digital Services'
+      },
+      offers: {
+        '@type': 'Offer',
+        url: 'https://waleedkhanafridi.online/#marketplace',
+        priceCurrency: 'USD',
+        price: String(service.price),
+        priceValidUntil: '2028-12-31',
+        itemCondition: 'https://schema.org/NewCondition',
+        availability: 'https://schema.org/InStock',
+        seller: {
+          '@type': 'Organization',
+          name: 'Waleed Khan Afridi Digital Services'
+        }
+      },
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: '5.0',
+        reviewCount: '28',
+        bestRating: '5',
+        worstRating: '1'
+      }
+    };
+
+    script.text = JSON.stringify(productSchema);
+
+    return () => {
+      const elem = document.getElementById(schemaId);
+      if (elem) {
+        elem.remove();
+      }
+    };
+  }, [service]);
+
   if (!service) return null;
 
   const buyUrl = 'https://wa.link/6128mm';

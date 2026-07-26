@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ServiceItem, CategoryFilter } from '../types';
+import { ServiceItem } from '../types';
+import { productStore, ExtendedProductItem } from '../services/productStore';
 import {
   Search,
   ShoppingBag,
@@ -40,45 +41,29 @@ interface DigitalServicesProps {
 }
 
 export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectService, whatsappNumber, onAddToCart }) => {
-  const [services, setServices] = useState<ServiceItem[]>([]);
+  const [services, setServices] = useState<ExtendedProductItem[]>([]);
+  const [dynamicCategories, setDynamicCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('All');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [subCategoryFilter, setSubCategoryFilter] = useState<string>('All');
 
-  // Load services from /services.json or fallback to /public/services.json
+  // Sync services and categories from productStore
   useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const response = await fetch('/services.json');
-        if (response.ok) {
-          const data = await response.json();
-          setServices(data);
-        } else {
-          // Fallback fetch from public
-          const resPublic = await fetch('/public/services.json');
-          if (resPublic.ok) {
-            const dataPublic = await resPublic.json();
-            setServices(dataPublic);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching services.json:', error);
-      } finally {
-        setLoading(false);
-      }
+    const loadFromStore = () => {
+      const items = productStore.getProducts(false); // get active products
+      const cats = productStore.getCategories();
+      setServices(items);
+      setDynamicCategories(['All', ...cats]);
+      setLoading(false);
     };
 
-    fetchServices();
+    loadFromStore();
+    const unsubscribe = productStore.subscribe(loadFromStore);
+    return () => unsubscribe();
   }, []);
 
-  const categories: CategoryFilter[] = [
-    'All',
-    'AI Subscriptions',
-    'Social Media Growth',
-    'Accounts',
-    'Gift Cards'
-  ];
+  const categories = dynamicCategories;
 
   // Featured services
   const featuredServices = useMemo(() => {

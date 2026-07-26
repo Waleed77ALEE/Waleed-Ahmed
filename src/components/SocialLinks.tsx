@@ -56,11 +56,11 @@ export const SOCIAL_LINKS: SocialLinkItem[] = [
   },
   {
     name: 'Instagram',
-    url: 'https://instagram.com/waleedkhanafridi.online',
+    url: 'https://www.instagram.com/malikdeenkhail/',
     icon: 'instagram',
     color: 'text-pink-400',
     bgHover: 'hover:bg-pink-500/10 hover:border-pink-500/40',
-    handle: '@waleedkhanafridi.online'
+    handle: '@malikdeenkhail'
   },
   {
     name: 'Facebook',

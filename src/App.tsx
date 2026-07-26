@@ -15,6 +15,7 @@ import { AccountModal } from './components/AccountModal';
 import { CartModal } from './components/CartModal';
 import { SupabaseSqlModal } from './components/SupabaseSqlModal';
 import { BinancePayModal } from './components/BinancePayModal';
+import { AdminPanelModal } from './components/AdminPanelModal';
 import { SeoSchemas } from './components/SeoSchemas';
 import { ServiceItem } from './types';
 import {
@@ -44,6 +45,7 @@ export default function App() {
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
   const [isSqlModalOpen, setIsSqlModalOpen] = useState(false);
   const [isBinanceModalOpen, setIsBinanceModalOpen] = useState(false);
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
 
   // Direct WhatsApp contact number for Waleed Khan Afridi
   const whatsappNumber = '923000000000';
@@ -74,6 +76,19 @@ export default function App() {
       }
     });
 
+    // Check hash for #admin
+    if (window.location.hash === '#admin') {
+      setIsAdminModalOpen(true);
+    }
+
+    // Keyboard shortcut (Ctrl+Shift+A) to open Admin Portal
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'a') {
+        e.preventDefault();
+        setIsAdminModalOpen((prev) => !prev);
+      }
+    };
+
     // Scroll Spy Listener
     const handleScroll = () => {
       const sections = ['hero', 'about', 'services', 'digital-services', 'projects', 'testimonials', 'about-me', 'contact'];
@@ -88,9 +103,11 @@ export default function App() {
       }
     };
 
+    window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       subscription.unsubscribe();
+      window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
@@ -168,6 +185,7 @@ export default function App() {
         onOpenCart={() => setIsCartModalOpen(true)}
         onOpenSql={() => setIsSqlModalOpen(true)}
         onOpenBinancePay={() => setIsBinanceModalOpen(true)}
+        onOpenAdmin={() => setIsAdminModalOpen(true)}
       />
 
       {/* Main Content Sections */}
@@ -205,7 +223,11 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <Footer onNavigate={scrollToSection} whatsappNumber={whatsappNumber} />
+      <Footer
+        onNavigate={scrollToSection}
+        whatsappNumber={whatsappNumber}
+        onOpenAdmin={() => setIsAdminModalOpen(true)}
+      />
 
       {/* Service Details Modal */}
       <ServiceDetailsModal
@@ -264,6 +286,12 @@ export default function App() {
         isOpen={isBinanceModalOpen}
         onClose={() => setIsBinanceModalOpen(false)}
         whatsappNumber={whatsappNumber}
+      />
+
+      {/* Admin Product & Store Management Portal Modal */}
+      <AdminPanelModal
+        isOpen={isAdminModalOpen}
+        onClose={() => setIsAdminModalOpen(false)}
       />
     </div>
   );

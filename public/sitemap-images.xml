@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://waleedkhanafridi.online/</loc>
+    <image:image>
+      <image:loc>https://waleedkhanafridi.online/profile-avatar.jpg</image:loc>
+      <image:title>Waleed Khan Afridi - Senior Full Stack Developer &amp; UI/UX Designer</image:title>
+      <image:caption>Professional profile picture of Waleed Khan Afridi</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://waleedkhanafridi.online/brand-logo.jpg</image:loc>
+      <image:title>Waleed Khan Afridi Monogram Brand Identity</image:title>
+    </image:image>
+  </url>
+</urlset>

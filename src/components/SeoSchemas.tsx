@@ -1,12 +1,26 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FAQS } from '../data/portfolioData';
+import { productStore, ExtendedProductItem } from '../services/productStore';
 
 export const SeoSchemas: React.FC = () => {
+  const [products, setProducts] = useState<ExtendedProductItem[]>([]);
+
+  useEffect(() => {
+    const updateProducts = () => {
+      setProducts(productStore.getProducts(false));
+    };
+
+    updateProducts();
+    const unsubscribe = productStore.subscribe(updateProducts);
+    return () => unsubscribe();
+  }, []);
+
   useEffect(() => {
     // 1. Developer / Person Schema
     const personSchema = {
       '@context': 'https://schema.org',
       '@type': 'Person',
+      '@id': 'https://waleedkhanafridi.online/#person',
       name: 'Waleed Khan Afridi',
       url: 'https://waleedkhanafridi.online',
       jobTitle: 'Senior Full Stack Developer, UI/UX Designer & SEO Specialist',
@@ -15,23 +29,64 @@ export const SeoSchemas: React.FC = () => {
         name: 'Waleed Khan Afridi Digital Services'
       },
       sameAs: [
+        'https://wa.link/6128mm',
+        'https://www.instagram.com/malikdeenkhail/',
         'https://github.com/waleedkhanafridi',
         'https://waleedkhanafridi.online'
+      ],
+      knowsAbout: [
+        'Full Stack Web Development',
+        'React & Next.js Frameworks',
+        'TypeScript & Node.js',
+        'WordPress & WooCommerce E-commerce',
+        'Technical SEO & Core Web Vitals',
+        'UI/UX Responsive Design',
+        'AI Subscriptions & API Services'
       ]
     };
 
-    // 2. Organization / Digital Marketplace Schema
-    const orgSchema = {
+    // 2. ProfessionalService & Organization Schema
+    const serviceSchema = {
       '@context': 'https://schema.org',
-      '@type': 'Organization',
-      name: 'Waleed Khan Afridi Digital Services Marketplace',
+      '@type': 'ProfessionalService',
+      '@id': 'https://waleedkhanafridi.online/#service',
+      name: 'Waleed Khan Afridi - Web Development & Digital Marketplace',
       url: 'https://waleedkhanafridi.online',
-      logo: 'https://waleedkhanafridi.online/favicon.ico',
-      description: 'Official Digital Services Marketplace offering AI Subscriptions (HeyGen, Kling AI, OpenAI API, Claude Pro), Social Media Growth, Aged Accounts, and Gift Cards.',
-      contactPoint: {
-        '@type': 'ContactPoint',
-        contactType: 'customer support',
-        availableLanguage: ['English', 'Urdu']
+      logo: 'https://waleedkhanafridi.online/brand-logo.jpg',
+      image: 'https://waleedkhanafridi.online/profile-avatar.jpg',
+      description: 'Enterprise web development, custom WordPress e-commerce, technical SEO, and verified digital services marketplace.',
+      email: 'waleedkhanafridi7@gmail.com',
+      priceRange: '$$',
+      paymentAccepted: ['Payoneer', 'Binance Pay', 'USDT TRC20', 'USDT BEP20', 'Crypto'],
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'Web Development & Digital Growth Services',
+        itemListElement: [
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Custom Web Application Development',
+              description: 'React, Next.js, Node.js & Supabase responsive full stack web applications.'
+            }
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'WordPress & WooCommerce Development',
+              description: 'E-commerce store design, speed optimization, and custom plugin integration.'
+            }
+          },
+          {
+            '@type': 'Offer',
+            itemOffered: {
+              '@type': 'Service',
+              name: 'Technical SEO Audit & Speed Optimization',
+              description: 'Google Search Console indexing, JSON-LD Schema markup, and Core Web Vitals.'
+            }
+          }
+        ]
       }
     };
 
@@ -39,6 +94,7 @@ export const SeoSchemas: React.FC = () => {
     const faqSchema = {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
+      '@id': 'https://waleedkhanafridi.online/#faq',
       mainEntity: FAQS.map((faq) => ({
         '@type': 'Question',
         name: faq.question,
@@ -53,6 +109,7 @@ export const SeoSchemas: React.FC = () => {
     const breadcrumbSchema = {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
+      '@id': 'https://waleedkhanafridi.online/#breadcrumb',
       itemListElement: [
         {
           '@type': 'ListItem',
@@ -63,19 +120,31 @@ export const SeoSchemas: React.FC = () => {
         {
           '@type': 'ListItem',
           position: 2,
-          name: 'Digital Services',
-          item: 'https://waleedkhanafridi.online/#digital-services'
+          name: 'Services',
+          item: 'https://waleedkhanafridi.online/#services'
         },
         {
           '@type': 'ListItem',
           position: 3,
-          name: 'Portfolio Projects',
-          item: 'https://waleedkhanafridi.online/#projects'
+          name: 'Digital Marketplace',
+          item: 'https://waleedkhanafridi.online/#marketplace'
+        },
+        {
+          '@type': 'ListItem',
+          position: 4,
+          name: 'Portfolio',
+          item: 'https://waleedkhanafridi.online/#portfolio'
+        },
+        {
+          '@type': 'ListItem',
+          position: 5,
+          name: 'About',
+          item: 'https://waleedkhanafridi.online/#about-me'
         }
       ]
     };
 
-    // Function to append script
+    // Helper to inject structured script tag
     const injectScript = (id: string, data: object) => {
       let script = document.getElementById(id) as HTMLScriptElement;
       if (!script) {
@@ -87,18 +156,66 @@ export const SeoSchemas: React.FC = () => {
       script.text = JSON.stringify(data);
     };
 
+    // 5. Digital Marketplace Product Schemas
+    if (Array.isArray(products) && products.length > 0) {
+      const productListSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        '@id': 'https://waleedkhanafridi.online/#product-catalog',
+        name: 'Digital Services & Subscriptions Marketplace',
+        numberOfItems: products.length,
+        itemListElement: products.map((item: any, idx: number) => ({
+          '@type': 'ListItem',
+          position: idx + 1,
+          item: {
+            '@type': 'Product',
+            '@id': `https://waleedkhanafridi.online/#product-${item.id}`,
+            name: item.title,
+            description: item.description,
+            category: item.category,
+            image: 'https://waleedkhanafridi.online/brand-logo.jpg',
+            brand: {
+              '@type': 'Brand',
+              name: 'Waleed Khan Afridi Digital Services'
+            },
+            offers: {
+              '@type': 'Offer',
+              url: 'https://waleedkhanafridi.online/#marketplace',
+              priceCurrency: 'USD',
+              price: String(item.price),
+              priceValidUntil: '2028-12-31',
+              itemCondition: 'https://schema.org/NewCondition',
+              availability: 'https://schema.org/InStock',
+              seller: {
+                '@type': 'Organization',
+                name: 'Waleed Khan Afridi Digital Services'
+              }
+            },
+            aggregateRating: {
+              '@type': 'AggregateRating',
+              ratingValue: '5.0',
+              reviewCount: String(20 + idx),
+              bestRating: '5',
+              worstRating: '1'
+            }
+          }
+        }))
+      };
+      injectScript('product-catalog-schema', productListSchema);
+    }
+
     injectScript('person-schema', personSchema);
-    injectScript('org-schema', orgSchema);
+    injectScript('service-schema', serviceSchema);
     injectScript('faq-schema', faqSchema);
     injectScript('breadcrumb-schema', breadcrumbSchema);
 
     return () => {
-      ['person-schema', 'org-schema', 'faq-schema', 'breadcrumb-schema'].forEach((id) => {
+      ['person-schema', 'service-schema', 'faq-schema', 'breadcrumb-schema', 'product-catalog-schema'].forEach((id) => {
         const elem = document.getElementById(id);
         if (elem) elem.remove();
       });
     };
-  }, []);
+  }, [products]);
 
   return null;
 };

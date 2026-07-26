@@ -1,0 +1,9 @@
+# Robots.txt for https://waleedkhanafridi.online
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /*?*query=
+
+# Sitemaps
+Sitemap: https://waleedkhanafridi.online/sitemap.xml
+Sitemap: https://waleedkhanafridi.online/sitemap-images.xml
