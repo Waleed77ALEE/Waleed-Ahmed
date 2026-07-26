@@ -14,12 +14,12 @@ export interface SocialLinkItem {
 export const SOCIAL_LINKS: SocialLinkItem[] = [
   {
     name: 'WhatsApp',
-    url: 'https://wa.me/923000000000',
+    url: 'https://wa.link/6128mm',
     icon: 'whatsapp',
     color: 'text-emerald-400',
     bgHover: 'hover:bg-emerald-500/10 hover:border-emerald-500/40',
     badge: 'Direct Orders & Chat',
-    handle: '+92 300 0000000'
+    handle: 'wa.link/6128mm'
   },
   {
     name: 'Official Website',
@@ -101,10 +101,10 @@ interface SocialLinksProps {
   whatsappNumber?: string;
 }
 
-export const SocialLinks: React.FC<SocialLinksProps> = ({ variant = 'full', whatsappNumber = '923000000000' }) => {
+export const SocialLinks: React.FC<SocialLinksProps> = ({ variant = 'full' }) => {
   const links = SOCIAL_LINKS.map(link => {
-    if (link.name === 'WhatsApp' && whatsappNumber) {
-      return { ...link, url: `https://wa.me/${whatsappNumber}` };
+    if (link.name === 'WhatsApp') {
+      return { ...link, url: 'https://wa.link/6128mm', handle: 'wa.link/6128mm' };
     }
     return link;
   });

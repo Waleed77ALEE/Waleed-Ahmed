@@ -151,9 +151,8 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
     }
   };
 
-  const getWhatsAppBuyUrl = (service: ServiceItem) => {
-    const message = `Hi Waleed! I would like to buy: "${service.title}" for $${service.price}. Delivery: ${service.delivery}. Please guide me on payment & instant handover.`;
-    return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+  const getWhatsAppBuyUrl = (_service: ServiceItem) => {
+    return 'https://wa.link/6128mm';
   };
 
   return (

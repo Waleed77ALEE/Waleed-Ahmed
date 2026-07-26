@@ -1,6 +1,7 @@
 import React from 'react';
 import { User, CheckCircle2, Globe, ShieldCheck, MessageSquare, Award, Terminal, Code2, Sparkles, Send, ArrowRight } from 'lucide-react';
 import { SocialLinks } from './SocialLinks';
+import profileAvatarImg from '../assets/images/profile_avatar_waleed_1785031698977.jpg';
 
 interface AboutMeEndProps {
   whatsappNumber: string;
@@ -56,8 +57,9 @@ export const AboutMeEnd: React.FC<AboutMeEndProps> = ({ whatsappNumber, onContac
               <div className="relative mb-6 mx-auto lg:mx-0 w-48 h-48 sm:w-56 sm:h-56 rounded-2xl overflow-hidden border-2 border-cyan-500/30 p-1.5 bg-gradient-to-tr from-cyan-500 via-indigo-500 to-emerald-500 shadow-xl shadow-cyan-950/40">
                 <div className="w-full h-full rounded-xl overflow-hidden bg-slate-950 relative">
                   <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80"
+                    src={profileAvatarImg}
                     alt="Waleed Khan Afridi"
+                    referrerPolicy="no-referrer"
                     className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
@@ -96,7 +98,7 @@ export const AboutMeEnd: React.FC<AboutMeEndProps> = ({ whatsappNumber, onContac
             {/* Quick Action Button */}
             <div className="mt-8 pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center gap-3">
               <a
-                href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Hi Waleed! I saw your profile on waleedkhanafridi.online and would like to connect.")}`}
+                href="https://wa.link/6128mm"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 font-bold text-xs hover:from-emerald-300 hover:to-teal-300 shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2"
@@ -177,7 +179,7 @@ export const AboutMeEnd: React.FC<AboutMeEndProps> = ({ whatsappNumber, onContac
             </div>
 
             <a
-              href={`https://wa.me/${whatsappNumber}`}
+              href="https://wa.link/6128mm"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold hover:bg-emerald-500/20 transition-all shrink-0"

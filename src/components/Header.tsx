@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, Code2, User, KeyRound, Database } from 'lucide-react';
+import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database } from 'lucide-react';
 import { UserProfile } from '../lib/supabase';
+import brandLogoImg from '../assets/images/brand_logo_1785031049165.jpg';
 
 interface HeaderProps {
   activeSection: string;
@@ -13,6 +14,7 @@ interface HeaderProps {
   onOpenAccount: () => void;
   onOpenCart: () => void;
   onOpenSql: () => void;
+  onOpenBinancePay?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -25,7 +27,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAuth,
   onOpenAccount,
   onOpenCart,
-  onOpenSql
+  onOpenSql,
+  onOpenBinancePay
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -53,7 +56,7 @@ export const Header: React.FC<HeaderProps> = ({
     setMobileMenuOpen(false);
   };
 
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Hi Waleed! I am visiting your portfolio (waleedkhanafridi.online) and would like to discuss a project / digital service.")}`;
+  const whatsappUrl = 'https://wa.link/6128mm';
 
   return (
     <header
@@ -70,10 +73,13 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => handleNavClick('hero')}
             className="flex items-center gap-2.5 text-left group focus:outline-none"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-purple-600 p-[1px] shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform duration-300">
-              <div className="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
-                <Code2 className="w-5 h-5 text-cyan-400 group-hover:rotate-12 transition-transform duration-300" />
-              </div>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-purple-600 p-[1px] shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform duration-300 overflow-hidden">
+              <img
+                src={brandLogoImg}
+                alt="Waleed Khan Afridi Logo"
+                referrerPolicy="no-referrer"
+                className="w-full h-full object-cover rounded-[11px] group-hover:scale-110 transition-transform duration-300"
+              />
             </div>
             <div className="hidden sm:block">
               <div className="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
@@ -148,6 +154,20 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
+            {/* Binance Pay Button */}
+            {onOpenBinancePay && (
+              <button
+                onClick={onOpenBinancePay}
+                className="px-3 py-2 text-xs font-bold text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 rounded-xl transition-all flex items-center gap-1.5 shadow-md shrink-0"
+                title="Binance Pay & Crypto Payment"
+              >
+                <svg className="w-3.5 h-3.5 fill-amber-400 shrink-0" viewBox="0 0 24 24">
+                  <path d="M12 2L6.5 7.5L9.3 10.3L12 7.6L14.7 10.3L17.5 7.5L12 2ZM4.8 9.2L2 12L4.8 14.8L7.6 12L4.8 9.2ZM19.2 9.2L16.4 12L19.2 14.8L22 12L19.2 9.2ZM12 12L9.3 14.7L12 17.4L14.7 14.7L12 12ZM12 22L17.5 16.5L14.7 13.7L12 16.4L9.3 13.7L6.5 16.5L12 22Z" />
+                </svg>
+                <span className="hidden md:inline">Binance Pay</span>
+              </button>
+            )}
+
             {/* Supabase SQL Helper */}
             <button
               onClick={onOpenSql}
@@ -202,6 +222,23 @@ export const Header: React.FC<HeaderProps> = ({
                 )}
               </button>
             ))}
+
+            {onOpenBinancePay && (
+              <button
+                onClick={() => { onOpenBinancePay(); setMobileMenuOpen(false); }}
+                className="w-full px-4 py-3 text-left text-xs font-bold rounded-xl text-amber-300 bg-amber-500/10 border border-amber-500/20 flex items-center justify-between"
+              >
+                <span className="flex items-center gap-2">
+                  <svg className="w-4 h-4 fill-amber-400 shrink-0" viewBox="0 0 24 24">
+                    <path d="M12 2L6.5 7.5L9.3 10.3L12 7.6L14.7 10.3L17.5 7.5L12 2ZM4.8 9.2L2 12L4.8 14.8L7.6 12L4.8 9.2ZM19.2 9.2L16.4 12L19.2 14.8L22 12L19.2 9.2ZM12 12L9.3 14.7L12 17.4L14.7 14.7L12 12ZM12 22L17.5 16.5L14.7 13.7L12 16.4L9.3 13.7L6.5 16.5L12 22Z" />
+                  </svg>
+                  <span>Binance Pay & USDT QR Scanner</span>
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-mono text-[9px]">
+                  Zero Fee
+                </span>
+              </button>
+            )}
 
             <button
               onClick={() => { onOpenSql(); setMobileMenuOpen(false); }}

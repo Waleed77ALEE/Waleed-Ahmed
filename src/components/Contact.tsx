@@ -43,9 +43,8 @@ export const Contact: React.FC<ContactProps> = ({ whatsappNumber, user }) => {
       status: 'New'
     });
 
-    // Direct WhatsApp message construct as fallback
-    const text = `Hi Waleed!\nName: ${formData.name}\nEmail: ${formData.email}\nInquiry: ${formData.serviceType}\nMessage: ${formData.message}`;
-    const waUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(text)}`;
+    // Direct WhatsApp link
+    const waUrl = 'https://wa.link/6128mm';
 
     setFormSubmitted(true);
     window.open(waUrl, '_blank');
@@ -78,7 +77,7 @@ export const Contact: React.FC<ContactProps> = ({ whatsappNumber, user }) => {
               </p>
 
               <a
-                href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Hi Waleed! I'm interested in ordering a digital service / discussing a web project.")}`}
+                href="https://wa.link/6128mm"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full py-3.5 px-4 rounded-xl text-sm font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 shadow-xl shadow-emerald-500/20 transition-all flex items-center justify-center gap-2.5 mb-4"
@@ -163,7 +162,7 @@ export const Contact: React.FC<ContactProps> = ({ whatsappNumber, user }) => {
                   WhatsApp has opened with your inquiry details. If it did not open automatically, click below:
                 </p>
                 <a
-                  href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi Waleed!\nName: ${formData.name}\nEmail: ${formData.email}\nInquiry: ${formData.serviceType}\nMessage: ${formData.message}`)}`}
+                  href="https://wa.link/6128mm"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs shadow-lg"

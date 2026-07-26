@@ -14,6 +14,7 @@ import { AuthModal } from './components/AuthModal';
 import { AccountModal } from './components/AccountModal';
 import { CartModal } from './components/CartModal';
 import { SupabaseSqlModal } from './components/SupabaseSqlModal';
+import { BinancePayModal } from './components/BinancePayModal';
 import { SeoSchemas } from './components/SeoSchemas';
 import { ServiceItem } from './types';
 import {
@@ -42,6 +43,7 @@ export default function App() {
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
   const [isSqlModalOpen, setIsSqlModalOpen] = useState(false);
+  const [isBinanceModalOpen, setIsBinanceModalOpen] = useState(false);
 
   // Direct WhatsApp contact number for Waleed Khan Afridi
   const whatsappNumber = '923000000000';
@@ -165,6 +167,7 @@ export default function App() {
         onOpenAccount={() => setIsAccountModalOpen(true)}
         onOpenCart={() => setIsCartModalOpen(true)}
         onOpenSql={() => setIsSqlModalOpen(true)}
+        onOpenBinancePay={() => setIsBinanceModalOpen(true)}
       />
 
       {/* Main Content Sections */}
@@ -254,6 +257,13 @@ export default function App() {
       <SupabaseSqlModal
         isOpen={isSqlModalOpen}
         onClose={() => setIsSqlModalOpen(false)}
+      />
+
+      {/* Binance Pay & Payment Proof Modal */}
+      <BinancePayModal
+        isOpen={isBinanceModalOpen}
+        onClose={() => setIsBinanceModalOpen(false)}
+        whatsappNumber={whatsappNumber}
       />
     </div>
   );

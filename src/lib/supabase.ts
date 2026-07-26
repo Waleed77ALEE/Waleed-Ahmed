@@ -48,6 +48,8 @@ export interface SupabaseOrder {
   payment_method: string;
   contact_whatsapp: string;
   notes?: string;
+  binance_tx_id?: string;
+  payment_proof?: string;
   created_at?: string;
 }
 
@@ -118,6 +120,8 @@ CREATE TABLE IF NOT EXISTS public.orders (
   payment_method TEXT DEFAULT 'WhatsApp Direct / Crypto / Bank',
   contact_whatsapp TEXT DEFAULT '',
   notes TEXT DEFAULT '',
+  binance_tx_id TEXT DEFAULT '',
+  payment_proof TEXT DEFAULT '',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

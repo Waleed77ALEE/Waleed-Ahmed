@@ -94,7 +94,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
             {profile?.full_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || 'U'}
           </div>
           <div>
-            <h3 className="text-xl font-black text-white">{profile?.full_name || 'My Supabase Account'}</h3>
+            <h3 className="text-xl font-black text-white">{profile?.full_name || 'My Account'}</h3>
             <p className="text-xs text-slate-400">{user?.email}</p>
           </div>
         </div>
@@ -181,14 +181,27 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                       ))}
                     </div>
 
-                    {/* WhatsApp Direct Assistance */}
-                    <div className="flex items-center justify-between pt-1">
-                      <span className="text-[10px] text-slate-500">Payment: {order.payment_method}</span>
+                    {/* WhatsApp Direct Assistance & Binance TxID */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1 border-t border-slate-800/60">
+                      <div>
+                        <span className="text-[10px] text-slate-500 block">Payment: {order.payment_method}</span>
+                        {order.binance_tx_id && (
+                          <span className="text-[10px] text-amber-300 font-mono block">
+                            Binance TxID: <strong>{order.binance_tx_id}</strong>
+                          </span>
+                        )}
+                        {order.payment_proof && (
+                          <span className="text-[10px] text-emerald-400 font-bold block">
+                            ✓ Payment Proof Uploaded
+                          </span>
+                        )}
+                      </div>
+
                       <a
-                        href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi Waleed! Checking on my Order #${order.order_number} ($${order.total_amount}).`)}`}
+                        href="https://wa.link/6128mm"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold hover:bg-emerald-500/20 transition-all"
+                        className="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold hover:bg-emerald-500/20 transition-all shrink-0"
                       >
                         <MessageSquare className="w-3 h-3 fill-emerald-400" />
                         <span>Order Support</span>

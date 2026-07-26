@@ -100,7 +100,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
             <KeyRound className="w-6 h-6" />
           </div>
           <h3 className="text-2xl font-black text-white">
-            {mode === 'signin' ? 'Welcome Back' : 'Create Supabase Account'}
+            {mode === 'signin' ? 'Welcome Back' : 'Create Your Account'}
           </h3>
           <p className="text-xs text-slate-400 mt-1">
             {mode === 'signin'

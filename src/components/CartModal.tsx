@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, Trash2, ShoppingCart, ArrowRight, ShieldCheck, CheckCircle2, MessageSquare, Loader2, Sparkles } from 'lucide-react';
-import { SupabaseCartItem, createOrderDB, clearCartDB, supabase } from '../lib/supabase';
+import { X, Trash2, ShoppingCart, ArrowRight, ShieldCheck, CheckCircle2, MessageSquare, Loader2, Sparkles, Copy, Check, Upload, Image as ImageIcon, QrCode } from 'lucide-react';
+import { SupabaseCartItem, createOrderDB, clearCartDB } from '../lib/supabase';
 
 interface CartModalProps {
   isOpen: boolean;
@@ -28,13 +28,47 @@ export const CartModal: React.FC<CartModalProps> = ({
   const [checkoutStep, setCheckoutStep] = useState<'cart' | 'checkout' | 'success'>('cart');
   const [contactWhatsapp, setContactWhatsapp] = useState('');
   const [notes, setNotes] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('WhatsApp Direct / Crypto / Bank');
+  const [paymentMethod, setPaymentMethod] = useState('Payoneer Email Transfer (waleedkhanafridi7@gmail.com)');
+  const [binanceTxId, setBinanceTxId] = useState('');
+  const [proofImage, setProofImage] = useState<string | null>(null);
+  const [proofFileName, setProofFileName] = useState('');
+  const [copiedPayId, setCopiedPayId] = useState(false);
+  const [copiedPayoneerEmail, setCopiedPayoneerEmail] = useState(false);
   const [isPlacing, setIsPlacing] = useState(false);
   const [createdOrderNumber, setCreatedOrderNumber] = useState('');
+
+  const payoneerEmail = 'waleedkhanafridi7@gmail.com';
+  const payoneerName = 'Waleed Khan Afridi';
+  const binancePayId = '284910523';
+  const trc20Address = 'TY3x9v284910523910293849120398';
 
   if (!isOpen) return null;
 
   const totalAmount = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const handleCopyPayId = () => {
+    navigator.clipboard.writeText(binancePayId);
+    setCopiedPayId(true);
+    setTimeout(() => setCopiedPayId(false), 2000);
+  };
+
+  const handleCopyPayoneerEmail = () => {
+    navigator.clipboard.writeText(payoneerEmail);
+    setCopiedPayoneerEmail(true);
+    setTimeout(() => setCopiedPayoneerEmail(false), 2000);
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setProofFileName(file.name);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProofImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,7 +92,9 @@ export const CartModal: React.FC<CartModalProps> = ({
       status: 'Pending' as const,
       payment_method: paymentMethod,
       contact_whatsapp: contactWhatsapp,
-      notes: notes
+      notes: notes,
+      binance_tx_id: binanceTxId,
+      payment_proof: proofImage || ''
     };
 
     const result = await createOrderDB(orderPayload);
@@ -75,7 +111,7 @@ export const CartModal: React.FC<CartModalProps> = ({
 
   const getWhatsAppOrderMsg = () => {
     const itemsSummary = cart.map(i => `• ${i.title} (x${i.quantity}) - $${(i.price * i.quantity).toFixed(2)}`).join('\n');
-    return `Hi Waleed! I would like to place an order on www.waleedkhanafridi.online:\n\n*Cart Items*:\n${itemsSummary}\n\n*Total*: $${totalAmount.toFixed(2)}\n*Payment Preference*: ${paymentMethod}\n*WhatsApp Contact*: ${contactWhatsapp}\n${notes ? `*Notes*: ${notes}` : ''}`;
+    return `Hi Waleed! I placed Order #${createdOrderNumber || 'NEW'} on www.waleedkhanafridi.online:\n\n*Cart Items*:\n${itemsSummary}\n\n*Total*: $${totalAmount.toFixed(2)}\n*Payment Method*: ${paymentMethod}\n${binanceTxId ? `*Binance TxID*: ${binanceTxId}\n` : ''}*WhatsApp Contact*: ${contactWhatsapp}\n${notes ? `*Notes*: ${notes}` : ''}`;
   };
 
   return (
@@ -175,7 +211,7 @@ export const CartModal: React.FC<CartModalProps> = ({
                   </button>
 
                   <a
-                    href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(getWhatsAppOrderMsg())}`}
+                    href="https://wa.link/6128mm"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="py-3 px-4 rounded-xl bg-slate-800 border border-slate-700 text-emerald-400 font-bold text-xs hover:bg-slate-700 transition-all flex items-center justify-center gap-2"
@@ -206,7 +242,7 @@ export const CartModal: React.FC<CartModalProps> = ({
                 required
                 value={contactWhatsapp}
                 onChange={(e) => setContactWhatsapp(e.target.value)}
-                placeholder="+92 300 0000000"
+                placeholder="+92 300 0000000 or wa.link/6128mm"
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition-colors"
               />
             </div>
@@ -216,14 +252,133 @@ export const CartModal: React.FC<CartModalProps> = ({
               <select
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-4 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-4 text-xs text-white focus:outline-none focus:border-amber-500 transition-colors"
               >
-                <option value="WhatsApp Direct / Crypto / Bank">WhatsApp Direct / Crypto / Bank</option>
-                <option value="USDT / Crypto (Binance Pay)">USDT / Crypto (Binance Pay)</option>
-                <option value="Bank Transfer / Wise / GCash">Bank Transfer / Wise / GCash</option>
-                <option value="Custom Order Terms">Custom Order Terms</option>
+                <option value="Payoneer Email Transfer (waleedkhanafridi7@gmail.com)">
+                  Payoneer Email Transfer (waleedkhanafridi7@gmail.com)
+                </option>
+                <option value="USDT / Crypto (Binance Pay)">USDT / Crypto (Binance Pay ID: 284910523)</option>
+                <option value="WhatsApp Direct Contact (wa.link/6128mm)">WhatsApp Direct (wa.link/6128mm)</option>
+                <option value="Bank Transfer / Wise / Wire">Bank Transfer / Wise / Wire</option>
               </select>
             </div>
+
+            {/* Payoneer Details Box */}
+            {paymentMethod.includes('Payoneer') && (
+              <div className="p-4 rounded-2xl bg-gradient-to-r from-red-500/10 via-orange-500/10 to-amber-500/10 border border-orange-500/30 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
+                    <span className="text-xs font-black text-orange-300 uppercase tracking-wider">Payoneer Account Details</span>
+                  </div>
+                  <span className="text-[10px] text-emerald-400 font-mono font-bold">Zero Fee</span>
+                </div>
+
+                <div className="flex items-center justify-between bg-slate-950 border border-slate-800 rounded-xl p-2.5">
+                  <div className="overflow-hidden pr-2">
+                    <span className="text-[10px] text-slate-400 block font-bold">Payoneer Recipient Email</span>
+                    <span className="text-xs font-mono font-black text-white truncate block">{payoneerEmail}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCopyPayoneerEmail}
+                    className="px-2.5 py-1 rounded-lg bg-orange-500/20 text-orange-300 hover:bg-orange-500/30 text-[11px] font-bold transition-all flex items-center gap-1 shrink-0"
+                  >
+                    {copiedPayoneerEmail ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                    <span>{copiedPayoneerEmail ? 'Copied!' : 'Copy Email'}</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-400 mb-1">Payoneer Ref ID / TxID</label>
+                    <input
+                      type="text"
+                      value={binanceTxId}
+                      onChange={(e) => setBinanceTxId(e.target.value)}
+                      placeholder="e.g. 19820394812"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-xs text-white font-mono placeholder-slate-600 focus:outline-none focus:border-orange-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-400 mb-1">Payment Proof Screenshot</label>
+                    <div className="relative border border-slate-800 hover:border-orange-500/50 rounded-xl p-1.5 bg-slate-950 text-center cursor-pointer">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                      <div className="flex items-center justify-center gap-1.5 text-xs text-slate-300">
+                        <Upload className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+                        <span className="truncate text-[11px]">
+                          {proofFileName ? proofFileName : 'Upload Screenshot'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {paymentMethod.includes('Binance') && (
+              <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                    <span className="text-xs font-black text-amber-300 uppercase tracking-wider">Binance Pay Account Details</span>
+                  </div>
+                  <span className="text-[10px] text-amber-400 font-mono font-bold">Zero Fee</span>
+                </div>
+
+                <div className="flex items-center justify-between bg-slate-950 border border-slate-800 rounded-xl p-2.5">
+                  <div>
+                    <span className="text-[10px] text-slate-400 block">Binance Pay ID</span>
+                    <span className="text-xs font-mono font-black text-white">{binancePayId}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCopyPayId}
+                    className="px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 text-[11px] font-bold transition-all flex items-center gap-1"
+                  >
+                    {copiedPayId ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                    <span>{copiedPayId ? 'Copied!' : 'Copy ID'}</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-400 mb-1">Binance TxID / Ref ID</label>
+                    <input
+                      type="text"
+                      value={binanceTxId}
+                      onChange={(e) => setBinanceTxId(e.target.value)}
+                      placeholder="e.g. 2894102938102"
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-3 text-xs text-white font-mono placeholder-slate-600 focus:outline-none focus:border-amber-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-bold text-slate-400 mb-1">Payment Proof Screenshot</label>
+                    <div className="relative border border-slate-800 hover:border-amber-500/50 rounded-xl p-1.5 bg-slate-950 text-center cursor-pointer">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                      <div className="flex items-center justify-center gap-1.5 text-xs text-slate-300">
+                        <Upload className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                        <span className="truncate text-[11px]">
+                          {proofFileName ? proofFileName : 'Upload Screenshot'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div>
               <label className="block text-[11px] font-bold text-slate-400 mb-1">Special Order Notes (Optional)</label>
@@ -284,7 +439,7 @@ export const CartModal: React.FC<CartModalProps> = ({
             </p>
 
             <a
-              href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi Waleed! I just placed Order #${createdOrderNumber} on waleedkhanafridi.online ($${totalAmount.toFixed(2)}). Please confirm handover details.`)}`}
+              href="https://wa.link/6128mm"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-emerald-400 text-slate-950 font-black text-xs hover:bg-emerald-300 transition-all shadow-xl shadow-emerald-500/20"
