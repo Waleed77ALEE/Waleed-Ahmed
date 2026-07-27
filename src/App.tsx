@@ -16,6 +16,7 @@ import { CartModal } from './components/CartModal';
 import { SupabaseSqlModal } from './components/SupabaseSqlModal';
 import { BinancePayModal } from './components/BinancePayModal';
 import { AdminPanelModal } from './components/AdminPanelModal';
+import { AndroidAppModal } from './components/AndroidAppModal';
 import { SeoSchemas } from './components/SeoSchemas';
 import { SectionTransition } from './components/SectionTransition';
 import { ServiceItem } from './types';
@@ -48,11 +49,22 @@ export default function App() {
   const [isSqlModalOpen, setIsSqlModalOpen] = useState(false);
   const [isBinanceModalOpen, setIsBinanceModalOpen] = useState(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [isAndroidAppModalOpen, setIsAndroidAppModalOpen] = useState(false);
+
+  // PWA Install Prompt State
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
   // Direct WhatsApp contact number for Waleed Khan Afridi
   const whatsappNumber = '+923416860077';
 
   useEffect(() => {
+    // PWA beforeinstallprompt event listener for 1-click Android installation
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
     // 1. Initial Supabase Auth Check
     supabase.auth.getSession().then(({ data: { session } }) => {
       const currentUser = session?.user || null;
@@ -78,9 +90,11 @@ export default function App() {
       }
     });
 
-    // Check hash for #admin
+    // Check hash for #admin or #apk
     if (window.location.hash === '#admin') {
       setIsAdminModalOpen(true);
+    } else if (window.location.hash === '#apk' || window.location.hash === '#android') {
+      setIsAndroidAppModalOpen(true);
     }
 
     // Keyboard shortcut (Ctrl+Shift+A) to open Admin Portal
@@ -109,10 +123,25 @@ export default function App() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       subscription.unsubscribe();
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  const handleInstallPWA = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult: any) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted Android PWA app installation');
+        }
+        setDeferredPrompt(null);
+      });
+    } else {
+      alert('To install on Android: Open in Google Chrome, tap the 3 dots menu (⋮) in the top right, and select "Install app" or "Add to Home screen".');
+    }
+  };
 
   const loadUserProfile = async (userId: string) => {
     const prof = await getProfile(userId);
@@ -193,13 +222,14 @@ export default function App() {
         onOpenSql={() => setIsSqlModalOpen(true)}
         onOpenBinancePay={() => setIsBinanceModalOpen(true)}
         onOpenAdmin={() => setIsAdminModalOpen(true)}
+        onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)}
       />
 
       {/* Main Content Sections */}
       <main>
         {/* 1. Hero Section */}
         <SectionTransition id="hero">
-          <Hero onNavigate={scrollToSection} />
+          <Hero onNavigate={scrollToSection} onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)} />
         </SectionTransition>
 
         {/* 2. Overview About Section */}
@@ -251,6 +281,7 @@ export default function App() {
         onNavigate={scrollToSection}
         whatsappNumber={whatsappNumber}
         onOpenAdmin={() => setIsAdminModalOpen(true)}
+        onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)}
       />
 
       {/* Service Details Modal */}
@@ -319,6 +350,14 @@ export default function App() {
       <AdminPanelModal
         isOpen={isAdminModalOpen}
         onClose={() => setIsAdminModalOpen(false)}
+      />
+
+      {/* Android APK & PWA App Download Portal Modal */}
+      <AndroidAppModal
+        isOpen={isAndroidAppModalOpen}
+        onClose={() => setIsAndroidAppModalOpen(false)}
+        deferredPrompt={deferredPrompt}
+        onInstallPWA={handleInstallPWA}
       />
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck } from 'lucide-react';
+import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck, Smartphone } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../lib/supabase';
 import brandLogoImg from '../assets/images/brand_logo_1785031049165.jpg';
@@ -17,6 +17,7 @@ interface HeaderProps {
   onOpenSql: () => void;
   onOpenBinancePay?: () => void;
   onOpenAdmin?: () => void;
+  onOpenAndroidApp?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -31,8 +32,10 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenCart,
   onOpenSql,
   onOpenBinancePay,
-  onOpenAdmin
+  onOpenAdmin,
+  onOpenAndroidApp
 }) => {
+
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -130,10 +133,25 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Right Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Download Android App Button */}
+            {onOpenAndroidApp && (
+              <button
+                onClick={onOpenAndroidApp}
+                className="px-3 py-2 text-xs font-bold text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-500/50 rounded-xl transition-all flex items-center gap-1.5 shadow-md shrink-0 cursor-pointer"
+                title="Download Official Android App (APK / PWA)"
+              >
+                <Smartphone className="w-4 h-4 text-emerald-400 shrink-0 animate-pulse" />
+                <span className="hidden md:inline">Android App</span>
+                <span className="px-1.5 py-0.2 rounded-full bg-emerald-500 text-slate-950 text-[9px] font-extrabold uppercase">
+                  APK
+                </span>
+              </button>
+            )}
+
             {/* Supabase Cart Button */}
             <button
               onClick={onOpenCart}
-              className="relative p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-cyan-500/40 transition-all flex items-center gap-1.5"
+              className="relative p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-cyan-500/40 transition-all flex items-center gap-1.5 cursor-pointer"
               title="Marketplace Cart"
             >
               <ShoppingBag className="w-4 h-4 text-emerald-400" />
@@ -251,6 +269,21 @@ export const Header: React.FC<HeaderProps> = ({
                   )}
                 </button>
               ))}
+
+              {onOpenAndroidApp && (
+                <button
+                  onClick={() => { onOpenAndroidApp(); setMobileMenuOpen(false); }}
+                  className="w-full px-4 py-3 text-left text-xs font-bold rounded-xl text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between"
+                >
+                  <span className="flex items-center gap-2">
+                    <Smartphone className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>Download Official Android App (APK)</span>
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-mono text-[9px] font-extrabold uppercase">
+                    v2.4 APK
+                  </span>
+                </button>
+              )}
 
               {onOpenBinancePay && (
                 <button

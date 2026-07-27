@@ -35,8 +35,12 @@ export const CoreServices: React.FC<CoreServicesProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="py-20 bg-slate-900/60 relative border-t border-slate-800 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="py-24 bg-slate-950 relative border-t border-slate-900/80 overflow-hidden bg-dots-pattern">
+      {/* Background Accent Glows */}
+      <div className="absolute top-1/2 left-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -44,14 +48,14 @@ export const CoreServices: React.FC<CoreServicesProps> = ({ onNavigate }) => {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="text-center max-w-3xl mx-auto mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-3">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-4 shadow-lg">
             <Code className="w-3.5 h-3.5" />
             <span>Development & SEO Services</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
             Custom Software & Engineering Solutions
           </h2>
-          <p className="mt-4 text-slate-400 text-base">
+          <p className="mt-4 text-slate-300 text-base leading-relaxed">
             High-caliber web development, pixel-perfect UI designs, and technical SEO architecture engineered for conversion.
           </p>
         </motion.div>
@@ -68,42 +72,46 @@ export const CoreServices: React.FC<CoreServicesProps> = ({ onNavigate }) => {
               key={service.id}
               variants={cardVariants}
               whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="bg-slate-950 border border-slate-800 hover:border-cyan-500/40 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between group shadow-xl hover:shadow-cyan-950/20"
+              className="bg-slate-900/60 border border-slate-800/90 hover:border-cyan-500/50 rounded-2xl p-7 transition-all duration-300 flex flex-col justify-between group shadow-2xl backdrop-blur-xl relative overflow-hidden"
             >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/15 transition-all pointer-events-none" />
+
               <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 group-hover:scale-110 transition-transform">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800/80 group-hover:scale-110 group-hover:border-cyan-500/40 transition-all shadow-lg">
                     {getIcon(service.icon)}
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider block">Starting</span>
-                    <span className="text-lg font-extrabold text-white">{service.startingPrice}</span>
+                    <span className="text-[10px] text-slate-400 uppercase font-bold tracking-widest block">Starting</span>
+                    <span className="text-xl font-black text-white tracking-tight">{service.startingPrice}</span>
                   </div>
                 </div>
 
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">
+                <h3 className="text-xl font-extrabold text-white mb-3 group-hover:text-cyan-300 transition-colors">
                   {service.title}
                 </h3>
 
-                <p className="text-xs text-slate-400 leading-relaxed mb-6">
+                <p className="text-xs text-slate-300 leading-relaxed mb-6">
                   {service.description}
                 </p>
 
-                <div className="space-y-2 mb-6">
+                <div className="space-y-2.5 mb-8">
                   {service.deliverables.map((item, i) => (
-                    <div key={i} className="flex items-center gap-2 text-xs text-slate-300">
-                      <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                      <span>{item}</span>
+                    <div key={i} className="flex items-center gap-2.5 text-xs text-slate-200">
+                      <div className="w-4 h-4 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                        <CheckCircle className="w-3 h-3 text-emerald-400" />
+                      </div>
+                      <span className="font-medium">{item}</span>
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-slate-900 flex items-center justify-between">
-                <span className="text-xs text-slate-400 font-medium">Turnaround: <strong className="text-slate-200">{service.turnaround}</strong></span>
+              <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                <span className="text-xs text-slate-400 font-medium">Turnaround: <strong className="text-slate-200 font-semibold">{service.turnaround}</strong></span>
                 <button
                   onClick={() => onNavigate('contact')}
-                  className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 group-hover:translate-x-1 transition-all cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-cyan-200 flex items-center gap-1.5 group-hover:translate-x-0.5 transition-all cursor-pointer"
                 >
                   <span>Request Quote</span>
                   <ArrowRight className="w-3.5 h-3.5" />

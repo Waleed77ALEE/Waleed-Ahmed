@@ -1,14 +1,16 @@
 import React from 'react';
-import { ArrowUp, Code2, Globe, ShieldCheck, MessageSquare } from 'lucide-react';
+import { ArrowUp, Code2, Globe, ShieldCheck, MessageSquare, Smartphone, Download } from 'lucide-react';
 import { SocialLinks } from './SocialLinks';
 
 interface FooterProps {
   onNavigate: (sectionId: string) => void;
   whatsappNumber: string;
   onOpenAdmin?: () => void;
+  onOpenAndroidApp?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate, whatsappNumber, onOpenAdmin }) => {
+export const Footer: React.FC<FooterProps> = ({ onNavigate, whatsappNumber, onOpenAdmin, onOpenAndroidApp }) => {
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -81,6 +83,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, whatsappNumber, onOp
                   Contact & Orders
                 </button>
               </li>
+              {onOpenAndroidApp && (
+                <li>
+                  <button onClick={onOpenAndroidApp} className="hover:text-emerald-300 transition-colors text-emerald-400 font-bold flex items-center gap-1">
+                    <Smartphone className="w-3.5 h-3.5" />
+                    <span>Download Android App (APK)</span>
+                  </button>
+                </li>
+              )}
               {onOpenAdmin && (
                 <li>
                   <button onClick={onOpenAdmin} className="hover:text-cyan-400 transition-colors text-slate-500 font-mono text-[10px]">
