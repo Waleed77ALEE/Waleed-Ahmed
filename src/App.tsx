@@ -17,6 +17,7 @@ import { SupabaseSqlModal } from './components/SupabaseSqlModal';
 import { BinancePayModal } from './components/BinancePayModal';
 import { AdminPanelModal } from './components/AdminPanelModal';
 import { SeoSchemas } from './components/SeoSchemas';
+import { SectionTransition } from './components/SectionTransition';
 import { ServiceItem } from './types';
 import {
   supabase,
@@ -197,36 +198,52 @@ export default function App() {
       {/* Main Content Sections */}
       <main>
         {/* 1. Hero Section */}
-        <Hero onNavigate={scrollToSection} />
+        <SectionTransition id="hero">
+          <Hero onNavigate={scrollToSection} />
+        </SectionTransition>
 
         {/* 2. Overview About Section */}
-        <About />
+        <SectionTransition id="about">
+          <About />
+        </SectionTransition>
 
         {/* 3. Core Web & SEO Services Section */}
-        <CoreServices onNavigate={scrollToSection} />
+        <SectionTransition id="services">
+          <CoreServices onNavigate={scrollToSection} />
+        </SectionTransition>
 
         {/* 4. Social Media & Digital Services Marketplace Section */}
-        <DigitalServices
-          onSelectService={(service) => setSelectedService(service)}
-          whatsappNumber={whatsappNumber}
-          onAddToCart={handleAddToCart}
-          onBuyNow={handleBuyNow}
-        />
+        <SectionTransition id="digital-services">
+          <DigitalServices
+            onSelectService={(service) => setSelectedService(service)}
+            whatsappNumber={whatsappNumber}
+            onAddToCart={handleAddToCart}
+            onBuyNow={handleBuyNow}
+          />
+        </SectionTransition>
 
         {/* 5. Featured Portfolio Projects Section */}
-        <Projects />
+        <SectionTransition id="projects">
+          <Projects />
+        </SectionTransition>
 
         {/* 6. Testimonials & Client Reviews Section */}
-        <Testimonials />
+        <SectionTransition id="testimonials">
+          <Testimonials />
+        </SectionTransition>
 
         {/* 7. Detailed About Me Section at the end */}
-        <AboutMeEnd
-          whatsappNumber={whatsappNumber}
-          onContactClick={() => scrollToSection('contact')}
-        />
+        <SectionTransition id="about-me">
+          <AboutMeEnd
+            whatsappNumber={whatsappNumber}
+            onContactClick={() => scrollToSection('contact')}
+          />
+        </SectionTransition>
 
         {/* 8. Contact & Direct Order Section */}
-        <Contact whatsappNumber={whatsappNumber} user={user} />
+        <SectionTransition id="contact">
+          <Contact whatsappNumber={whatsappNumber} user={user} />
+        </SectionTransition>
       </main>
 
       {/* Footer */}

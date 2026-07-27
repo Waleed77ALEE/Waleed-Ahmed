@@ -1,12 +1,33 @@
 import React from 'react';
 import { TESTIMONIALS } from '../data/portfolioData';
 import { Star, ShieldCheck, Quote, ThumbsUp, Award } from 'lucide-react';
+import { motion } from 'motion/react';
 
 export const Testimonials: React.FC = () => {
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.12
+      }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 24 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
+  };
+
   return (
-    <section id="testimonials" className="py-20 bg-slate-950 relative border-t border-slate-900">
+    <div className="py-20 bg-slate-950 relative border-t border-slate-900 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-3xl mx-auto mb-16"
+        >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-3">
             <Award className="w-3.5 h-3.5" />
             <span>Client Reviews & Marketplace Reputation</span>
@@ -17,12 +38,20 @@ export const Testimonials: React.FC = () => {
           <p className="mt-4 text-slate-400 text-base">
             Verified feedback from G2G Marketplace buyers, freelance clients, and enterprise partners.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           {TESTIMONIALS.map((review) => (
-            <div
+            <motion.div
               key={review.id}
+              variants={cardVariants}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 relative flex flex-col justify-between shadow-xl backdrop-blur-md hover:border-slate-700 transition-colors"
             >
               <Quote className="absolute top-4 right-4 w-8 h-8 text-slate-800/80 pointer-events-none" />
@@ -72,10 +101,10 @@ export const Testimonials: React.FC = () => {
                   </div>
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../lib/supabase';
 import brandLogoImg from '../assets/images/brand_logo_1785031049165.jpg';
 
@@ -103,15 +104,22 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`relative px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 flex items-center gap-1.5 ${
+                  className={`relative px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors duration-200 flex items-center gap-1.5 z-10 ${
                     isActive
-                      ? 'text-white bg-gradient-to-r from-cyan-500/20 to-indigo-500/20 border border-cyan-500/30 shadow-inner'
+                      ? 'text-white'
                       : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
                   }`}
                 >
-                  {item.label}
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeNavPill"
+                      className="absolute inset-0 bg-gradient-to-r from-cyan-500/25 via-sky-500/20 to-indigo-500/25 border border-cyan-500/40 rounded-full shadow-lg shadow-cyan-500/10 -z-10"
+                      transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                    />
+                  )}
+                  <span className="relative z-10">{item.label}</span>
                   {item.badge && (
-                    <span className="px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-gradient-to-r from-cyan-500 to-indigo-500 text-white tracking-wider uppercase">
+                    <span className="relative z-10 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-gradient-to-r from-cyan-500 to-indigo-500 text-white tracking-wider uppercase">
                       {item.badge}
                     </span>
                   )}
@@ -215,84 +223,92 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="xl:hidden fixed inset-x-0 top-[65px] bg-slate-950/95 border-b border-slate-800/90 backdrop-blur-xl p-4 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-200">
-          <div className="flex flex-col gap-2">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleNavClick(item.id)}
-                className={`w-full px-4 py-3 text-left text-sm font-semibold rounded-xl flex items-center justify-between transition-colors ${
-                  activeSection === item.id
-                    ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-                    : 'text-slate-300 hover:bg-slate-900'
-                }`}
-              >
-                <span>{item.label}</span>
-                {item.badge && (
-                  <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-cyan-500 text-slate-950">
-                    {item.badge}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -16, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -16, scale: 0.98 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+            className="xl:hidden fixed inset-x-0 top-[65px] bg-slate-950/95 border-b border-slate-800/90 backdrop-blur-xl p-4 shadow-2xl z-40"
+          >
+            <div className="flex flex-col gap-2">
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handleNavClick(item.id)}
+                  className={`w-full px-4 py-3 text-left text-sm font-semibold rounded-xl flex items-center justify-between transition-colors ${
+                    activeSection === item.id
+                      ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
+                      : 'text-slate-300 hover:bg-slate-900'
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  {item.badge && (
+                    <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-cyan-500 text-slate-950">
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              ))}
+
+              {onOpenBinancePay && (
+                <button
+                  onClick={() => { onOpenBinancePay(); setMobileMenuOpen(false); }}
+                  className="w-full px-4 py-3 text-left text-xs font-bold rounded-xl text-amber-300 bg-amber-500/10 border border-amber-500/20 flex items-center justify-between"
+                >
+                  <span className="flex items-center gap-2">
+                    <svg className="w-4 h-4 fill-amber-400 shrink-0" viewBox="0 0 24 24">
+                      <path d="M12 2L6.5 7.5L9.3 10.3L12 7.6L14.7 10.3L17.5 7.5L12 2ZM4.8 9.2L2 12L4.8 14.8L7.6 12L4.8 9.2ZM19.2 9.2L16.4 12L19.2 14.8L22 12L19.2 9.2ZM12 12L9.3 14.7L12 17.4L14.7 14.7L12 12ZM12 22L17.5 16.5L14.7 13.7L12 16.4L9.3 13.7L6.5 16.5L12 22Z" />
+                    </svg>
+                    <span>Binance Pay & USDT QR Scanner</span>
                   </span>
-                )}
-              </button>
-            ))}
+                  <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-mono text-[9px]">
+                    Zero Fee
+                  </span>
+                </button>
+              )}
 
-            {onOpenBinancePay && (
               <button
-                onClick={() => { onOpenBinancePay(); setMobileMenuOpen(false); }}
-                className="w-full px-4 py-3 text-left text-xs font-bold rounded-xl text-amber-300 bg-amber-500/10 border border-amber-500/20 flex items-center justify-between"
+                onClick={() => { onOpenSql(); setMobileMenuOpen(false); }}
+                className="w-full px-4 py-3 text-left text-xs font-semibold rounded-xl text-slate-400 bg-slate-900 flex items-center justify-between"
               >
                 <span className="flex items-center gap-2">
-                  <svg className="w-4 h-4 fill-amber-400 shrink-0" viewBox="0 0 24 24">
-                    <path d="M12 2L6.5 7.5L9.3 10.3L12 7.6L14.7 10.3L17.5 7.5L12 2ZM4.8 9.2L2 12L4.8 14.8L7.6 12L4.8 9.2ZM19.2 9.2L16.4 12L19.2 14.8L22 12L19.2 9.2ZM12 12L9.3 14.7L12 17.4L14.7 14.7L12 12ZM12 22L17.5 16.5L14.7 13.7L12 16.4L9.3 13.7L6.5 16.5L12 22Z" />
-                  </svg>
-                  <span>Binance Pay & USDT QR Scanner</span>
-                </span>
-                <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-mono text-[9px]">
-                  Zero Fee
+                  <Database className="w-4 h-4 text-cyan-400" />
+                  <span>Supabase SQL Tables Schema</span>
                 </span>
               </button>
-            )}
 
-            <button
-              onClick={() => { onOpenSql(); setMobileMenuOpen(false); }}
-              className="w-full px-4 py-3 text-left text-xs font-semibold rounded-xl text-slate-400 bg-slate-900 flex items-center justify-between"
-            >
-              <span className="flex items-center gap-2">
-                <Database className="w-4 h-4 text-cyan-400" />
-                <span>Supabase SQL Tables Schema</span>
-              </span>
-            </button>
+              {onOpenAdmin && (
+                <button
+                  onClick={() => { onOpenAdmin(); setMobileMenuOpen(false); }}
+                  className="w-full px-4 py-3 text-left text-xs font-bold rounded-xl text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-between"
+                >
+                  <span className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                    <span>Admin Store Management Portal</span>
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-cyan-500 text-slate-950 font-mono text-[9px]">
+                    Ctrl+Shift+A
+                  </span>
+                </button>
+              )}
 
-            {onOpenAdmin && (
-              <button
-                onClick={() => { onOpenAdmin(); setMobileMenuOpen(false); }}
-                className="w-full px-4 py-3 text-left text-xs font-bold rounded-xl text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-between"
-              >
-                <span className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-cyan-400" />
-                  <span>Admin Store Management Portal</span>
-                </span>
-                <span className="px-2 py-0.5 rounded-full bg-cyan-500 text-slate-950 font-mono text-[9px]">
-                  Ctrl+Shift+A
-                </span>
-              </button>
-            )}
-
-            <div className="pt-3 border-t border-slate-800/80 mt-2 flex flex-col gap-2">
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3 text-center text-sm font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
-              >
-                <MessageSquare className="w-4 h-4" />
-                <span>Order via WhatsApp Direct</span>
-              </a>
+              <div className="pt-3 border-t border-slate-800/80 mt-2 flex flex-col gap-2">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-3 text-center text-sm font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>Order via WhatsApp Direct</span>
+                </a>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

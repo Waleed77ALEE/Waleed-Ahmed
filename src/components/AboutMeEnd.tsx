@@ -2,6 +2,7 @@ import React from 'react';
 import { User, CheckCircle2, Globe, ShieldCheck, MessageSquare, Award, Terminal, Code2, Sparkles, Send, ArrowRight } from 'lucide-react';
 import { SocialLinks } from './SocialLinks';
 import profileAvatarImg from '../assets/images/profile_avatar_waleed_1785031698977.jpg';
+import { motion } from 'motion/react';
 
 interface AboutMeEndProps {
   whatsappNumber: string;
@@ -26,14 +27,20 @@ export const AboutMeEnd: React.FC<AboutMeEndProps> = ({ whatsappNumber, onContac
   ];
 
   return (
-    <section id="about-me" className="py-24 bg-slate-950 relative border-t border-slate-900 overflow-hidden">
+    <div className="py-24 bg-slate-950 relative border-t border-slate-900 overflow-hidden">
       {/* Background Decorative Glows */}
       <div className="absolute top-1/4 left-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-96 h-96 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-3xl mx-auto mb-16"
+        >
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-4">
             <User className="w-4 h-4" />
             <span>About Waleed Khan Afridi</span>
@@ -44,12 +51,18 @@ export const AboutMeEnd: React.FC<AboutMeEndProps> = ({ whatsappNumber, onContac
           <p className="mt-4 text-slate-400 text-base sm:text-lg leading-relaxed">
             Full Stack Software Engineer, UI Designer, and Creator of <strong className="text-cyan-300 font-semibold">waleedkhanafridi.online</strong> — delivering custom web solutions and instant digital subscription services worldwide.
           </p>
-        </div>
+        </motion.div>
 
         {/* Profile Card & Bio Bento Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch mb-16">
           {/* Left: Profile Picture & Core Identity Card (5 cols) */}
-          <div className="lg:col-span-5 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden shadow-2xl backdrop-blur-xl group">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-5 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden shadow-2xl backdrop-blur-xl group"
+          >
             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-br from-cyan-500/20 to-emerald-500/0 rounded-full blur-3xl pointer-events-none" />
 
             <div>
@@ -110,17 +123,23 @@ export const AboutMeEnd: React.FC<AboutMeEndProps> = ({ whatsappNumber, onContac
               {onContactClick && (
                 <button
                   onClick={onContactClick}
-                  className="w-full sm:w-auto px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold text-xs hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5"
+                  className="w-full sm:w-auto px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white font-bold text-xs hover:bg-slate-700 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <span>Send Message</span>
                   <ArrowRight className="w-3.5 h-3.5 text-cyan-400" />
                 </button>
               )}
             </div>
-          </div>
+          </motion.div>
 
           {/* Right: Detailed Experience & Key Stats (7 cols) */}
-          <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-7 flex flex-col justify-between space-y-6"
+          >
             {/* Stats Cards Row */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {achievements.map((item, idx) => (
@@ -162,11 +181,17 @@ export const AboutMeEnd: React.FC<AboutMeEndProps> = ({ whatsappNumber, onContac
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Social Media Links Section */}
-        <div className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-xl">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-slate-900/50 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-xl"
+        >
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-6 border-b border-slate-800">
             <div>
               <h3 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
@@ -191,8 +216,8 @@ export const AboutMeEnd: React.FC<AboutMeEndProps> = ({ whatsappNumber, onContac
 
           {/* Full Interactive Social Media Matrix */}
           <SocialLinks variant="full" whatsappNumber={whatsappNumber} />
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </div>
   );
 };

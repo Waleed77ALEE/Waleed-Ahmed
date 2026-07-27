@@ -1,5 +1,6 @@
 import React from 'react';
 import { User, CheckCircle2, Award, Terminal, Cpu, Globe, Rocket } from 'lucide-react';
+import { motion } from 'motion/react';
 
 export const About: React.FC = () => {
   const skills = [
@@ -21,9 +22,15 @@ export const About: React.FC = () => {
   ];
 
   return (
-    <section id="about" className="py-20 bg-slate-950 relative border-t border-slate-900">
+    <div className="py-20 bg-slate-950 relative border-t border-slate-900 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-3xl mx-auto mb-16"
+        >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold uppercase tracking-wider mb-3">
             <User className="w-3.5 h-3.5" />
             <span>About Waleed Khan Afridi</span>
@@ -34,11 +41,17 @@ export const About: React.FC = () => {
           <p className="mt-4 text-slate-400 text-base">
             Dedicated Full Stack Engineer, UI Designer, and Digital Service Merchant based online. I build resilient software and provide instant digital assets to propel individuals and organizations.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Column: Bio Card */}
-          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 backdrop-blur-md relative overflow-hidden shadow-xl">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="bg-slate-900/60 border border-slate-800 rounded-2xl p-8 backdrop-blur-md relative overflow-hidden shadow-xl"
+          >
             <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
 
             <div className="flex items-center gap-4 mb-6">
@@ -69,10 +82,16 @@ export const About: React.FC = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
 
           {/* Right Column: Skill Bars */}
-          <div className="space-y-6">
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="space-y-6"
+          >
             <h3 className="text-xl font-bold text-white flex items-center gap-2">
               <Terminal className="w-5 h-5 text-cyan-400" />
               <span>Core Technical Competencies</span>
@@ -86,17 +105,20 @@ export const About: React.FC = () => {
                     <span className="text-xs font-bold text-cyan-400">{skill.level}%</span>
                   </div>
                   <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-cyan-500 via-sky-400 to-indigo-500 rounded-full transition-all duration-1000"
-                      style={{ width: `${skill.level}%` }}
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-cyan-500 via-sky-400 to-indigo-500 rounded-full"
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${skill.level}%` }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.2, delay: idx * 0.1, ease: 'easeOut' }}
                     />
                   </div>
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { ServiceItem } from '../types';
 import { productStore, ExtendedProductItem } from '../services/productStore';
 import {
@@ -143,14 +144,20 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
   };
 
   return (
-    <section id="digital-services" className="py-20 bg-slate-950 relative border-t border-slate-900">
+    <div className="py-20 bg-slate-950 relative border-t border-slate-900">
       {/* Background Accent Glows */}
       <div className="absolute top-20 right-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-20 left-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Title */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-3xl mx-auto mb-12"
+        >
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-3 shadow-lg">
             <ShoppingBag className="w-3.5 h-3.5" />
             <span>Digital Services Marketplace</span>
@@ -161,7 +168,7 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
           <p className="mt-4 text-slate-300 text-base sm:text-lg leading-relaxed">
             Verified AI Subscriptions, High-Retention Social Media Growth, Aged Accounts, and Gift Vouchers with instant WhatsApp handover & 100% replacement warranty.
           </p>
-        </div>
+        </motion.div>
 
         {/* Featured Digital Products Section */}
         {featuredServices.length > 0 && searchQuery === '' && selectedCategory === 'All' && (
@@ -497,6 +504,6 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
           </div>
         )}
       </div>
-    </section>
+    </div>
   );
 };

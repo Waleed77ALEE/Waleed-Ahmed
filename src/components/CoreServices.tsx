@@ -1,6 +1,7 @@
 import React from 'react';
 import { CORE_SERVICES } from '../data/portfolioData';
 import { Code, Palette, Search, Cpu, ShoppingBag, Zap, CheckCircle, ArrowRight } from 'lucide-react';
+import { motion } from 'motion/react';
 
 interface CoreServicesProps {
   onNavigate: (sectionId: string) => void;
@@ -19,10 +20,30 @@ export const CoreServices: React.FC<CoreServicesProps> = ({ onNavigate }) => {
     }
   };
 
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } }
+  };
+
   return (
-    <section id="services" className="py-20 bg-slate-900/60 relative border-t border-slate-800">
+    <div className="py-20 bg-slate-900/60 relative border-t border-slate-800 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-3xl mx-auto mb-16"
+        >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider mb-3">
             <Code className="w-3.5 h-3.5" />
             <span>Development & SEO Services</span>
@@ -33,13 +54,21 @@ export const CoreServices: React.FC<CoreServicesProps> = ({ onNavigate }) => {
           <p className="mt-4 text-slate-400 text-base">
             High-caliber web development, pixel-perfect UI designs, and technical SEO architecture engineered for conversion.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
           {CORE_SERVICES.map((service) => (
-            <div
+            <motion.div
               key={service.id}
-              className="bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 shadow-xl hover:shadow-cyan-950/20"
+              variants={cardVariants}
+              whileHover={{ y: -6, transition: { duration: 0.2 } }}
+              className="bg-slate-950 border border-slate-800 hover:border-cyan-500/40 rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between group shadow-xl hover:shadow-cyan-950/20"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -74,16 +103,16 @@ export const CoreServices: React.FC<CoreServicesProps> = ({ onNavigate }) => {
                 <span className="text-xs text-slate-400 font-medium">Turnaround: <strong className="text-slate-200">{service.turnaround}</strong></span>
                 <button
                   onClick={() => onNavigate('contact')}
-                  className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 group-hover:translate-x-1 transition-all"
+                  className="text-xs font-bold text-cyan-400 hover:text-cyan-300 flex items-center gap-1 group-hover:translate-x-1 transition-all cursor-pointer"
                 >
                   <span>Request Quote</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
-    </section>
+    </div>
   );
 };
