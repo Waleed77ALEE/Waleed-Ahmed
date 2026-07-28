@@ -4,6 +4,7 @@ import {
   ExtendedProductItem,
   AdminOrder
 } from '../services/productStore';
+import { PlatformLogo } from './PlatformLogo';
 import {
   X,
   LayoutDashboard,
@@ -573,7 +574,8 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                           filteredProducts.map((prod) => (
                             <tr key={prod.id} className="hover:bg-slate-900/60 transition-colors">
                               <td className="p-3 font-semibold text-white">
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2.5">
+                                  <PlatformLogo title={prod.title} category={prod.category} subCategory={prod.subCategory} id={prod.id} className="w-5 h-5 shrink-0" />
                                   <span>{prod.title}</span>
                                   {prod.featured && (
                                     <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[9px] font-bold">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Trash2, ShoppingCart, ArrowRight, ShieldCheck, CheckCircle2, MessageSquare, Loader2, Sparkles, Copy, Check, Upload, Image as ImageIcon, QrCode } from 'lucide-react';
 import { SupabaseCartItem, createOrderDB, clearCartDB } from '../lib/supabase';
+import { PlatformLogo } from './PlatformLogo';
 
 interface CartModalProps {
   isOpen: boolean;
@@ -155,12 +156,17 @@ export const CartModal: React.FC<CartModalProps> = ({
               ) : (
                 cart.map((item) => (
                   <div key={item.id} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800/90 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                    <div className="flex-1">
-                      <h4 className="text-xs font-bold text-white">{item.title}</h4>
-                      <p className="text-[10px] text-cyan-400 font-medium">{item.category} • {item.delivery}</p>
-                      <p className="text-sm font-black font-mono text-emerald-400 mt-1">
-                        ${item.price.toFixed(2)}
-                      </p>
+                    <div className="flex items-start gap-3 flex-1">
+                      <div className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-cyan-400 shrink-0 mt-0.5">
+                        <PlatformLogo title={item.title} category={item.category} id={item.service_id} className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-xs font-bold text-white">{item.title}</h4>
+                        <p className="text-[10px] text-cyan-400 font-medium">{item.category} • {item.delivery}</p>
+                        <p className="text-sm font-black font-mono text-emerald-400 mt-0.5">
+                          ${item.price.toFixed(2)}
+                        </p>
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-3 self-end sm:self-center">

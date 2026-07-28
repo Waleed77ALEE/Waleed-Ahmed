@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { ServiceItem } from '../types';
+import { PlatformLogo } from './PlatformLogo';
 import { X, Check, Clock, ShieldCheck, MessageSquare, ShoppingBag, Info, Award } from 'lucide-react';
 
 interface ServiceDetailsModalProps {
@@ -95,11 +96,12 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
 
         {/* Modal Header */}
         <div className="flex items-start gap-4 mb-6 pr-8">
-          <div className="p-3.5 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-indigo-500/20 border border-cyan-500/30 text-cyan-400 shrink-0">
-            <ShoppingBag className="w-7 h-7" />
+          <div className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800/80 text-cyan-400 shrink-0 shadow-lg flex items-center justify-center">
+            <PlatformLogo title={service.title} category={service.category} subCategory={service.subCategory} id={service.id} className="w-8 h-8" />
           </div>
           <div>
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex flex-wrap items-center gap-2 mb-1.5">
+              <PlatformLogo title={service.title} category={service.category} subCategory={service.subCategory} id={service.id} showBadgeName={true} />
               <span className="px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 uppercase tracking-wider">
                 {service.category}
               </span>
