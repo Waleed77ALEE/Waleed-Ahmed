@@ -15,8 +15,26 @@
     <meta name="application-name" content="Waleed Khan Afridi Portfolio" />
     <meta name="theme-color" content="#020617" />
     <meta name="color-scheme" content="dark" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="rating" content="general" />
+    <meta name="revisit-after" content="7 days" />
+    <meta name="distribution" content="global" />
+    <meta name="coverage" content="Worldwide" />
 
-    <!-- Robots & Crawling Control -->
+    <!-- Mobile & PWA Web App Metadata -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Waleed Khan Afridi" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Geographic & Regional Metadata -->
+    <meta name="geo.region" content="PK-KP" />
+    <meta name="geo.placename" content="Peshawar" />
+    <meta name="geo.position" content="34.0151;71.5249" />
+    <meta name="ICBM" content="34.0151, 71.5249" />
+
+    <!-- Robots & Crawling Directives -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
@@ -35,11 +53,13 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Waleed Khan Afridi" />
     <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="en_GB" />
     <meta property="og:url" content="https://waleedkhanafridi.online/" />
     <meta property="og:title" content="Waleed Khan Afridi - Senior Full Stack Developer &amp; SEO Expert" />
     <meta property="og:description" content="Senior Full Stack Developer, UI/UX Designer &amp; SEO Specialist. High-converting custom web apps, e-commerce, and verified AI &amp; digital growth services." />
     <meta property="og:image" content="https://waleedkhanafridi.online/brand-logo.jpg" />
     <meta property="og:image:secure_url" content="https://waleedkhanafridi.online/brand-logo.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Waleed Khan Afridi - Senior Full Stack Developer Brand Identity" />
@@ -52,17 +72,21 @@
     <meta name="twitter:title" content="Waleed Khan Afridi - Senior Full Stack Developer &amp; SEO Expert" />
     <meta name="twitter:description" content="Senior Full Stack Developer, UI/UX Designer &amp; SEO Specialist. Custom web applications, e-commerce, and digital service subscriptions." />
     <meta name="twitter:image" content="https://waleedkhanafridi.online/brand-logo.jpg" />
+    <meta name="twitter:image:alt" content="Waleed Khan Afridi - Senior Full Stack Developer Brand Identity" />
 
     <!-- Webmaster Verification Placeholders -->
     <meta name="google-site-verification" content="GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID_PLACEHOLDER" />
     <meta name="msvalidate.01" content="BING_WEBMASTER_VERIFICATION_ID_PLACEHOLDER" />
 
-    <!-- Fonts preconnect for LCP optimization -->
+    <!-- Resource Hints & Fonts Preconnect for LCP Optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet" />
 
-    <!-- Structured Data (JSON-LD) - Rich Results & Knowledge Graph -->
+    <!-- Structured Data (JSON-LD) - Google Search Rich Results & Knowledge Graph -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -72,6 +96,7 @@
           "@id": "https://waleedkhanafridi.online/#website",
           "url": "https://waleedkhanafridi.online/",
           "name": "Waleed Khan Afridi",
+          "alternateName": ["WKA Digital", "Waleed Khan Afridi Portfolio"],
           "description": "Full Stack Web Developer, WordPress Expert & SEO Specialist Portfolio & Digital Marketplace",
           "publisher": {
             "@id": "https://waleedkhanafridi.online/#person"
@@ -79,7 +104,10 @@
           "inLanguage": "en-US",
           "potentialAction": {
             "@type": "SearchAction",
-            "target": "https://waleedkhanafridi.online/?s={search_term_string}",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://waleedkhanafridi.online/?s={search_term_string}"
+            },
             "query-input": "required name=search_term_string"
           }
         },
@@ -90,20 +118,31 @@
           "givenName": "Waleed",
           "familyName": "Afridi",
           "jobTitle": "Senior Full Stack Web Developer & SEO Specialist",
+          "image": {
+            "@type": "ImageObject",
+            "@id": "https://waleedkhanafridi.online/#personImage",
+            "url": "https://waleedkhanafridi.online/brand-logo.jpg",
+            "caption": "Waleed Khan Afridi"
+          },
           "email": "mailto:waleedkhanafridi7@gmail.com",
+          "telephone": "+923416860077",
           "url": "https://waleedkhanafridi.online/",
+          "worksFor": {
+            "@id": "https://waleedkhanafridi.online/#organization"
+          },
           "sameAs": [
-            "https://wa.link/6128mm",
-            "https://github.com/",
-            "https://linkedin.com/"
+            "https://wa.me/923416860077",
+            "https://www.instagram.com/malikdeenkhail/",
+            "https://github.com/waleedkhanafridi",
+            "https://waleedkhanafridi.online"
           ],
           "knowsAbout": [
             "Full Stack Web Development",
-            "React.js & Next.js",
+            "React.js & Next.js Frameworks",
             "TypeScript & Node.js",
-            "WordPress & WooCommerce",
+            "WordPress & WooCommerce Development",
             "Technical SEO & Core Web Vitals",
-            "UI/UX Design",
+            "UI/UX Responsive Design",
             "AI Subscription APIs & Integration"
           ]
         },
@@ -111,13 +150,38 @@
           "@type": "ProfessionalService",
           "@id": "https://waleedkhanafridi.online/#organization",
           "name": "Waleed Khan Afridi - Digital Web Services",
+          "alternateName": "WKA Digital Marketplace",
           "url": "https://waleedkhanafridi.online/",
-          "logo": "https://waleedkhanafridi.online/brand-logo.jpg",
-          "image": "https://waleedkhanafridi.online/profile-avatar.jpg",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://waleedkhanafridi.online/brand-logo.jpg",
+            "width": "512",
+            "height": "512"
+          },
+          "image": "https://waleedkhanafridi.online/brand-logo.jpg",
           "description": "Full service web development, WordPress e-commerce solutions, technical SEO, and digital services marketplace.",
           "email": "waleedkhanafridi7@gmail.com",
-          "telephone": "+923000000000",
+          "telephone": "+923416860077",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Peshawar",
+            "addressRegion": "Khyber Pakhtunkhwa",
+            "addressCountry": "PK"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 34.0151,
+            "longitude": 71.5249
+          },
+          "areaServed": [
+            "Worldwide",
+            "Pakistan",
+            "United States",
+            "United Kingdom",
+            "United Arab Emirates"
+          ],
           "priceRange": "$$",
+          "currenciesAccepted": "USD, PKR, USDT",
           "paymentAccepted": ["Payoneer", "Binance Pay", "USDT TRC20", "USDT BEP20", "Crypto"],
           "openingHoursSpecification": {
             "@type": "OpeningHoursSpecification",
@@ -183,6 +247,11 @@
           "about": {
             "@id": "https://waleedkhanafridi.online/#person"
           },
+          "primaryImageOfPage": {
+            "@type": "ImageObject",
+            "url": "https://waleedkhanafridi.online/brand-logo.jpg"
+          },
+          "inLanguage": "en-US",
           "description": "Official website and digital service store for Waleed Khan Afridi. Specialized in React, WordPress, Technical SEO, and AI growth services."
         },
         {

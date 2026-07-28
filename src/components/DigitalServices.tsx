@@ -52,6 +52,7 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [subCategoryFilter, setSubCategoryFilter] = useState<string>('All');
   const [selectedPlatformFilter, setSelectedPlatformFilter] = useState<string>('All');
+  const [sortBy, setSortBy] = useState<'featured' | 'platform' | 'price-asc' | 'price-desc' | 'name'>('featured');
 
   // Sync services and categories from productStore
   useEffect(() => {
@@ -70,16 +71,19 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
 
   const categories = dynamicCategories;
 
-  // Extract all unique detected platforms
+  // Extract all unique detected platforms with counts
   const detectedPlatforms = useMemo(() => {
-    const map = new Map<string, { key: string; name: string }>();
+    const map = new Map<string, { key: string; name: string; count: number }>();
     services.forEach((s) => {
       const { key, info } = detectPlatform(s.title, s.category, s.subCategory, s.id);
-      if (!map.has(key)) {
-        map.set(key, { key, name: info.name });
+      const existing = map.get(key);
+      if (existing) {
+        existing.count += 1;
+      } else {
+        map.set(key, { key, name: info.name, count: 1 });
       }
     });
-    return Array.from(map.values());
+    return Array.from(map.values()).sort((a, b) => b.count - a.count);
   }, [services]);
 
   // Featured services
@@ -128,6 +132,28 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
       return matchesCategory && matchesSubCategory && matchesPlatform && matchesSearch;
     });
   }, [services, selectedCategory, subCategoryFilter, selectedPlatformFilter, searchQuery]);
+
+  // Sorted services
+  const sortedServices = useMemo(() => {
+    const list = [...filteredServices];
+    if (sortBy === 'price-asc') {
+      list.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'price-desc') {
+      list.sort((a, b) => b.price - a.price);
+    } else if (sortBy === 'platform') {
+      list.sort((a, b) => {
+        const pA = detectPlatform(a.title, a.category, a.subCategory, a.id).info.name;
+        const pB = detectPlatform(b.title, b.category, b.subCategory, b.id).info.name;
+        return pA.localeCompare(pB);
+      });
+    } else if (sortBy === 'name') {
+      list.sort((a, b) => a.title.localeCompare(b.title));
+    } else {
+      // default featured
+      list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+    }
+    return list;
+  }, [filteredServices, sortBy]);
 
   // Render Lucide Icon helper
   const renderIcon = (iconName: string, className = 'w-5 h-5') => {
@@ -313,30 +339,111 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
         )}
 
         {/* Control Bar: Search & Category Filter */}
-        <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-6 mb-10 backdrop-blur-md shadow-2xl">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
-            {/* Search Input Box */}
-            <div className="relative w-full lg:w-96">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+        <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 sm:p-7 mb-10 backdrop-blur-md shadow-2xl space-y-5">
+          {/* Top Search Bar */}
+          <div>
+            <div className="relative w-full">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-cyan-400" />
               <input
                 type="text"
-                placeholder="Search services (e.g. HeyGen, Instagram, OpenAI)..."
+                placeholder="Search services by name or platform (e.g. Facebook, Instagram, YouTube, HeyGen, OpenAI, Kling, TikTok)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-10 py-2.5 text-xs sm:text-sm bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/80 focus:ring-1 focus:ring-cyan-500/80 transition-all"
+                className="w-full pl-12 pr-28 py-3.5 text-sm sm:text-base bg-slate-950 border border-slate-800 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 transition-all shadow-inner"
               />
-              {searchQuery && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                {searchQuery ? (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="p-1.5 text-slate-400 hover:text-white bg-slate-900 rounded-lg transition-colors"
+                    title="Clear Search"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                ) : (
+                  <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold text-slate-400 bg-slate-900 rounded-lg border border-slate-800">
+                    <Search className="w-3 h-3 text-cyan-400" /> Live Search
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Quick search tags */}
+            <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-xs">
+              <span className="text-slate-400 font-medium mr-1 text-[11px]">Popular searches:</span>
+              {['Facebook', 'Instagram', 'YouTube', 'OpenAI', 'HeyGen', 'Kling', 'TikTok', 'Microsoft'].map((tag) => (
                 <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white"
+                  key={tag}
+                  onClick={() => setSearchQuery(tag)}
+                  className="px-2.5 py-0.5 text-[11px] font-medium text-slate-300 hover:text-cyan-300 bg-slate-950 hover:bg-slate-800 border border-slate-800/80 rounded-lg transition-all"
                 >
-                  <X className="w-4 h-4" />
+                  #{tag}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Platform Quick Filter Bar */}
+          <div className="pt-4 border-t border-slate-800/80">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs text-slate-300 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <Layers className="w-4 h-4 text-cyan-400" /> Filter By Platform Category:
+              </span>
+              {selectedPlatformFilter !== 'All' && (
+                <button
+                  onClick={() => setSelectedPlatformFilter('All')}
+                  className="text-[11px] text-cyan-400 hover:underline font-semibold"
+                >
+                  Show All Platforms
                 </button>
               )}
             </div>
 
+            <div className="flex flex-wrap items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+              <button
+                onClick={() => setSelectedPlatformFilter('All')}
+                className={`px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5 ${
+                  selectedPlatformFilter === 'All'
+                    ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-md shadow-cyan-500/20 scale-105'
+                    : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
+                }`}
+              >
+                <span>All Platforms</span>
+                <span className={`px-1.5 py-0.2 text-[10px] rounded-full font-extrabold ${selectedPlatformFilter === 'All' ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'}`}>
+                  {services.length}
+                </span>
+              </button>
+
+              {detectedPlatforms.map((p) => {
+                const isSelected = selectedPlatformFilter === p.key;
+                return (
+                  <button
+                    key={p.key}
+                    onClick={() => setSelectedPlatformFilter(p.key)}
+                    className={`flex items-center gap-2 px-3.5 py-1.5 text-xs font-bold rounded-xl transition-all ${
+                      isSelected
+                        ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-md shadow-cyan-500/20 scale-105 border border-cyan-400'
+                        : 'bg-slate-950 text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-800'
+                    }`}
+                  >
+                    <PlatformLogo title={p.name} id={p.key} className="w-4 h-4 shrink-0" />
+                    <span>{p.name}</span>
+                    <span className={`px-1.5 py-0.2 text-[10px] rounded-full font-extrabold ${isSelected ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400'}`}>
+                      {p.count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Service Type Categories & Sort Bar */}
+          <div className="pt-4 border-t border-slate-800/80 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             {/* Main Category Filter Buttons */}
-            <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0 scrollbar-none">
+            <div className="flex flex-wrap items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+              <span className="text-xs text-slate-400 font-medium flex items-center gap-1 mr-1 text-[11px]">
+                <Filter className="w-3.5 h-3.5 text-cyan-400" /> Type:
+              </span>
               {categories.map((cat) => {
                 const isActive = selectedCategory === cat;
                 return (
@@ -346,10 +453,10 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
                       setSelectedCategory(cat);
                       setSubCategoryFilter('All');
                     }}
-                    className={`px-4 py-2 text-xs font-semibold rounded-xl transition-all duration-200 whitespace-nowrap ${
+                    className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-all duration-200 whitespace-nowrap ${
                       isActive
-                        ? 'bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-lg shadow-cyan-500/20 scale-105'
-                        : 'bg-slate-950 text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-800'
+                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
+                        : 'bg-slate-950 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800'
                     }`}
                   >
                     {cat}
@@ -357,44 +464,30 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
                 );
               })}
             </div>
-          </div>
 
-          {/* Platform Quick Filter Bar */}
-          <div className="mt-4 pt-4 border-t border-slate-800/80 flex flex-wrap items-center gap-2">
-            <span className="text-xs text-slate-400 font-medium flex items-center gap-1.5 mr-2">
-              <Layers className="w-3.5 h-3.5 text-cyan-400" /> Platform Filter:
-            </span>
-            <button
-              onClick={() => setSelectedPlatformFilter('All')}
-              className={`px-3 py-1 text-[11px] font-bold rounded-lg transition-all ${
-                selectedPlatformFilter === 'All'
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
-                  : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
-              }`}
-            >
-              All Platforms
-            </button>
-            {detectedPlatforms.map((p) => (
-              <button
-                key={p.key}
-                onClick={() => setSelectedPlatformFilter(p.key)}
-                className={`flex items-center gap-1.5 px-3 py-1 text-[11px] font-bold rounded-lg transition-all ${
-                  selectedPlatformFilter === p.key
-                    ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm scale-105'
-                    : 'bg-slate-950 text-slate-400 hover:text-white border border-slate-800'
-                }`}
+            {/* Sort Selector */}
+            <div className="flex items-center gap-2 w-full md:w-auto justify-end">
+              <label htmlFor="sort-services" className="text-xs text-slate-400 font-medium whitespace-nowrap">Sort by:</label>
+              <select
+                id="sort-services"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="bg-slate-950 border border-slate-800 text-xs font-semibold text-cyan-300 rounded-xl px-3 py-1.5 focus:outline-none focus:border-cyan-500 cursor-pointer"
               >
-                <PlatformLogo title={p.name} id={p.key} className="w-3.5 h-3.5" />
-                <span>{p.name}</span>
-              </button>
-            ))}
+                <option value="featured">🔥 Featured First</option>
+                <option value="platform">🏷️ Platform Category</option>
+                <option value="price-asc">💲 Price: Low to High</option>
+                <option value="price-desc">💎 Price: High to Low</option>
+                <option value="name">🔤 Name: A to Z</option>
+              </select>
+            </div>
           </div>
 
           {/* Subcategory Pills if main category selected */}
           {availableSubCategories.length > 0 && (
-            <div className="mt-3 pt-3 border-t border-slate-800/60 flex flex-wrap items-center gap-2">
-              <span className="text-xs text-slate-400 font-medium flex items-center gap-1 mr-2">
-                <Filter className="w-3 h-3 text-cyan-400" /> Subcategory:
+            <div className="pt-3 border-t border-slate-800/60 flex flex-wrap items-center gap-2">
+              <span className="text-xs text-slate-400 font-medium flex items-center gap-1 mr-2 text-[11px]">
+                Sub-type:
               </span>
               <button
                 onClick={() => setSubCategoryFilter('All')}
@@ -426,25 +519,29 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
         {/* Results Counter */}
         <div className="flex items-center justify-between mb-6 text-xs text-slate-400">
           <span>
-            Showing <strong className="text-white">{filteredServices.length}</strong> available digital services
+            Showing <strong className="text-white">{sortedServices.length}</strong> available digital services
+            {selectedPlatformFilter !== 'All' && (
+              <span> in <strong className="text-cyan-400">{detectedPlatforms.find(p => p.key === selectedPlatformFilter)?.name || selectedPlatformFilter}</strong></span>
+            )}
           </span>
-          {(searchQuery || selectedCategory !== 'All' || subCategoryFilter !== 'All' || selectedPlatformFilter !== 'All') && (
+          {(searchQuery || selectedCategory !== 'All' || subCategoryFilter !== 'All' || selectedPlatformFilter !== 'All' || sortBy !== 'featured') && (
             <button
               onClick={() => {
                 setSearchQuery('');
                 setSelectedCategory('All');
                 setSubCategoryFilter('All');
                 setSelectedPlatformFilter('All');
+                setSortBy('featured');
               }}
               className="text-cyan-400 hover:underline font-semibold"
             >
-              Reset All Filters
+              Reset All Filters & Sort
             </button>
           )}
         </div>
 
         {/* Main Services Grid */}
-        {filteredServices.length === 0 ? (
+        {sortedServices.length === 0 ? (
           <div className="text-center py-16 bg-slate-900/40 rounded-2xl border border-slate-800">
             <ShoppingBag className="w-12 h-12 text-slate-600 mx-auto mb-3" />
             <h4 className="text-lg font-bold text-white mb-1">No services found</h4>
@@ -457,6 +554,7 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
                 setSelectedCategory('All');
                 setSubCategoryFilter('All');
                 setSelectedPlatformFilter('All');
+                setSortBy('featured');
               }}
               className="px-4 py-2 text-xs font-semibold bg-cyan-500 text-slate-950 rounded-xl"
             >
@@ -465,7 +563,7 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredServices.map((service) => (
+            {sortedServices.map((service) => (
               <div
                 key={service.id}
                 className="group relative bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 rounded-2xl p-6 transition-all duration-300 transform hover:-translate-y-1.5 hover:scale-[1.03] shadow-xl hover:shadow-cyan-950/30 flex flex-col justify-between"
