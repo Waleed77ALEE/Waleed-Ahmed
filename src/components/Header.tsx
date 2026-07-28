@@ -69,7 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80 shadow-xl shadow-cyan-950/10 py-3'
+          ? 'bg-slate-950/90 backdrop-blur-2xl border-b border-slate-800/90 shadow-2xl shadow-slate-950/80 py-3.5'
           : 'bg-transparent py-5'
       }`}
     >
@@ -78,51 +78,62 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Brand Logo */}
           <button
             onClick={() => handleNavClick('hero')}
-            className="flex items-center gap-2.5 text-left group focus:outline-none"
+            className="flex items-center gap-3 text-left group focus:outline-none"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-purple-600 p-[1px] shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform duration-300 overflow-hidden">
-              <img
-                src={brandLogoImg}
-                alt="Waleed Khan Afridi Logo"
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover rounded-[11px] group-hover:scale-110 transition-transform duration-300"
-              />
+            <div className="relative shrink-0">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-amber-500 to-cyan-400 p-[1.5px] shadow-xl shadow-amber-500/20 group-hover:shadow-amber-500/40 group-hover:scale-105 transition-all duration-300 overflow-hidden">
+                <img
+                  src={brandLogoImg}
+                  alt="Waleed Khan Afridi Logo"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover rounded-[14px] group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-slate-950 p-[1.5px] flex items-center justify-center">
+                <div className="w-full h-full rounded-full bg-emerald-400 animate-pulse" title="Available for Freelance & Digital Orders" />
+              </div>
             </div>
             <div className="hidden sm:block">
-              <div className="text-base font-bold tracking-tight text-white flex items-center gap-1.5">
-                <span>WALEED KHAN AFRIDI</span>
-                <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" title="Available for Hire & Instant Orders"></span>
+              <div className="text-base font-black tracking-wider text-white flex items-center gap-2">
+                <span className="bg-gradient-to-r from-white via-slate-100 to-amber-200 bg-clip-text text-transparent group-hover:to-amber-300 transition-colors">
+                  WALEED KHAN AFRIDI
+                </span>
+                <span className="px-1.5 py-0.5 rounded-md bg-amber-500/20 border border-amber-500/40 text-[9px] font-extrabold text-amber-300 uppercase tracking-widest shadow-sm">
+                  PRO
+                </span>
               </div>
-              <div className="text-xs text-slate-400 font-medium tracking-wide">
-                Full Stack Developer & SEO Specialist
+              <div className="text-[11px] text-slate-300 font-semibold tracking-wide flex items-center gap-1.5">
+                <span className="text-cyan-400">Senior Software Architect</span>
+                <span className="text-slate-600">•</span>
+                <span className="text-amber-300">SEO & Growth Expert</span>
               </div>
             </div>
           </button>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden xl:flex items-center gap-1 bg-slate-900/60 p-1.5 rounded-full border border-slate-800/80 backdrop-blur-md">
+          <nav className="hidden xl:flex items-center gap-1 bg-slate-900/80 p-1.5 rounded-full border border-slate-800 backdrop-blur-xl shadow-xl">
             {navItems.map((item) => {
               const isActive = activeSection === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`relative px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors duration-200 flex items-center gap-1.5 z-10 ${
+                  className={`relative px-4 py-1.5 text-xs font-bold rounded-full transition-colors duration-200 flex items-center gap-1.5 z-10 cursor-pointer ${
                     isActive
                       ? 'text-white'
-                      : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
+                      : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
                   }`}
                 >
                   {isActive && (
                     <motion.div
                       layoutId="activeNavPill"
-                      className="absolute inset-0 bg-gradient-to-r from-cyan-500/25 via-sky-500/20 to-indigo-500/25 border border-cyan-500/40 rounded-full shadow-lg shadow-cyan-500/10 -z-10"
+                      className="absolute inset-0 bg-gradient-to-r from-amber-500/30 via-cyan-500/20 to-amber-500/30 border border-amber-500/50 rounded-full shadow-lg shadow-amber-500/15 -z-10"
                       transition={{ type: 'spring', stiffness: 450, damping: 32 }}
                     />
                   )}
                   <span className="relative z-10">{item.label}</span>
                   {item.badge && (
-                    <span className="relative z-10 px-1.5 py-0.5 text-[9px] font-bold rounded-full bg-gradient-to-r from-cyan-500 to-indigo-500 text-white tracking-wider uppercase">
+                    <span className="relative z-10 px-1.5 py-0.5 text-[9px] font-black rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 tracking-wider uppercase shadow-sm">
                       {item.badge}
                     </span>
                   )}

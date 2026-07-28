@@ -35,11 +35,11 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate, onOpenAndroidApp }) => {
   };
 
   return (
-    <div className="relative pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden bg-grid-pattern">
-      {/* Background Glows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-gradient-to-tr from-cyan-600/20 via-indigo-600/20 to-purple-600/15 blur-[140px] rounded-full pointer-events-none" />
-      <div className="absolute top-1/3 left-10 w-80 h-80 bg-cyan-500/15 blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-indigo-500/15 blur-[120px] rounded-full pointer-events-none" />
+    <div className="relative pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden bg-radial-luxury bg-grid-pattern">
+      {/* Background Glows & Ambient Rays */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-gradient-to-tr from-cyan-600/15 via-amber-500/10 to-indigo-600/15 blur-[160px] rounded-full pointer-events-none" />
+      <div className="absolute top-1/4 left-5 w-96 h-96 bg-cyan-500/10 blur-[130px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-5 right-5 w-96 h-96 bg-amber-500/10 blur-[130px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
@@ -49,29 +49,32 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate, onOpenAndroidApp }) => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.1 }}
         >
-          {/* Top Pill */}
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-slate-800/80 text-xs text-slate-300 backdrop-blur-xl mb-8 shadow-2xl hover:border-cyan-500/40 transition-colors">
+          {/* Top Floating Badge */}
+          <motion.div variants={itemVariants} className="inline-flex items-center gap-2.5 px-4.5 py-1.5 rounded-full bg-slate-900/90 border border-amber-500/30 text-xs text-slate-200 backdrop-blur-2xl mb-8 shadow-xl shadow-amber-500/5 hover:border-amber-500/60 transition-colors">
             <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-400"></span>
             </span>
-            <span className="font-semibold text-white tracking-wide">waleedkhanafridi.online</span>
+            <span className="font-bold text-white tracking-wide">waleedkhanafridi.online</span>
             <span className="text-slate-600">|</span>
-            <span className="text-cyan-400 font-semibold tracking-wide">Digital Marketplace & Web Engineering Active</span>
+            <span className="text-amber-300 font-bold tracking-wide flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              Verified Digital Marketplace & Web Engineering
+            </span>
           </motion.div>
 
           {/* Main Heading */}
           <motion.h1 variants={itemVariants} className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.1] mb-6">
-            Senior Full Stack Developer,{' '}
-            <span className="bg-gradient-to-r from-cyan-300 via-sky-300 to-indigo-400 bg-clip-text text-transparent drop-shadow-sm">
-              UI/UX Designer
+            Senior Full Stack Engineer,{' '}
+            <span className="text-gradient-gold-cyan drop-shadow-lg">
+              UI/UX Architect
             </span>{' '}
-            & SEO Specialist
+            & Technical SEO Expert
           </motion.h1>
 
           {/* Subheading Description */}
           <motion.p variants={itemVariants} className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto font-normal leading-relaxed mb-10">
-            Building high-performance web applications, engineering resilient digital architectures, and providing instant verified AI subscriptions, social growth services, and premium digital assets with 24/7 delivery.
+            Crafting high-performance web systems, engineering resilient enterprise software, and delivering verified AI subscriptions, social media growth, and digital assets with instant 24/7 delivery.
           </motion.p>
 
           {/* Tech Badges */}
@@ -79,9 +82,9 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate, onOpenAndroidApp }) => {
             {techBadges.map((badge, idx) => (
               <motion.span
                 key={idx}
-                whileHover={{ scale: 1.08, borderColor: 'rgba(6, 182, 212, 0.5)' }}
+                whileHover={{ scale: 1.08, borderColor: 'rgba(245, 158, 11, 0.6)' }}
                 whileTap={{ scale: 0.95 }}
-                className="px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-slate-900/90 border border-slate-800/90 text-slate-300 hover:text-cyan-300 transition-all shadow-md cursor-default"
+                className="px-4 py-1.5 text-xs font-bold rounded-xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-amber-300 transition-all shadow-md cursor-default backdrop-blur-xl"
               >
                 {badge}
               </motion.span>
@@ -94,7 +97,7 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate, onOpenAndroidApp }) => {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => onNavigate('digital-services')}
-              className="w-full sm:w-auto px-7 py-4 rounded-xl text-sm font-extrabold text-slate-950 bg-gradient-to-r from-cyan-400 via-sky-300 to-cyan-400 hover:from-cyan-300 hover:to-sky-200 shadow-xl shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 flex items-center justify-center gap-2.5 group cursor-pointer"
+              className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-extrabold text-slate-950 bg-gradient-to-r from-amber-400 via-amber-300 to-cyan-400 hover:from-amber-300 hover:to-cyan-300 shadow-xl shadow-amber-500/20 hover:shadow-amber-500/35 transition-all duration-300 flex items-center justify-center gap-2.5 group cursor-pointer"
             >
               <ShoppingBag className="w-5 h-5 text-slate-950 group-hover:scale-110 transition-transform" />
               <span>Explore Digital Marketplace</span>
@@ -109,9 +112,9 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate, onOpenAndroidApp }) => {
                 className="w-full sm:w-auto px-6 py-4 rounded-xl text-sm font-extrabold text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/40 hover:border-emerald-500/70 transition-all duration-200 flex items-center justify-center gap-2.5 shadow-xl shadow-emerald-500/10 backdrop-blur-md cursor-pointer group"
               >
                 <Smartphone className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform animate-pulse" />
-                <span>Download Android App</span>
+                <span>Android App (APK)</span>
                 <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 text-[10px] font-black uppercase">
-                  APK v2.4
+                  v2.4
                 </span>
               </motion.button>
             )}
@@ -130,7 +133,7 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate, onOpenAndroidApp }) => {
           {/* Key Metric Highlights */}
           <motion.div
             variants={itemVariants}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-xl shadow-2xl"
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 p-6 rounded-2xl bg-slate-900/70 border border-slate-800/90 backdrop-blur-2xl shadow-2xl glow-box-amber"
           >
             {stats.map((stat, i) => {
               const Icon = stat.icon;
@@ -140,13 +143,13 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate, onOpenAndroidApp }) => {
                   whileHover={{ y: -4 }}
                   className="flex flex-col items-center p-3 text-center transition-all group"
                 >
-                  <div className={`p-3 rounded-xl bg-slate-800/80 border border-slate-700/50 mb-3 group-hover:scale-110 transition-transform ${stat.color}`}>
+                  <div className={`p-3 rounded-xl bg-slate-950/80 border border-slate-800/80 mb-3 group-hover:scale-110 transition-transform ${stat.color}`}>
                     <Icon className="w-5 h-5" />
                   </div>
                   <div className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-0.5">
                     {stat.value}
                   </div>
-                  <div className="text-xs text-slate-400 font-medium">
+                  <div className="text-xs text-slate-300 font-medium">
                     {stat.label}
                   </div>
                 </motion.div>
