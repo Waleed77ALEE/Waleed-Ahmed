@@ -105,17 +105,24 @@ export default function App() {
       }
     };
 
-    // Scroll Spy Listener
+    // Scroll Spy Listener with requestAnimationFrame throttling for ultra-fast 60fps scrolling
+    let ticking = false;
     const handleScroll = () => {
-      const sections = ['hero', 'about', 'services', 'digital-services', 'projects', 'testimonials', 'about-me', 'contact'];
-      const scrollPos = window.scrollY + 200;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const sections = ['hero', 'about', 'services', 'digital-services', 'projects', 'testimonials', 'about-me', 'contact'];
+          const scrollPos = window.scrollY + 200;
 
-      for (let i = sections.length - 1; i >= 0; i--) {
-        const elem = document.getElementById(sections[i]);
-        if (elem && elem.offsetTop <= scrollPos) {
-          setActiveSection(sections[i]);
-          break;
-        }
+          for (let i = sections.length - 1; i >= 0; i--) {
+            const elem = document.getElementById(sections[i]);
+            if (elem && elem.offsetTop <= scrollPos) {
+              setActiveSection(sections[i]);
+              break;
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 

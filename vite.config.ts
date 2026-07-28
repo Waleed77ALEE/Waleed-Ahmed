@@ -12,6 +12,22 @@ export default defineConfig(() => {
       },
       dedupe: ['react', 'react-dom'],
     },
+    build: {
+      target: 'esnext',
+      minify: 'esbuild' as const,
+      cssMinify: true,
+      sourcemap: false,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom'],
+            'vendor-motion': ['motion'],
+            'vendor-icons': ['lucide-react'],
+            'vendor-supabase': ['@supabase/supabase-js'],
+          },
+        },
+      },
+    },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.

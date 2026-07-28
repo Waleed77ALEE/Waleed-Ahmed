@@ -40,10 +40,17 @@ export const Header: React.FC<HeaderProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -86,6 +93,8 @@ export const Header: React.FC<HeaderProps> = ({
                   src={brandLogoImg}
                   alt="Waleed Khan Afridi Logo"
                   referrerPolicy="no-referrer"
+                  decoding="async"
+                  loading="eager"
                   className="w-full h-full object-cover rounded-[14px] group-hover:scale-110 transition-transform duration-500"
                 />
               </div>
