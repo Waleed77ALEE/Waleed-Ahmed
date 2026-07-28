@@ -16,7 +16,7 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate, onOpenAndroidApp }) => {
     { value: 'Instant', label: 'Average Service Delivery', icon: ShieldCheck, color: 'text-emerald-400' }
   ];
 
-  const techBadges = ['React 19', 'Next.js', 'TypeScript', 'Node.js', 'Technical SEO', 'AI APIs', 'G2G Services'];
+  const techBadges = ['React 19', 'Next.js', 'TypeScript', 'Node.js', 'Technical SEO', 'AI APIs', 'Instant Services'];
 
   const containerVariants = {
     hidden: { opacity: 0 },

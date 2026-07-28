@@ -39,7 +39,7 @@ export const Testimonials: React.FC = () => {
             Trusted by Creators, Agencies & Global Clients
           </h2>
           <p className="mt-4 text-slate-300 text-base leading-relaxed">
-            Verified feedback from G2G Marketplace buyers, freelance engineering clients, and digital asset customers worldwide.
+            Verified feedback from Instant Services buyers, freelance engineering clients, and digital asset customers worldwide.
           </p>
         </motion.div>
 

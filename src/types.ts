@@ -43,7 +43,7 @@ export interface Testimonial {
   id: string;
   name: string;
   role: string;
-  platform: 'G2G Marketplace' | 'Upwork' | 'Direct Client' | 'Fiverr';
+  platform: 'Instant Services' | 'Upwork' | 'Direct Client' | 'Fiverr';
   avatar: string;
   comment: string;
   rating: number;

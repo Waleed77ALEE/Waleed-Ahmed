@@ -57,7 +57,7 @@ export const Header: React.FC<HeaderProps> = ({
   const navItems = [
     { id: 'hero', label: 'Home' },
     { id: 'services', label: 'Web & SEO' },
-    { id: 'digital-services', label: 'Digital Marketplace', badge: 'G2G Services' },
+    { id: 'digital-services', label: 'Digital Marketplace', badge: 'Instant Services' },
     { id: 'projects', label: 'Projects' },
     { id: 'testimonials', label: 'Reviews' },
     { id: 'about-me', label: 'About Me' },
