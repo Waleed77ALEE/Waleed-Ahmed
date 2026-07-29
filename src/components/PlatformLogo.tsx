@@ -17,6 +17,104 @@ export function detectPlatform(
 ): { key: string; info: PlatformInfo } {
   const combined = `${title} ${category} ${subCategory} ${id}`.toLowerCase();
 
+  if (combined.includes('synthesia')) {
+    return {
+      key: 'synthesia',
+      info: {
+        name: 'Synthesia AI',
+        brandColor: '#2563EB',
+        bgGradient: 'from-blue-950/60 via-slate-950 to-indigo-950/40',
+        badgeBg: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+        textColor: 'text-blue-400',
+        borderStyle: 'border-blue-500/30'
+      }
+    };
+  }
+
+  if (combined.includes('runway')) {
+    return {
+      key: 'runway',
+      info: {
+        name: 'Runway ML',
+        brandColor: '#EC4899',
+        bgGradient: 'from-pink-950/60 via-slate-950 to-rose-950/40',
+        badgeBg: 'bg-pink-500/20 text-pink-300 border-pink-500/40',
+        textColor: 'text-pink-400',
+        borderStyle: 'border-pink-500/30'
+      }
+    };
+  }
+
+  if (combined.includes('luma')) {
+    return {
+      key: 'luma',
+      info: {
+        name: 'Luma AI',
+        brandColor: '#06B6D4',
+        bgGradient: 'from-cyan-950/60 via-slate-950 to-teal-950/40',
+        badgeBg: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
+        textColor: 'text-cyan-400',
+        borderStyle: 'border-cyan-500/30'
+      }
+    };
+  }
+
+  if (combined.includes('pika')) {
+    return {
+      key: 'pika',
+      info: {
+        name: 'Pika Labs',
+        brandColor: '#F59E0B',
+        bgGradient: 'from-amber-950/60 via-slate-950 to-orange-950/40',
+        badgeBg: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+        textColor: 'text-amber-400',
+        borderStyle: 'border-amber-500/30'
+      }
+    };
+  }
+
+  if (combined.includes('hailuo') || combined.includes('minimax')) {
+    return {
+      key: 'hailuo',
+      info: {
+        name: 'Hailuo AI',
+        brandColor: '#8B5CF6',
+        bgGradient: 'from-violet-950/60 via-slate-950 to-purple-950/40',
+        badgeBg: 'bg-violet-500/20 text-violet-300 border-violet-500/40',
+        textColor: 'text-violet-400',
+        borderStyle: 'border-violet-500/30'
+      }
+    };
+  }
+
+  if (combined.includes('veed')) {
+    return {
+      key: 'veed',
+      info: {
+        name: 'VEED.IO',
+        brandColor: '#10B981',
+        bgGradient: 'from-emerald-950/60 via-slate-950 to-teal-950/40',
+        badgeBg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+        textColor: 'text-emerald-400',
+        borderStyle: 'border-emerald-500/30'
+      }
+    };
+  }
+
+  if (combined.includes('invideo')) {
+    return {
+      key: 'invideo',
+      info: {
+        name: 'InVideo AI',
+        brandColor: '#6366F1',
+        bgGradient: 'from-indigo-950/60 via-slate-950 to-blue-950/40',
+        badgeBg: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40',
+        textColor: 'text-indigo-400',
+        borderStyle: 'border-indigo-500/30'
+      }
+    };
+  }
+
   if (combined.includes('heygen')) {
     return {
       key: 'heygen',
@@ -303,6 +401,74 @@ export const PlatformLogo: React.FC<PlatformLogoProps> = ({
 
   const renderSvg = () => {
     switch (key) {
+      case 'synthesia':
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="6" fill="#1E40AF" />
+            <path d="M6 8L12 4L18 8V16L12 20L6 16V8Z" fill="#3B82F6" />
+            <circle cx="12" cy="12" r="3" fill="white" />
+          </svg>
+        );
+
+      case 'runway':
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="6" fill="#831843" />
+            <path d="M4 18C8 18 10 6 14 6C18 6 20 18 20 18" stroke="#F472B6" strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="14" cy="6" r="2" fill="#F472B6" />
+          </svg>
+        );
+
+      case 'luma':
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="6" fill="#083344" />
+            <path d="M12 3L20 19H4L12 3Z" fill="url(#luma_grad)" />
+            <circle cx="12" cy="13" r="2.5" fill="white" />
+            <defs>
+              <linearGradient id="luma_grad" x1="4" y1="19" x2="20" y2="3" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#06B6D4" />
+                <stop offset="1" stopColor="#38BDF8" />
+              </linearGradient>
+            </defs>
+          </svg>
+        );
+
+      case 'pika':
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="6" fill="#78350F" />
+            <path d="M7 17V7L17 12L7 17Z" fill="#F59E0B" />
+            <circle cx="17" cy="7" r="2" fill="#FBBF24" />
+          </svg>
+        );
+
+      case 'hailuo':
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="6" fill="#4C1D95" />
+            <path d="M5 12C5 8.13401 8.13401 5 12 5C15.866 5 19 8.13401 19 12C19 15.866 15.866 19 12 19" stroke="#A78BFA" strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="12" cy="12" r="3" fill="#C4B5FD" />
+          </svg>
+        );
+
+      case 'veed':
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="6" fill="#064E3B" />
+            <path d="M6 7L12 17L18 7" stroke="#34D399" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        );
+
+      case 'invideo':
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="6" fill="#312E81" />
+            <rect x="5" y="6" width="14" height="12" rx="2" stroke="#818CF8" strokeWidth="2" />
+            <path d="M10 9.5L15 12L10 14.5V9.5Z" fill="#818CF8" />
+          </svg>
+        );
+
       case 'openai':
         return (
           <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

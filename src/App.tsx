@@ -4,6 +4,7 @@ import { Hero } from './components/Hero';
 import { About } from './components/About';
 import { CoreServices } from './components/CoreServices';
 import { DigitalServices } from './components/DigitalServices';
+import { AiSubscriptionMarketplace } from './components/AiSubscriptionMarketplace';
 import { Projects } from './components/Projects';
 import { Testimonials } from './components/Testimonials';
 import { Contact } from './components/Contact';
