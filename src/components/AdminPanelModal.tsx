@@ -16,6 +16,11 @@ import {
 } from '../services/walletStore';
 import { sendOrderEmailNotification } from '../services/emailNotificationService';
 import {
+  fetchAllRegisteredUsers,
+  RegisteredUserRecord,
+  subscribeUserStore
+} from '../services/userStore';
+import {
   X,
   LayoutDashboard,
   Package,
@@ -70,13 +75,19 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
 
   // Active Tab
   const [activeTab, setActiveTab] = useState<
-    'dashboard' | 'products' | 'categories' | 'orders' | 'wallets' | 'seo' | 'database'
+    'dashboard' | 'products' | 'categories' | 'orders' | 'users' | 'wallets' | 'seo' | 'database'
   >('dashboard');
 
   // Store State Sync
   const [products, setProducts] = useState<ExtendedProductItem[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [orders, setOrders] = useState<AdminOrder[]>([]);
+
+  // Registered Users Directory State
+  const [registeredUsers, setRegisteredUsers] = useState<RegisteredUserRecord[]>([]);
+  const [userSearchQuery, setUserSearchQuery] = useState<string>('');
+  const [userFilter, setUserFilter] = useState<'all' | 'google' | 'email' | 'orders'>('all');
+  const [isSyncingUsers, setIsSyncingUsers] = useState<boolean>(false);
 
   // User Wallets State
   const [userWallets, setUserWallets] = useState<UserWallet[]>([]);
@@ -132,6 +143,18 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
     setTestEmailResult(res);
   };
 
+  const refreshUsersList = async () => {
+    setIsSyncingUsers(true);
+    try {
+      const usersList = await fetchAllRegisteredUsers();
+      setRegisteredUsers(usersList);
+    } catch (e) {
+      console.error('Error refreshing users list:', e);
+    } finally {
+      setIsSyncingUsers(false);
+    }
+  };
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -143,14 +166,21 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
     };
 
     syncState();
+    refreshUsersList();
+
     const unsubscribeProduct = productStore.subscribe(syncState);
     const unsubscribeWallet = subscribeWallet(() => {
       setUserWallets(getAllUserWallets());
+      refreshUsersList();
+    });
+    const unsubscribeUser = subscribeUserStore(() => {
+      refreshUsersList();
     });
 
     return () => {
       unsubscribeProduct();
       unsubscribeWallet();
+      unsubscribeUser();
     };
   }, [isOpen]);
 
@@ -453,6 +483,23 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                 </span>
                 <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-400 font-mono">
                   {orders.length}
+                </span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('users')}
+                className={`w-full px-3 py-2.5 rounded-xl text-xs font-bold flex items-center justify-between transition-colors ${
+                  activeTab === 'users'
+                    ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 font-black'
+                    : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'
+                }`}
+              >
+                <span className="flex items-center gap-2.5">
+                  <Users className="w-4 h-4 text-cyan-400" />
+                  <span>Registered Users</span>
+                </span>
+                <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-cyan-500/20 text-cyan-300 font-mono font-bold">
+                  {registeredUsers.length}
                 </span>
               </button>
 
@@ -866,6 +913,316 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                       </tbody>
                     </table>
                   </div>
+                </div>
+              )}
+
+              {/* TAB: REGISTERED USERS DIRECTORY */}
+              {activeTab === 'users' && (
+                <div className="space-y-6 text-xs text-slate-300">
+                  {/* Header & Cloud Sync Action */}
+                  <div className="p-5 rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-cyan-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                      <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+                        <Users className="w-5 h-5 text-cyan-400" />
+                        <span>Registered User Accounts Directory</span>
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-1">
+                        Every single user registered via Google OAuth, Email/Password, or Supabase Auth is indexed here.
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={refreshUsersList}
+                      disabled={isSyncingUsers}
+                      className="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 shadow-lg shadow-cyan-950/50"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${isSyncingUsers ? 'animate-spin' : ''}`} />
+                      <span>{isSyncingUsers ? 'Syncing Cloud Users...' : 'Sync & Refresh Users'}</span>
+                    </button>
+                  </div>
+
+                  {/* Metric Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-slate-400 font-bold">Total Registered</p>
+                        <h3 className="text-2xl font-black text-white mt-1">{registeredUsers.length} Users</h3>
+                        <p className="text-[11px] text-cyan-400 mt-1">100% User Coverage</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-cyan-500/10 text-cyan-400">
+                        <Users className="w-6 h-6" />
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-slate-400 font-bold">Google OAuth Signups</p>
+                        <h3 className="text-2xl font-black text-white mt-1">
+                          {registeredUsers.filter((u) => u.provider === 'Google').length}
+                        </h3>
+                        <p className="text-[11px] text-emerald-400 mt-1">Google Single Sign-On</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+                        <ShieldCheck className="w-6 h-6" />
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-slate-400 font-bold">Email/Password Users</p>
+                        <h3 className="text-2xl font-black text-white mt-1">
+                          {registeredUsers.filter((u) => u.provider === 'Email' || u.provider === 'Supabase').length}
+                        </h3>
+                        <p className="text-[11px] text-indigo-400 mt-1">Direct Auth Accounts</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-indigo-500/10 text-indigo-400">
+                        <Mail className="w-6 h-6" />
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-slate-400 font-bold">Active Buyer Accounts</p>
+                        <h3 className="text-2xl font-black text-amber-400 mt-1">
+                          {registeredUsers.filter((u) => u.ordersCount > 0).length}
+                        </h3>
+                        <p className="text-[11px] text-amber-400 mt-1">Placed 1+ Store Orders</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
+                        <ShoppingBag className="w-6 h-6" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Search & Filter Controls */}
+                  <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div className="relative w-full md:w-80">
+                      <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Search by name, email, phone, or ID..."
+                        value={userSearchQuery}
+                        onChange={(e) => setUserSearchQuery(e.target.value)}
+                        className="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs focus:outline-none focus:border-cyan-500"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
+                      <button
+                        onClick={() => setUserFilter('all')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          userFilter === 'all'
+                            ? 'bg-cyan-500 text-slate-950 font-black'
+                            : 'bg-slate-900 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        All Users ({registeredUsers.length})
+                      </button>
+                      <button
+                        onClick={() => setUserFilter('google')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          userFilter === 'google'
+                            ? 'bg-emerald-500 text-slate-950 font-black'
+                            : 'bg-slate-900 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        Google OAuth ({registeredUsers.filter((u) => u.provider === 'Google').length})
+                      </button>
+                      <button
+                        onClick={() => setUserFilter('email')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          userFilter === 'email'
+                            ? 'bg-indigo-500 text-white font-black'
+                            : 'bg-slate-900 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        Email Users ({registeredUsers.filter((u) => u.provider === 'Email' || u.provider === 'Supabase').length})
+                      </button>
+                      <button
+                        onClick={() => setUserFilter('orders')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          userFilter === 'orders'
+                            ? 'bg-amber-500 text-slate-950 font-black'
+                            : 'bg-slate-900 text-slate-400 hover:text-white'
+                        }`}
+                      >
+                        Active Buyers ({registeredUsers.filter((u) => u.ordersCount > 0).length})
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Users List Table */}
+                  {(() => {
+                    const filteredUsersList = registeredUsers.filter((u) => {
+                      const q = userSearchQuery.toLowerCase().trim();
+                      const matchesSearch =
+                        !q ||
+                        u.fullName.toLowerCase().includes(q) ||
+                        u.email.toLowerCase().includes(q) ||
+                        (u.whatsapp && u.whatsapp.toLowerCase().includes(q)) ||
+                        u.id.toLowerCase().includes(q);
+
+                      if (!matchesSearch) return false;
+
+                      if (userFilter === 'google') return u.provider === 'Google';
+                      if (userFilter === 'email') return u.provider === 'Email' || u.provider === 'Supabase';
+                      if (userFilter === 'orders') return u.ordersCount > 0;
+                      return true;
+                    });
+
+                    if (filteredUsersList.length === 0) {
+                      return (
+                        <div className="p-8 text-center rounded-2xl bg-slate-950 border border-slate-800 text-slate-500 space-y-2">
+                          <Users className="w-8 h-8 text-slate-600 mx-auto" />
+                          <p className="font-bold text-white">No registered users matched your search criteria.</p>
+                          <p className="text-xs text-slate-500">Try clearing your search terms or clicking Sync &amp; Refresh Users.</p>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <div className="border border-slate-800 rounded-2xl overflow-x-auto bg-slate-950">
+                        <table className="w-full text-left text-xs text-slate-300">
+                          <thead className="bg-slate-900 border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px]">
+                            <tr>
+                              <th className="p-3">User Profile</th>
+                              <th className="p-3">Email Address</th>
+                              <th className="p-3">WhatsApp / Phone</th>
+                              <th className="p-3">Signup Method</th>
+                              <th className="p-3">Registered On</th>
+                              <th className="p-3">Orders / Spent</th>
+                              <th className="p-3">Wallet Balance</th>
+                              <th className="p-3 text-right">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-800/60">
+                            {filteredUsersList.map((u) => {
+                              const formattedDate = new Date(u.createdAt).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric'
+                              });
+                              const cleanWhatsapp = u.whatsapp ? u.whatsapp.replace(/[^0-9]/g, '') : '';
+
+                              return (
+                                <tr key={u.id} className="hover:bg-slate-900/50 transition-colors">
+                                  <td className="p-3">
+                                    <div className="flex items-center gap-3">
+                                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-indigo-600 flex items-center justify-center text-white font-extrabold text-xs shrink-0 shadow-md">
+                                        {u.fullName ? u.fullName.charAt(0).toUpperCase() : u.email.charAt(0).toUpperCase()}
+                                      </div>
+                                      <div>
+                                        <span className="font-bold text-white block text-xs">{u.fullName || 'User'}</span>
+                                        <span className="text-[10px] font-mono text-slate-500">{u.id.slice(0, 16)}...</span>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  <td className="p-3">
+                                    <div className="flex items-center gap-2">
+                                      <span className="font-mono text-slate-200">{u.email}</span>
+                                      <button
+                                        onClick={() => {
+                                          navigator.clipboard.writeText(u.email);
+                                          alert(`Copied email: ${u.email}`);
+                                        }}
+                                        title="Copy email address"
+                                        className="p-1 hover:text-cyan-400 text-slate-500 transition-colors cursor-pointer"
+                                      >
+                                        <Copy className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
+                                  </td>
+
+                                  <td className="p-3">
+                                    {u.whatsapp ? (
+                                      <a
+                                        href={`https://wa.me/${cleanWhatsapp}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 text-[11px] font-bold transition-all"
+                                      >
+                                        <span>{u.whatsapp}</span>
+                                      </a>
+                                    ) : (
+                                      <span className="text-slate-600 text-[11px]">Not provided</span>
+                                    )}
+                                  </td>
+
+                                  <td className="p-3">
+                                    {u.provider === 'Google' ? (
+                                      <span className="px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-bold text-[10px] inline-flex items-center gap-1">
+                                        <ShieldCheck className="w-3 h-3 text-cyan-400" />
+                                        <span>Google OAuth</span>
+                                      </span>
+                                    ) : (
+                                      <span className="px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 font-bold text-[10px] inline-flex items-center gap-1">
+                                        <Mail className="w-3 h-3 text-indigo-400" />
+                                        <span>Email Signup</span>
+                                      </span>
+                                    )}
+                                  </td>
+
+                                  <td className="p-3 font-mono text-slate-400 text-[11px]">
+                                    {formattedDate}
+                                  </td>
+
+                                  <td className="p-3">
+                                    <div>
+                                      <span className="font-bold text-white block">{u.ordersCount} Orders</span>
+                                      <span className="text-[10px] text-emerald-400 font-mono font-bold">${u.totalSpent.toFixed(2)} USD</span>
+                                    </div>
+                                  </td>
+
+                                  <td className="p-3">
+                                    <span className="font-mono font-black text-emerald-400 text-sm">
+                                      ${(u.walletBalance || 0).toFixed(2)} USD
+                                    </span>
+                                  </td>
+
+                                  <td className="p-3 text-right">
+                                    <div className="flex items-center justify-end gap-2">
+                                      <button
+                                        onClick={() => {
+                                          setSelectedUserIdForCredit(u.id);
+                                          setCreditAmountInput('50');
+                                          setActiveTab('wallets');
+                                        }}
+                                        className="px-2.5 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/25 text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1"
+                                      >
+                                        <Plus className="w-3 h-3" />
+                                        <span>Credit</span>
+                                      </button>
+
+                                      {cleanWhatsapp && (
+                                        <a
+                                          href={`https://wa.me/${cleanWhatsapp}?text=Hello%20${encodeURIComponent(u.fullName || 'Member')},%20greetings%20from%20Waleed%20Khan%20Afridi%20AI%20Marketplace!`}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="p-1.5 rounded-lg bg-slate-800 hover:bg-emerald-900/50 text-emerald-400 transition-colors cursor-pointer"
+                                          title="Contact on WhatsApp"
+                                        >
+                                          <Send className="w-3.5 h-3.5" />
+                                        </a>
+                                      )}
+
+                                      <a
+                                        href={`mailto:${u.email}`}
+                                        className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors cursor-pointer"
+                                        title="Send Email"
+                                      >
+                                        <Mail className="w-3.5 h-3.5" />
+                                      </a>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    );
+                  })()}
                 </div>
               )}
 

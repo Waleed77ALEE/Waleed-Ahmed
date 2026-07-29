@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, User, Phone, CheckCircle2, AlertCircle, Loader2, KeyRound } from 'lucide-react';
 import { supabase, upsertProfile } from '../lib/supabase';
+import { recordUserSignup } from '../services/userStore';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -65,12 +66,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
         if (error) {
           setErrorMsg(error.message);
         } else if (data.user) {
-          // Sync profile to Supabase database profiles table
-          await upsertProfile({
+          // Sync profile to userStore and Supabase database profiles table
+          await recordUserSignup({
             id: data.user.id,
             email: data.user.email || email,
-            full_name: fullName,
-            whatsapp: whatsapp
+            fullName: fullName || email.split('@')[0],
+            whatsapp: whatsapp,
+            provider: 'Email',
+            createdAt: new Date().toISOString()
           });
 
           setSuccessMsg('Account registered successfully! You are now logged in.');
@@ -89,6 +92,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
         if (error) {
           setErrorMsg(error.message);
         } else if (data.user) {
+          // Record signin profile
+          await recordUserSignup({
+            id: data.user.id,
+            email: data.user.email || email,
+            fullName: data.user.user_metadata?.full_name || email.split('@')[0],
+            whatsapp: data.user.user_metadata?.whatsapp || '',
+            provider: 'Email'
+          });
+
           setSuccessMsg('Signed in successfully!');
           setTimeout(() => {
             if (onAuthSuccess) onAuthSuccess();

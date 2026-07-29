@@ -32,6 +32,7 @@ import {
   removeFromCartDB,
   clearCartDB
 } from './lib/supabase';
+import { recordUserSignup } from './services/userStore';
 
 export default function App() {
   const [activeSection, setActiveSection] = useState<string>('hero');
@@ -153,7 +154,28 @@ export default function App() {
 
   const loadUserProfile = async (userId: string) => {
     const prof = await getProfile(userId);
-    if (prof) setProfile(prof);
+    if (prof) {
+      setProfile(prof);
+      recordUserSignup({
+        id: prof.id,
+        email: prof.email,
+        fullName: prof.full_name,
+        whatsapp: prof.whatsapp,
+        createdAt: prof.created_at
+      });
+    } else if (user) {
+      // Fallback for user without explicit profile row yet
+      const email = user.email || '';
+      const fullName = user.user_metadata?.full_name || user.user_metadata?.name || email.split('@')[0] || 'Member';
+      recordUserSignup({
+        id: user.id,
+        email,
+        fullName,
+        whatsapp: user.user_metadata?.whatsapp || '',
+        provider: user.app_metadata?.provider === 'google' ? 'Google' : 'Email',
+        createdAt: user.created_at
+      });
+    }
   };
 
   const loadCart = async (userId: string | null) => {
