@@ -18,6 +18,7 @@ import {
   Printer,
   ExternalLink,
   Lock,
+  ChevronLeft,
   ChevronRight,
   Sparkles,
   Check,
@@ -29,7 +30,9 @@ import {
   ArrowUpRight,
   Coins,
   QrCode,
-  Copy
+  Copy,
+  Search,
+  Filter
 } from 'lucide-react';
 import { UserProfile, SupabaseOrder, fetchUserOrders, upsertProfile } from '../lib/supabase';
 import { ClientProject, Deliverable, ClientInvoice } from '../types';
@@ -73,9 +76,68 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   const [topupSuccess, setTopupSuccess] = useState(false);
   const [copiedBinanceId, setCopiedBinanceId] = useState(false);
 
+  // Transactions Filter & Pagination State
+  const [txSearch, setTxSearch] = useState('');
+  const [txStatusFilter, setTxStatusFilter] = useState<string>('all');
+  const [txTypeFilter, setTxTypeFilter] = useState<string>('all');
+  const [txPage, setTxPage] = useState<number>(1);
+  const txPerPage = 5;
+
   // Client Dashboard State
   const [projects, setProjects] = useState<ClientProject[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
+
+  // Calculate Real Wallet Stats
+  const walletStats = useMemo(() => {
+    const available = wallet.balance || 0;
+
+    const pending = wallet.transactions
+      .filter((t) => t.status === 'Pending' && (t.type === 'deposit' || t.type === 'admin_credit'))
+      .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+    const totalDeposited = wallet.transactions
+      .filter((t) => t.status === 'Completed' && (t.type === 'deposit' || t.type === 'admin_credit' || t.type === 'bonus'))
+      .reduce((sum, t) => sum + (t.amount || 0), 0);
+
+    const totalSpent = wallet.transactions
+      .filter((t) => t.status === 'Completed' && t.type === 'purchase')
+      .reduce((sum, t) => sum + Math.abs(t.amount || 0), 0);
+
+    return {
+      available,
+      pending,
+      totalDeposited,
+      totalSpent
+    };
+  }, [wallet]);
+
+  // Filtered Transactions
+  const filteredTransactions = useMemo(() => {
+    return wallet.transactions.filter((tx) => {
+      const q = txSearch.toLowerCase().trim();
+      const matchesSearch =
+        !q ||
+        tx.id.toLowerCase().includes(q) ||
+        tx.description.toLowerCase().includes(q) ||
+        (tx.paymentMethod && tx.paymentMethod.toLowerCase().includes(q)) ||
+        (tx.referenceId && tx.referenceId.toLowerCase().includes(q));
+
+      const matchesStatus =
+        txStatusFilter === 'all' || tx.status === txStatusFilter;
+
+      const matchesType =
+        txTypeFilter === 'all' || tx.type === txTypeFilter;
+
+      return matchesSearch && matchesStatus && matchesType;
+    });
+  }, [wallet.transactions, txSearch, txStatusFilter, txTypeFilter]);
+
+  const totalTxPages = Math.ceil(filteredTransactions.length / txPerPage) || 1;
+
+  const paginatedTransactions = useMemo(() => {
+    const start = (txPage - 1) * txPerPage;
+    return filteredTransactions.slice(start, start + txPerPage);
+  }, [filteredTransactions, txPage, txPerPage]);
 
   useEffect(() => {
     if (user?.id) {
@@ -339,65 +401,103 @@ export const AccountModal: React.FC<AccountModalProps> = ({
 
         {/* TAB 1: CLIENT DASHBOARD OVERVIEW */}
         <div className="overflow-y-auto flex-1 pr-1 custom-scrollbar">
-          {/* WALLET & TOP-UP TAB */}
-          {activeTab === 'wallet' && (
+          {/* TAB 1: CLIENT DASHBOARD OVERVIEW & WALLET */}
+          {(activeTab === 'dashboard' || activeTab === 'wallet') && (
             <div className="space-y-6">
-              {/* Wallet Main Balance Hero Banner */}
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-950/90 via-slate-900 to-teal-950/90 border border-emerald-500/30 p-6 sm:p-8 shadow-2xl">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <Wallet className="w-5 h-5 text-emerald-400" />
-                      <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">Available Wallet Balance</span>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 border border-emerald-500/40 text-emerald-300">
-                        USD $
-                      </span>
+              {/* SECTION 1: WALLET BALANCE (TOP) */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Wallet className="w-5 h-5 text-emerald-400" />
+                    <h3 className="text-base font-black text-white">Wallet Overview</h3>
+                  </div>
+                  <span className="text-[11px] font-mono text-emerald-400 font-bold bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+                    Live Database Balance
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {/* Available Balance */}
+                  <div className="bg-gradient-to-br from-emerald-950/80 via-slate-900 to-slate-950 border border-emerald-500/40 rounded-2xl p-4 shadow-lg relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-2 text-emerald-500/20">
+                      <Wallet className="w-8 h-8" />
                     </div>
-                    <h2 className="text-4xl sm:text-5xl font-black font-mono text-white tracking-tight">
-                      ${wallet.balance.toFixed(2)}
-                    </h2>
-                    <p className="text-xs text-slate-400 mt-2 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                      <span>Use wallet balance for instant 1-click checkout on AI Accounts & Digital Services</span>
-                    </p>
+                    <span className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Available Balance</span>
+                    <div className="text-xl sm:text-2xl font-black font-mono text-white tracking-tight">
+                      ${walletStats.available.toFixed(2)}
+                    </div>
+                    <span className="text-[10px] font-mono text-emerald-400 block mt-1">
+                      PKR {(walletStats.available * 278).toLocaleString('en-PK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
                   </div>
 
-                  <div className="flex flex-col gap-2 w-full md:w-auto">
-                    <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 flex items-center gap-3">
-                      <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 shrink-0">
-                        <Coins className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <span className="text-[10px] text-slate-400 font-bold uppercase block">Instant Delivery Guarantee</span>
-                        <span className="text-xs font-black text-white">Zero Waiting • 24/7 Handover</span>
-                      </div>
+                  {/* Pending Balance */}
+                  <div className="bg-slate-950/80 border border-amber-500/30 rounded-2xl p-4 shadow-lg relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-2 text-amber-500/20">
+                      <Clock className="w-8 h-8" />
                     </div>
+                    <span className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Pending Balance</span>
+                    <div className="text-xl sm:text-2xl font-black font-mono text-amber-300 tracking-tight">
+                      ${walletStats.pending.toFixed(2)}
+                    </div>
+                    <span className="text-[10px] font-mono text-amber-400/80 block mt-1">
+                      PKR {(walletStats.pending * 278).toLocaleString('en-PK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                  </div>
+
+                  {/* Total Deposited */}
+                  <div className="bg-slate-950/80 border border-cyan-500/30 rounded-2xl p-4 shadow-lg relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-2 text-cyan-500/20">
+                      <ArrowDownRight className="w-8 h-8" />
+                    </div>
+                    <span className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Total Deposited</span>
+                    <div className="text-xl sm:text-2xl font-black font-mono text-cyan-300 tracking-tight">
+                      ${walletStats.totalDeposited.toFixed(2)}
+                    </div>
+                    <span className="text-[10px] font-mono text-cyan-400/80 block mt-1">
+                      {walletStats.totalDeposited > 0
+                        ? `PKR ${(walletStats.totalDeposited * 278).toLocaleString('en-PK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                        : 'PKR 0.00'}
+                    </span>
+                  </div>
+
+                  {/* Total Spent */}
+                  <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 shadow-lg relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-2 text-slate-700">
+                      <ArrowUpRight className="w-8 h-8" />
+                    </div>
+                    <span className="text-[11px] font-bold uppercase text-slate-400 block mb-1">Total Spent</span>
+                    <div className="text-xl sm:text-2xl font-black font-mono text-slate-200 tracking-tight">
+                      ${walletStats.totalSpent.toFixed(2)}
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400 block mt-1">
+                      PKR {(walletStats.totalSpent * 278).toLocaleString('en-PK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
                   </div>
                 </div>
               </div>
 
-              {/* Top-up Form Section */}
-              <div className="bg-slate-950/80 border border-slate-800 rounded-3xl p-6 sm:p-7 space-y-5">
+              {/* SECTION 2: TOP UP BALANCE */}
+              <div className="bg-slate-950/90 border border-slate-800 rounded-3xl p-5 sm:p-7 space-y-5 shadow-xl">
                 <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-xl bg-cyan-500/20 text-cyan-400">
+                    <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400">
                       <PlusCircle className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="text-base font-black text-white">Top Up Wallet Balance</h3>
-                      <p className="text-xs text-slate-400">Select deposit amount and preferred payment channel</p>
+                      <h3 className="text-base font-black text-white">Top Up Balance</h3>
+                      <p className="text-xs text-slate-400">Select payment channel and submit top-up request</p>
                     </div>
                   </div>
                   <span className="px-2.5 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
-                    Secure Top-up
+                    Zero Extra Fees
                   </span>
                 </div>
 
                 <form onSubmit={handleTopupSubmit} className="space-y-5">
-                  {/* Preset Amount Selection */}
+                  {/* Deposit Amount Selection */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-2">1. Select Preset Top-up Amount</label>
+                    <label className="block text-xs font-bold text-slate-300 mb-2">1. Select Deposit Amount</label>
                     <div className="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
                       {[25, 50, 100, 250, 500].map((amt) => {
                         const isSelected = topupAmount === amt && !topupCustomAmount;
@@ -409,9 +509,9 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                               setTopupAmount(amt);
                               setTopupCustomAmount('');
                             }}
-                            className={`py-3 px-3 rounded-2xl text-sm font-black font-mono transition-all border ${
+                            className={`py-2.5 px-3 rounded-2xl text-xs font-black font-mono transition-all border ${
                               isSelected
-                                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 border-emerald-400 shadow-lg shadow-emerald-500/20 scale-105'
+                                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 border-emerald-400 shadow-md shadow-emerald-500/20 scale-105'
                                 : 'bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700 hover:text-white'
                             }`}
                           >
@@ -424,108 +524,116 @@ export const AccountModal: React.FC<AccountModalProps> = ({
 
                   {/* Custom Amount */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1.5">Or Enter Custom Top-up Amount ($ USD)</label>
+                    <label className="block text-xs font-bold text-slate-300 mb-1.5">Or Enter Custom Amount ($ USD)</label>
                     <input
                       type="number"
-                      min="5"
+                      min="1"
                       max="10000"
                       value={topupCustomAmount}
                       onChange={(e) => setTopupCustomAmount(e.target.value)}
-                      placeholder="e.g. 75, 150, 300..."
-                      className="w-full bg-slate-900 border border-slate-800 rounded-2xl py-3 px-4 text-sm font-mono text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition-colors"
+                      placeholder="Enter custom deposit amount..."
+                      className="w-full bg-slate-900 border border-slate-800 rounded-2xl py-2.5 px-4 text-xs font-mono text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition-colors"
                     />
                   </div>
 
-                  {/* Payment Channel */}
+                  {/* Payment Method Selection */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-2">2. Choose Top-up Payment Method</label>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label className="block text-xs font-bold text-slate-300 mb-2">2. Payment Method Selection</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {[
                         {
-                          id: 'Binance Pay (USDT)',
-                          title: 'Binance Pay (USDT / Crypto)',
-                          desc: 'Pay ID: 787445946 • Zero Fee Instant',
+                          id: 'Binance Pay',
+                          title: 'Binance Pay (USDT)',
+                          desc: 'Pay ID: 787445946',
+                          badge: 'Instant Crypto',
                           icon: QrCode
                         },
                         {
-                          id: 'Credit / Debit Card (Stripe)',
-                          title: 'Credit / Debit Card (USD)',
-                          desc: 'Visa, Mastercard, Amex • Instant',
-                          icon: CreditCard
-                        },
-                        {
-                          id: 'Payoneer Email Transfer',
+                          id: 'Payoneer',
                           title: 'Payoneer Transfer',
                           desc: 'waleedkhanafridi7@gmail.com',
+                          badge: 'USD Direct',
                           icon: Sparkles
                         },
                         {
-                          id: 'EasyPaisa / JazzCash / Local PKR',
-                          title: 'EasyPaisa / JazzCash / Nayapay',
-                          desc: 'Direct PKR conversion ($1 = ~278 PKR)',
+                          id: 'JazzCash / EasyPaisa',
+                          title: 'JazzCash / EasyPaisa',
+                          desc: '03416860077 (Waleed Khan Afridi)',
+                          badge: 'Local PKR',
                           icon: Coins
                         }
                       ].map((item) => {
-                        const isSelected = topupMethod === item.id;
+                        const isSelected = topupMethod.includes(item.id);
                         const IconComponent = item.icon;
                         return (
                           <div
                             key={item.id}
                             onClick={() => setTopupMethod(item.id)}
-                            className={`p-3.5 rounded-2xl border cursor-pointer transition-all flex items-start gap-3 ${
+                            className={`p-3.5 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between ${
                               isSelected
                                 ? 'bg-emerald-500/10 border-emerald-500/60 shadow-md shadow-emerald-500/10'
                                 : 'bg-slate-900/80 border-slate-800/80 hover:border-slate-700'
                             }`}
                           >
-                            <div className={`p-2 rounded-xl shrink-0 mt-0.5 ${isSelected ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>
-                              <IconComponent className="w-4 h-4" />
+                            <div className="flex items-start justify-between gap-2 mb-2">
+                              <div className={`p-2 rounded-xl shrink-0 ${isSelected ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>
+                                <IconComponent className="w-4 h-4" />
+                              </div>
+                              <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">
+                                {item.badge}
+                              </span>
                             </div>
-                            <div className="flex-1">
+                            <div>
                               <h4 className="text-xs font-bold text-white">{item.title}</h4>
-                              <p className="text-[11px] text-slate-400 mt-0.5">{item.desc}</p>
+                              <p className="text-[10px] text-slate-400 font-mono mt-0.5">{item.desc}</p>
                             </div>
-                            {isSelected && <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-1" />}
                           </div>
                         );
                       })}
                     </div>
                   </div>
 
-                  {/* Binance Pay Merchant Details Info */}
+                  {/* Payment Instructions Details */}
                   {topupMethod.includes('Binance') && (
-                    <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-2 text-xs">
-                      <div className="flex items-center justify-between text-amber-300 font-bold">
-                        <span>Binance Pay Merchant ID:</span>
-                        <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 font-mono text-white">
-                          <span>787445946</span>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              navigator.clipboard.writeText('787445946');
-                              setCopiedBinanceId(true);
-                              setTimeout(() => setCopiedBinanceId(false), 2000);
-                            }}
-                            className="text-amber-400 hover:text-white"
-                          >
-                            {copiedBinanceId ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                          </button>
-                        </div>
+                    <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs space-y-1.5">
+                      <div className="flex items-center justify-between font-bold text-amber-300">
+                        <span>Binance Pay ID: 787445946</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText('787445946');
+                            setCopiedBinanceId(true);
+                            setTimeout(() => setCopiedBinanceId(false), 2000);
+                          }}
+                          className="px-2 py-0.5 bg-slate-950 border border-slate-800 text-amber-400 rounded hover:text-white flex items-center gap-1 font-mono text-[11px]"
+                        >
+                          {copiedBinanceId ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                          <span>{copiedBinanceId ? 'Copied' : 'Copy Pay ID'}</span>
+                        </button>
                       </div>
-                      <p className="text-slate-400 text-[11px]">
+                      <p className="text-[11px] text-slate-400">
                         Open Binance App → Pay → Send → Enter Pay ID <strong>787445946</strong>.
                       </p>
                     </div>
                   )}
 
-                  {/* Optional Reference TxID */}
+                  {topupMethod.includes('JazzCash') && (
+                    <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs space-y-1 text-slate-300 font-mono">
+                      <p className="font-bold text-emerald-300">JazzCash / EasyPaisa / Nayapay PKR Account:</p>
+                      <p>Account Number: <strong className="text-white">03416860077</strong></p>
+                      <p>Account Title: <strong className="text-white">Waleed Khan Afridi</strong></p>
+                      <p className="text-[10px] text-slate-400 mt-1">Rate conversion: 1 USD = ~278 PKR</p>
+                    </div>
+                  )}
+
+                  {/* Payment Reference ID input */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-1">Payment Reference / TxID (Optional)</label>
+                    <label className="block text-xs font-bold text-slate-300 mb-1">Transaction Ref / TxID / Proof ID</label>
                     <input
                       type="text"
                       value={topupRefId}
                       onChange={(e) => setTopupRefId(e.target.value)}
-                      placeholder="e.g. Binance Order ID, Card TxID, or EasyPaisa Reference"
+                      placeholder="Enter Binance Order ID, JazzCash Ref, or Payment Proof TxID"
                       className="w-full bg-slate-900 border border-slate-800 rounded-2xl py-2.5 px-4 text-xs font-mono text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition-colors"
                     />
                   </div>
@@ -533,14 +641,14 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                   {topupSuccess && (
                     <div className="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-2">
                       <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                      <span>Top-Up payment request submitted! The Admin will review your payment and credit your wallet shortly.</span>
+                      <span>Top-Up request submitted successfully! Admin will verify payment and credit your balance.</span>
                     </div>
                   )}
 
                   <button
                     type="submit"
                     disabled={isProcessingTopup}
-                    className="w-full py-3 px-6 rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 text-slate-950 font-black text-sm hover:brightness-110 transition-all shadow-xl shadow-emerald-500/20 flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-3 px-6 rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 text-slate-950 font-black text-xs hover:brightness-110 transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {isProcessingTopup ? (
                       <>
@@ -550,43 +658,115 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                     ) : (
                       <>
                         <PlusCircle className="w-4 h-4" />
-                        <span>Submit Top-Up Request (${topupCustomAmount || topupAmount})</span>
+                        <span>Submit Top-Up Request (${topupCustomAmount || topupAmount} USD)</span>
                       </>
                     )}
                   </button>
                 </form>
               </div>
 
-              {/* Transaction History */}
-              <div className="bg-slate-950/80 border border-slate-800 rounded-3xl p-6 sm:p-7 space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                  <h3 className="text-base font-black text-white flex items-center gap-2">
+              {/* SECTION 3: TRANSACTIONS & FILTERING */}
+              <div className="bg-slate-950/80 border border-slate-800 rounded-3xl p-5 sm:p-6 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                  <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-cyan-400" />
-                    <span>Wallet Transaction History</span>
-                  </h3>
-                  <span className="text-xs font-mono text-slate-400">
-                    {wallet.transactions.length} records
-                  </span>
+                    <h3 className="text-base font-black text-white">Wallet Transactions</h3>
+                    <span className="px-2 py-0.5 rounded-full bg-slate-900 border border-slate-800 text-xs font-mono text-slate-400">
+                      {filteredTransactions.length} records
+                    </span>
+                  </div>
+
+                  {/* Search and Filters */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    {/* Search Input */}
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-2.5" />
+                      <input
+                        type="text"
+                        value={txSearch}
+                        onChange={(e) => {
+                          setTxSearch(e.target.value);
+                          setTxPage(1);
+                        }}
+                        placeholder="Search TxID or ref..."
+                        className="bg-slate-900 border border-slate-800 rounded-xl py-1.5 pl-8 pr-3 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono"
+                      />
+                    </div>
+
+                    {/* Status Filter */}
+                    <select
+                      value={txStatusFilter}
+                      onChange={(e) => {
+                        setTxStatusFilter(e.target.value);
+                        setTxPage(1);
+                      }}
+                      className="bg-slate-900 border border-slate-800 text-xs text-slate-300 rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-cyan-500 font-semibold cursor-pointer"
+                    >
+                      <option value="all">All Status</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Failed">Rejected / Failed</option>
+                    </select>
+
+                    {/* Type Filter */}
+                    <select
+                      value={txTypeFilter}
+                      onChange={(e) => {
+                        setTxTypeFilter(e.target.value);
+                        setTxPage(1);
+                      }}
+                      className="bg-slate-900 border border-slate-800 text-xs text-slate-300 rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-cyan-500 font-semibold cursor-pointer"
+                    >
+                      <option value="all">All Types</option>
+                      <option value="deposit">Deposits</option>
+                      <option value="purchase">Purchases</option>
+                      <option value="refund">Refunds</option>
+                      <option value="admin_credit">Admin Credit</option>
+                    </select>
+                  </div>
                 </div>
 
-                <div className="space-y-2.5">
-                  {wallet.transactions.length === 0 ? (
-                    <p className="text-xs text-slate-500 text-center py-6">No transaction history found.</p>
-                  ) : (
-                    wallet.transactions.map((tx) => (
+                {/* Transactions Ledger List or Empty State */}
+                {filteredTransactions.length === 0 ? (
+                  /* SECTION 4: EMPTY STATE */
+                  <div className="py-12 px-4 text-center bg-slate-900/40 rounded-2xl border border-slate-800/60 space-y-3">
+                    <div className="w-12 h-12 rounded-2xl bg-slate-800/80 border border-slate-700/80 flex items-center justify-center mx-auto text-slate-400">
+                      <Wallet className="w-6 h-6 text-slate-500" />
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-extrabold text-white">📭 No Transactions Found</h4>
+                      <p className="text-xs text-slate-400 max-w-sm mx-auto mt-1">
+                        You haven't made any deposits or purchases yet. Top up your wallet to get started.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActiveTab('wallet');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 text-xs font-bold hover:bg-emerald-400 transition-all inline-flex items-center gap-1.5 shadow-md shadow-emerald-500/20"
+                    >
+                      <PlusCircle className="w-4 h-4" />
+                      <span>Top Up Balance</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2.5">
+                    {paginatedTransactions.map((tx) => (
                       <div
                         key={tx.id}
-                        className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800/80 flex items-center justify-between gap-3"
+                        className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800/80 flex items-center justify-between gap-3 hover:border-slate-700 transition-all"
                       >
                         <div className="flex items-center gap-3">
                           <div
-                            className={`p-2 rounded-xl shrink-0 ${
-                              tx.type === 'deposit' || tx.type === 'bonus' || tx.type === 'refund'
+                            className={`p-2.5 rounded-xl shrink-0 ${
+                              tx.type === 'deposit' || tx.type === 'admin_credit' || tx.type === 'refund'
                                 ? 'bg-emerald-500/20 text-emerald-400'
                                 : 'bg-red-500/20 text-red-400'
                             }`}
                           >
-                            {tx.type === 'deposit' || tx.type === 'bonus' || tx.type === 'refund' ? (
+                            {tx.type === 'deposit' || tx.type === 'admin_credit' || tx.type === 'refund' ? (
                               <ArrowDownRight className="w-4 h-4" />
                             ) : (
                               <ArrowUpRight className="w-4 h-4" />
@@ -595,7 +775,8 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                           <div>
                             <h4 className="text-xs font-bold text-white">{tx.description}</h4>
                             <p className="text-[10px] text-slate-400 font-mono mt-0.5">
-                              {new Date(tx.createdAt).toLocaleString()} • {tx.paymentMethod || 'Wallet'}
+                              {new Date(tx.createdAt).toLocaleString()} • Method: {tx.paymentMethod || 'Wallet'}
+                              {tx.referenceId && ` • Ref: ${tx.referenceId}`}
                             </p>
                           </div>
                         </div>
@@ -603,186 +784,108 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                         <div className="text-right">
                           <span
                             className={`text-sm font-black font-mono block ${
-                              tx.amount > 0 ? 'text-emerald-400' : 'text-slate-300'
+                              tx.amount >= 0 ? 'text-emerald-400' : 'text-slate-300'
                             }`}
                           >
-                            {tx.amount > 0 ? `+${tx.amount.toFixed(2)}` : `${tx.amount.toFixed(2)}`}
+                            {tx.amount >= 0 ? `+$${tx.amount.toFixed(2)}` : `-$${Math.abs(tx.amount).toFixed(2)}`}
                           </span>
-                          <span className="px-2 py-0.2 rounded-full text-[9px] font-extrabold bg-slate-800 text-slate-300 uppercase">
+                          <span
+                            className={`px-2 py-0.2 rounded-full text-[9px] font-extrabold uppercase border ${
+                              tx.status === 'Completed'
+                                ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                                : tx.status === 'Pending'
+                                ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                                : 'bg-red-500/20 text-red-400 border-red-500/30'
+                            }`}
+                          >
                             {tx.status}
                           </span>
                         </div>
                       </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
+                    ))}
 
-          {activeTab === 'dashboard' && (
-            <div className="space-y-6">
-              {/* Summary Metric Cards */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-                <div className="bg-slate-950/70 border border-slate-800/90 rounded-2xl p-4 flex flex-col justify-between">
-                  <div className="flex items-center justify-between text-slate-400 mb-2">
-                    <span className="text-[11px] font-semibold">Active Projects</span>
-                    <FolderGit2 className="w-4 h-4 text-cyan-400" />
-                  </div>
-                  <div>
-                    <span className="text-2xl font-black text-white font-mono">{stats.totalProjects}</span>
-                    <span className="text-[10px] text-emerald-400 block font-semibold mt-0.5">
-                      {stats.completedProjects} Ready / Completed
-                    </span>
-                  </div>
-                </div>
-
-                <div className="bg-slate-950/70 border border-slate-800/90 rounded-2xl p-4 flex flex-col justify-between">
-                  <div className="flex items-center justify-between text-slate-400 mb-2">
-                    <span className="text-[11px] font-semibold">Deliverables</span>
-                    <Download className="w-4 h-4 text-emerald-400" />
-                  </div>
-                  <div>
-                    <span className="text-2xl font-black text-white font-mono">{stats.totalDeliverables}</span>
-                    <span className="text-[10px] text-cyan-400 block font-semibold mt-0.5">Instant Download Ready</span>
-                  </div>
-                </div>
-
-                <div className="bg-slate-950/70 border border-slate-800/90 rounded-2xl p-4 flex flex-col justify-between">
-                  <div className="flex items-center justify-between text-slate-400 mb-2">
-                    <span className="text-[11px] font-semibold">Total Paid</span>
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  </div>
-                  <div>
-                    <span className="text-2xl font-black text-emerald-400 font-mono">${stats.totalPaid}</span>
-                    <span className="text-[10px] text-slate-500 block mt-0.5">Verified via Crypto/Bank</span>
-                  </div>
-                </div>
-
-                <div className="bg-slate-950/70 border border-slate-800/90 rounded-2xl p-4 flex flex-col justify-between">
-                  <div className="flex items-center justify-between text-slate-400 mb-2">
-                    <span className="text-[11px] font-semibold">Balance Due</span>
-                    <FileText className="w-4 h-4 text-amber-400" />
-                  </div>
-                  <div>
-                    <span className="text-2xl font-black text-amber-400 font-mono">${stats.balanceDue}</span>
-                    <span className="text-[10px] text-slate-500 block mt-0.5">
-                      {stats.balanceDue === 0 ? 'Fully Paid' : 'Due upon next milestone'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Primary Active Project Banner */}
-              {selectedProject && (
-                <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border border-cyan-500/30 rounded-3xl p-5 sm:p-6 relative overflow-hidden shadow-xl">
-                  <div className="absolute top-0 right-0 p-3">
-                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      {selectedProject.status}
-                    </span>
-                  </div>
-
-                  <div className="max-w-2xl">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-cyan-400 font-mono">
-                      {selectedProject.category} • Lead Engineer: {selectedProject.leadEngineer}
-                    </span>
-                    <h4 className="text-lg sm:text-xl font-extrabold text-white mt-1 mb-3">
-                      {selectedProject.title}
-                    </h4>
-
-                    {/* Progress Bar */}
-                    <div className="space-y-1.5 mb-4">
-                      <div className="flex justify-between text-xs text-slate-300 font-bold">
-                        <span>Project Completion Progress</span>
-                        <span className="text-cyan-400 font-mono">{selectedProject.progressPercentage}%</span>
-                      </div>
-                      <div className="w-full h-3 bg-slate-950 rounded-full overflow-hidden border border-slate-800 p-0.5">
-                        <div
-                          className="h-full bg-gradient-to-r from-cyan-500 via-indigo-500 to-emerald-400 rounded-full transition-all duration-500 shadow-sm"
-                          style={{ width: `${selectedProject.progressPercentage}%` }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Quick Tech Stack Chips */}
-                    <div className="flex flex-wrap gap-1.5 mb-5">
-                      {selectedProject.techStack.map((tech, idx) => (
-                        <span
-                          key={idx}
-                          className="px-2.5 py-0.5 text-[10px] font-semibold bg-slate-900 text-slate-300 rounded-md border border-slate-800"
-                        >
-                          {tech}
+                    {/* Pagination Bar */}
+                    {totalTxPages > 1 && (
+                      <div className="flex items-center justify-between pt-3 border-t border-slate-800/80 text-xs text-slate-400">
+                        <span>
+                          Showing page <strong className="text-white">{txPage}</strong> of{' '}
+                          <strong className="text-white">{totalTxPages}</strong>
                         </span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            disabled={txPage === 1}
+                            onClick={() => setTxPage((p) => Math.max(1, p - 1))}
+                            className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={txPage === totalTxPages}
+                            onClick={() => setTxPage((p) => Math.min(totalTxPages, p + 1))}
+                            className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
+                          >
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* SECTION 5: ORDERS & PROJECTS (REAL DATA ONLY) */}
+              {activeTab === 'dashboard' && (
+                <div className="space-y-4 pt-2 border-t border-slate-800/80">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-base font-black text-white flex items-center gap-2">
+                      <ShoppingBag className="w-4 h-4 text-cyan-400" />
+                      <span>Recent Orders & Activity</span>
+                    </h3>
+                    {orders.length > 0 && (
+                      <button
+                        onClick={() => setActiveTab('orders')}
+                        className="text-xs text-cyan-400 hover:underline font-semibold"
+                      >
+                        View All Orders ({orders.length})
+                      </button>
+                    )}
+                  </div>
+
+                  {orders.length === 0 ? (
+                    <div className="p-6 rounded-2xl bg-slate-950/60 border border-slate-800/80 text-center space-y-2">
+                      <Package className="w-8 h-8 text-slate-600 mx-auto" />
+                      <p className="text-xs font-bold text-white">No Orders Placed Yet</p>
+                      <p className="text-[11px] text-slate-400 max-w-sm mx-auto">
+                        Your marketplace purchases and digital services orders will appear here once placed.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {orders.slice(0, 3).map((order) => (
+                        <div
+                          key={order.id}
+                          className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800/90 flex items-center justify-between gap-3"
+                        >
+                          <div>
+                            <span className="text-xs font-bold font-mono text-cyan-400">Order #{order.order_number}</span>
+                            <p className="text-[10px] text-slate-400">
+                              {order.items?.length || 0} item(s) • Payment: {order.payment_method}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-xs font-black font-mono text-white block">${order.total_amount?.toFixed(2)}</span>
+                            <span className="px-2 py-0.2 rounded-full text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                              {order.status}
+                            </span>
+                          </div>
+                        </div>
                       ))}
                     </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex flex-wrap items-center gap-3">
-                      <button
-                        onClick={() => setActiveTab('projects')}
-                        className="px-4 py-2 text-xs font-bold rounded-xl bg-cyan-500 text-slate-950 hover:bg-cyan-400 transition-all flex items-center gap-1.5 shadow-md shadow-cyan-500/20"
-                      >
-                        <span>View Milestones & Timeline</span>
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-
-                      <button
-                        onClick={() => setActiveTab('deliverables')}
-                        className="px-4 py-2 text-xs font-bold rounded-xl bg-slate-800 text-white hover:bg-slate-700 border border-slate-700 transition-all flex items-center gap-1.5"
-                      >
-                        <Download className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>Download Deliverables ({selectedProject.deliverables?.length || 0})</span>
-                      </button>
-                    </div>
-                  </div>
+                  )}
                 </div>
               )}
-
-              {/* Recent Deliverables Download Shortcuts */}
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                    <Download className="w-4 h-4 text-cyan-400" />
-                    <span>Recent Client Deliverables</span>
-                  </h4>
-                  <button
-                    onClick={() => setActiveTab('deliverables')}
-                    className="text-xs text-cyan-400 hover:underline font-semibold"
-                  >
-                    View All ({allDeliverables.length})
-                  </button>
-                </div>
-
-                <div className="space-y-2">
-                  {allDeliverables.slice(0, 3).map((del) => (
-                    <div
-                      key={del.id}
-                      className="p-3 sm:p-4 rounded-2xl bg-slate-950/80 border border-slate-800/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-slate-700 transition-all"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold shrink-0">
-                          {del.fileType.toUpperCase()}
-                        </div>
-                        <div>
-                          <h5 className="text-xs font-bold text-white">{del.title}</h5>
-                          <p className="text-[11px] text-slate-400 font-mono">
-                            {del.fileName} • {del.fileSize} • {del.version}
-                          </p>
-                        </div>
-                      </div>
-
-                      <button
-                        onClick={() => triggerFileDownload(del)}
-                        className="px-3.5 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-xs font-bold hover:bg-emerald-500/30 transition-all flex items-center justify-center gap-1.5 shrink-0"
-                      >
-                        <Download className="w-3.5 h-3.5" />
-                        <span>Download File</span>
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
               {/* Direct Support & Consultation Box */}
               <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">

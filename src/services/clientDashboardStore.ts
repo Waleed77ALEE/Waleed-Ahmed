@@ -3,226 +3,29 @@ import { ClientProject, Deliverable, ClientInvoice } from '../types';
 const CLIENT_PROJECTS_KEY = 'wka_client_projects_v1';
 
 export function getDefaultClientProjects(userId: string, userEmail: string = 'client@example.com'): ClientProject[] {
-  return [
-    {
-      id: 'proj-001',
-      userId: userId || 'guest',
-      title: 'Full-Stack Custom SaaS Web Application (React 19 & Supabase)',
-      category: 'Full Stack Engineering',
-      status: 'Deliverables Ready',
-      progressPercentage: 90,
-      leadEngineer: 'Waleed Khan Afridi',
-      techStack: ['React 19', 'Next.js 15', 'TypeScript', 'Tailwind CSS', 'Supabase Auth & RLS', 'Node.js'],
-      startDate: '2026-07-10',
-      estimatedCompletion: '2026-07-30',
-      totalBudget: 1250,
-      paidAmount: 1250,
-      repositoryUrl: 'https://github.com/waleedkhanafridi/saas-web-app-production',
-      previewUrl: 'https://waleedkhanafridi.online/',
-      milestones: [
-        {
-          id: 'm1',
-          title: 'Requirements, Architecture & UI Mockups',
-          status: 'Completed',
-          completedDate: '2026-07-12',
-          description: 'Full UX wireframing, component tokens, database schema design, and API route planning.'
-        },
-        {
-          id: 'm2',
-          title: 'Frontend Component Architecture & Styling',
-          status: 'Completed',
-          completedDate: '2026-07-18',
-          description: 'Built responsive UI in React 19, dark/light theme tokens, Lucide icons, and Tailwind CSS.'
-        },
-        {
-          id: 'm3',
-          title: 'Supabase Backend, Auth & Database RLS',
-          status: 'Completed',
-          completedDate: '2026-07-24',
-          description: 'Configured PostgreSQL database tables, secure user authentication, and Row Level Security policies.'
-        },
-        {
-          id: 'm4',
-          title: 'Final Testing, Deliverables & Cloud Deployment',
-          status: 'In Progress',
-          description: 'Lighthouse audit, performance optimization, domain setup, and source code package delivery.'
-        }
-      ],
-      deliverables: [
-        {
-          id: 'del-101',
-          projectId: 'proj-001',
-          title: 'Production Source Code & Deployment Package',
-          fileName: 'FullStack_SaaS_SourceCode_v1.2.zip',
-          fileSize: '14.8 MB',
-          fileType: 'zip',
-          version: 'v1.2.0',
-          uploadedAt: '2026-07-26',
-          downloadsCount: 3,
-          securityHash: 'sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
-          contentSnippet: `# Production Build Package - Full Stack SaaS Application
-Lead Engineer: Waleed Khan Afridi (https://waleedkhanafridi.online)
-Client Email: ${userEmail}
-
-## Package Contents:
-1. /src - Complete React 19 + TypeScript source code
-2. /supabase - PostgreSQL schema migration files & RLS policies
-3. README.md - Step-by-step installation & deployment guide
-4. .env.example - Production environment variable configuration
-
-Thank you for choosing Waleed Khan Afridi Digital Web Services!
-`
-        },
-        {
-          id: 'del-102',
-          projectId: 'proj-001',
-          title: 'Figma UI/UX Component Kit & Design System',
-          fileName: 'Figma_UI_Design_System_v1.fig',
-          fileSize: '8.2 MB',
-          fileType: 'fig',
-          version: 'v1.0.0',
-          uploadedAt: '2026-07-15',
-          downloadsCount: 5,
-          securityHash: 'sha256:8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4',
-          contentSnippet: `Figma Design Tokens & UI Kit Documentation
-Includes Color Palettes, Typography System, Dark Mode Tokens, and 40+ Interactive UI Components.`
-        },
-        {
-          id: 'del-103',
-          projectId: 'proj-001',
-          title: 'Supabase Database Schema & Credentials Access Guide',
-          fileName: 'Supabase_Database_Credentials_Guide.pdf',
-          fileSize: '1.4 MB',
-          fileType: 'pdf',
-          version: 'v1.0.0',
-          uploadedAt: '2026-07-25',
-          downloadsCount: 2,
-          securityHash: 'sha256:a211327170e88384f509eb33e4b486241b18d893f40d39e38e6820ef63e3d231',
-          contentSnippet: `Database Credentials & API Integration Guide
-PostgreSQL Connection String, Anon Key, Service Role Key, and Row Level Security Setup.`
-        }
-      ],
-      invoices: [
-        {
-          id: 'inv-2001',
-          invoiceNumber: 'INV-2026-8091',
-          projectId: 'proj-001',
-          projectTitle: 'Full-Stack Custom SaaS Web Application',
-          issueDate: '2026-07-10',
-          dueDate: '2026-07-20',
-          amount: 1250,
-          status: 'PAID',
-          paymentMethod: 'Binance Pay USDT (TRC20)',
-          items: [
-            { description: 'Milestone 1 & 2: Wireframing, React 19 Frontend & Design System', quantity: 1, unitPrice: 625, total: 625 },
-            { description: 'Milestone 3 & 4: Supabase Backend Integration, RLS & Production Launch', quantity: 1, unitPrice: 625, total: 625 }
-          ],
-          notes: 'Paid in full via Binance Pay USDT. Transaction Verified on Blockchain.'
-        }
-      ]
-    },
-    {
-      id: 'proj-002',
-      userId: userId || 'guest',
-      title: 'E-Commerce SEO Optimization & Core Web Vitals Overhaul',
-      category: 'Technical SEO',
-      status: 'In Progress',
-      progressPercentage: 65,
-      leadEngineer: 'Waleed Khan Afridi',
-      techStack: ['Google Search Console', 'Technical SEO', 'Schema.org JSON-LD', 'PageSpeed Insights', 'Next.js SSG'],
-      startDate: '2026-07-18',
-      estimatedCompletion: '2026-08-05',
-      totalBudget: 450,
-      paidAmount: 225,
-      milestones: [
-        {
-          id: 'm201',
-          title: 'Comprehensive Technical SEO Audit & Crawl Analysis',
-          status: 'Completed',
-          completedDate: '2026-07-21',
-          description: 'Identified 404 crawl errors, canonical tag mismatches, and page speed bottlenecks.'
-        },
-        {
-          id: 'm202',
-          title: 'Structured Data JSON-LD & Rich Snippet Injection',
-          status: 'Completed',
-          completedDate: '2026-07-25',
-          description: 'Implemented Google-compliant Organization, Product, FAQ, and BreadcrumbList schemas.'
-        },
-        {
-          id: 'm203',
-          title: 'Core Web Vitals Optimization (LCP, CLS, INP)',
-          status: 'In Progress',
-          description: 'Optimizing image compression, font preconnects, and JavaScript bundle sizes.'
-        },
-        {
-          id: 'm204',
-          title: 'Google Indexation Verification & Monthly SEO Growth Report',
-          status: 'Pending',
-          description: 'Submitting sitemaps to Google Search Console and measuring ranking improvements.'
-        }
-      ],
-      deliverables: [
-        {
-          id: 'del-201',
-          projectId: 'proj-002',
-          title: 'Technical SEO Audit & Schema Blueprint Report',
-          fileName: 'Technical_SEO_Audit_Report.pdf',
-          fileSize: '3.6 MB',
-          fileType: 'pdf',
-          version: 'v1.0.0',
-          uploadedAt: '2026-07-22',
-          downloadsCount: 4,
-          securityHash: 'sha256:d41d8cd98f00b204e9800998ecf8427e',
-          contentSnippet: `Technical SEO Audit & Rich Snippet Optimization Report
-Author: Waleed Khan Afridi
-Analysis of site speed, Schema.org JSON-LD structured data, mobile usability, and Google ranking metrics.`
-        }
-      ],
-      invoices: [
-        {
-          id: 'inv-2002',
-          invoiceNumber: 'INV-2026-8104',
-          projectId: 'proj-002',
-          projectTitle: 'E-Commerce SEO Optimization & Core Web Vitals Overhaul',
-          issueDate: '2026-07-18',
-          dueDate: '2026-07-28',
-          amount: 450,
-          status: 'PAID',
-          paymentMethod: 'Payoneer Direct Transfer',
-          items: [
-            { description: 'Deposit (50%): Technical SEO Audit & Schema Injection', quantity: 1, unitPrice: 225, total: 225 },
-            { description: 'Final Balance (50%): Core Web Vitals & Search Console Indexation', quantity: 1, unitPrice: 225, total: 225 }
-          ],
-          notes: '50% initial milestone payment received via Payoneer. Balance due upon project completion.'
-        }
-      ]
-    }
-  ];
+  return [];
 }
 
 export function loadClientProjects(userId: string, userEmail: string = 'client@example.com'): ClientProject[] {
-  if (typeof window === 'undefined') return getDefaultClientProjects(userId, userEmail);
+  if (typeof window === 'undefined') return [];
 
   try {
-    const raw = localStorage.getItem(CLIENT_PROJECTS_KEY);
+    const raw = localStorage.getItem(`${CLIENT_PROJECTS_KEY}_${userId || 'guest'}`);
     if (!raw) {
-      const defaults = getDefaultClientProjects(userId, userEmail);
-      localStorage.setItem(CLIENT_PROJECTS_KEY, JSON.stringify(defaults));
-      return defaults;
+      return [];
     }
     const projects: ClientProject[] = JSON.parse(raw);
-    return projects.length > 0 ? projects : getDefaultClientProjects(userId, userEmail);
+    return Array.isArray(projects) ? projects : [];
   } catch (err) {
     console.error('Error loading client projects:', err);
-    return getDefaultClientProjects(userId, userEmail);
+    return [];
   }
 }
 
-export function saveClientProjects(projects: ClientProject[]) {
+export function saveClientProjects(projects: ClientProject[], userId: string = 'guest') {
   if (typeof window === 'undefined') return;
   try {
-    localStorage.setItem(CLIENT_PROJECTS_KEY, JSON.stringify(projects));
+    localStorage.setItem(`${CLIENT_PROJECTS_KEY}_${userId}`, JSON.stringify(projects));
   } catch (err) {
     console.error('Error saving client projects:', err);
   }

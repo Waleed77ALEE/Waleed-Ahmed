@@ -39,22 +39,35 @@ export const Header: React.FC<HeaderProps> = ({
 
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [wallet, setWallet] = useState<UserWallet>(() => loadUserWallet(user?.id));
+  const [wallet, setWallet] = useState<UserWallet>(() =>
+    loadUserWallet(user?.id, user?.email, profile?.full_name)
+  );
+  const [balanceHighlight, setBalanceHighlight] = useState(false);
 
   useEffect(() => {
-    if (user?.id) {
-      setWallet(loadUserWallet(user.id));
-    }
-  }, [user]);
+    const fresh = loadUserWallet(user?.id, user?.email, profile?.full_name);
+    setWallet(fresh);
+  }, [user, profile]);
 
   useEffect(() => {
-    const unsubscribe = subscribeWallet((updatedWallet) => {
-      if (updatedWallet.userId === (user?.id || 'guest')) {
+    const handleWalletUpdate = (updatedWallet: UserWallet) => {
+      const currentUserId = user?.id || 'guest';
+      const currentUserEmail = user?.email || profile?.whatsapp; // email or identifier
+
+      const isMatch =
+        updatedWallet.userId === currentUserId ||
+        (currentUserEmail && updatedWallet.userEmail?.toLowerCase() === currentUserEmail.toLowerCase());
+
+      if (isMatch || !user?.id) {
         setWallet(updatedWallet);
+        setBalanceHighlight(true);
+        setTimeout(() => setBalanceHighlight(false), 2500);
       }
-    });
+    };
+
+    const unsubscribe = subscribeWallet(handleWalletUpdate);
     return unsubscribe;
-  }, [user]);
+  }, [user, profile]);
 
   useEffect(() => {
     let ticking = false;
@@ -154,14 +167,18 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Right Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-2.5">
-            {/* Wallet Balance Button - Only shown when user is logged in */}
-            {user && (
+            {/* Wallet Balance Button - Shown when user is logged in or has active balance */}
+            {(user || wallet.balance > 0 || wallet.userId !== 'guest') && (
               <button
                 onClick={onOpenAccount}
-                className="px-3 py-1.5 text-xs font-extrabold text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 rounded-xl transition-all flex items-center gap-1.5 shadow-md shrink-0 cursor-pointer"
+                className={`px-3 py-1.5 text-xs font-extrabold rounded-xl transition-all flex items-center gap-1.5 shadow-md shrink-0 cursor-pointer ${
+                  balanceHighlight
+                    ? 'bg-emerald-400 text-slate-950 scale-110 shadow-lg shadow-emerald-400/40 ring-2 ring-emerald-300 font-black animate-pulse'
+                    : 'text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20'
+                }`}
                 title="Click to view Wallet & Top-Up"
               >
-                <Wallet className="w-3.5 h-3.5 text-emerald-400" />
+                <Wallet className={`w-3.5 h-3.5 ${balanceHighlight ? 'text-slate-950' : 'text-emerald-400'}`} />
                 <span className="font-mono">${wallet.balance.toFixed(2)}</span>
               </button>
             )}

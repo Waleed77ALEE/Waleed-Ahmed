@@ -122,6 +122,25 @@ function notifyWalletListeners(wallet: UserWallet): void {
       console.error('Error in wallet listener:', e);
     }
   });
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('wka_wallet_updated', { detail: wallet }));
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('storage', (e) => {
+    if (e.key && e.key.startsWith(WALLET_STORAGE_KEY)) {
+      try {
+        if (e.newValue) {
+          const updated: UserWallet = JSON.parse(e.newValue);
+          notifyWalletListeners(updated);
+        }
+      } catch (err) {
+        console.error('Error handling wallet storage event:', err);
+      }
+    }
+  });
 }
 
 /**
