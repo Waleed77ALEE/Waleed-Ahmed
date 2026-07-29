@@ -60,7 +60,6 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'digital-services', label: 'Digital Marketplace', badge: 'Instant Services' },
     { id: 'projects', label: 'Projects' },
     { id: 'testimonials', label: 'Reviews' },
-    { id: 'about-me', label: 'About Me' },
     { id: 'contact', label: 'Contact' }
   ];
 

@@ -54,8 +54,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, whatsappNumber, onOp
                 </button>
               </li>
               <li>
-                <button onClick={() => onNavigate('about-me')} className="hover:text-cyan-400 transition-colors font-semibold text-cyan-300">
-                  About Me
+                <button onClick={() => onNavigate('about')} className="hover:text-cyan-400 transition-colors font-semibold text-cyan-300">
+                  About
                 </button>
               </li>
               <li>

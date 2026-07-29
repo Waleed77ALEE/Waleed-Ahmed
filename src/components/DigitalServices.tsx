@@ -212,7 +212,7 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
             Social Media & Digital Services
           </h2>
           <p className="mt-4 text-slate-300 text-base sm:text-lg leading-relaxed">
-            Verified AI Subscriptions, High-Retention Social Media Growth, Aged Accounts, and Gift Vouchers with instant WhatsApp handover & 100% replacement warranty.
+            Verified AI Accounts & Subscriptions ($50 – $450 Tiers), High-Retention Social Media Growth, Aged Accounts, and Digital Vouchers with instant WhatsApp handover & 100% replacement warranty.
           </p>
         </motion.div>
 
@@ -371,11 +371,22 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
             {/* Quick search tags */}
             <div className="mt-2.5 flex flex-wrap items-center gap-1.5 text-xs">
               <span className="text-slate-400 font-medium mr-1 text-[11px]">Popular searches:</span>
-              {['Facebook', 'Instagram', 'YouTube', 'OpenAI', 'HeyGen', 'Kling', 'TikTok', 'Microsoft'].map((tag) => (
+              {['AI Accounts ($50-$450)', 'OpenAI', 'Claude', 'HeyGen', 'Midjourney', 'YouTube', 'Instagram', 'Facebook'].map((tag) => (
                 <button
                   key={tag}
-                  onClick={() => setSearchQuery(tag)}
-                  className="px-2.5 py-0.5 text-[11px] font-medium text-slate-300 hover:text-cyan-300 bg-slate-950 hover:bg-slate-800 border border-slate-800/80 rounded-lg transition-all"
+                  onClick={() => {
+                    if (tag.startsWith('AI Accounts')) {
+                      setSelectedCategory('AI Subscriptions');
+                      setSearchQuery('');
+                    } else {
+                      setSearchQuery(tag);
+                    }
+                  }}
+                  className={`px-2.5 py-0.5 text-[11px] font-medium rounded-lg transition-all ${
+                    tag.startsWith('AI Accounts')
+                      ? 'bg-gradient-to-r from-cyan-500/20 to-indigo-500/20 text-cyan-300 border border-cyan-500/40 font-bold'
+                      : 'text-slate-300 hover:text-cyan-300 bg-slate-950 hover:bg-slate-800 border border-slate-800/80'
+                  }`}
                 >
                   #{tag}
                 </button>

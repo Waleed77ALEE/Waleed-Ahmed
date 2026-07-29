@@ -43,9 +43,9 @@ export interface AdminCustomer {
   lastOrderDate: string;
 }
 
-const PRODUCTS_STORAGE_KEY = 'wka_products_v1';
-const CATEGORIES_STORAGE_KEY = 'wka_categories_v1';
-const ORDERS_STORAGE_KEY = 'wka_orders_v1';
+const PRODUCTS_STORAGE_KEY = 'wka_products_v3';
+const CATEGORIES_STORAGE_KEY = 'wka_categories_v2';
+const ORDERS_STORAGE_KEY = 'wka_orders_v2';
 
 type Listener = () => void;
 
@@ -78,7 +78,7 @@ class ProductStore {
 
     // Seed categories if not existing
     if (!localStorage.getItem(CATEGORIES_STORAGE_KEY)) {
-      const initialCategories = ['AI Subscriptions', 'Social Media Growth', 'Accounts', 'Gift Cards'];
+      const initialCategories = ['AI Subscriptions', 'Accounts', 'Social Media Growth', 'Gift Cards'];
       localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(initialCategories));
     }
 
@@ -90,10 +90,9 @@ class ProductStore {
           customerName: 'Sarah Jenkins',
           customerEmail: 'sarah.j@example.com',
           items: [
-            { service_id: 'ai-01', title: 'OpenAI ChatGPT Plus (1 Month)', price: 15, quantity: 1 },
-            { service_id: 'ai-04', title: 'HeyGen Video Creator Pro', price: 29, quantity: 1 }
+            { service_id: 'ai-acc-heygen-team-1m', title: 'HeyGen Team AI Video Account (1 Month)', price: 50, quantity: 1 }
           ],
-          totalAmount: 44,
+          totalAmount: 50,
           paymentMethod: 'Binance Pay USDT',
           status: 'Completed',
           createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
@@ -104,9 +103,9 @@ class ProductStore {
           customerName: 'Alex Rivera',
           customerEmail: 'arivera@devstudio.io',
           items: [
-            { service_id: 'ai-03', title: 'OpenAI API $120 Key Balance', price: 45, quantity: 2 }
+            { service_id: 'ai-acc-openai-api-300', title: 'OpenAI Tier 3 Developer Account ($300 Balance)', price: 220, quantity: 1 }
           ],
-          totalAmount: 90,
+          totalAmount: 220,
           paymentMethod: 'Payoneer Transfer',
           status: 'Verified',
           createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),

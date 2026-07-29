@@ -139,7 +139,7 @@ export const SeoSchemas: React.FC = () => {
           '@type': 'ListItem',
           position: 5,
           name: 'About',
-          item: 'https://waleedkhanafridi.online/#about-me'
+          item: 'https://waleedkhanafridi.online/#about'
         }
       ]
     };

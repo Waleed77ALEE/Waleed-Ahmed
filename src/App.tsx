@@ -6,7 +6,6 @@ import { CoreServices } from './components/CoreServices';
 import { DigitalServices } from './components/DigitalServices';
 import { Projects } from './components/Projects';
 import { Testimonials } from './components/Testimonials';
-import { AboutMeEnd } from './components/AboutMeEnd';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { ServiceDetailsModal } from './components/ServiceDetailsModal';
@@ -110,7 +109,7 @@ export default function App() {
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          const sections = ['hero', 'about', 'services', 'digital-services', 'projects', 'testimonials', 'about-me', 'contact'];
+          const sections = ['hero', 'about', 'services', 'digital-services', 'projects', 'testimonials', 'contact'];
           const scrollPos = window.scrollY + 200;
 
           for (let i = sections.length - 1; i >= 0; i--) {
@@ -269,15 +268,7 @@ export default function App() {
           <Testimonials />
         </SectionTransition>
 
-        {/* 7. Detailed About Me Section at the end */}
-        <SectionTransition id="about-me">
-          <AboutMeEnd
-            whatsappNumber={whatsappNumber}
-            onContactClick={() => scrollToSection('contact')}
-          />
-        </SectionTransition>
-
-        {/* 8. Contact & Direct Order Section */}
+        {/* 7. Contact & Direct Order Section */}
         <SectionTransition id="contact">
           <Contact whatsappNumber={whatsappNumber} user={user} />
         </SectionTransition>

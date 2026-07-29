@@ -55,3 +55,67 @@ export interface FAQItem {
   question: string;
   answer: string;
 }
+
+export interface ProjectMilestone {
+  id: string;
+  title: string;
+  status: 'Completed' | 'In Progress' | 'Pending';
+  completedDate?: string;
+  description: string;
+}
+
+export interface Deliverable {
+  id: string;
+  projectId: string;
+  title: string;
+  fileName: string;
+  fileSize: string;
+  fileType: 'zip' | 'pdf' | 'fig' | 'json' | 'code' | 'doc';
+  version: string;
+  uploadedAt: string;
+  downloadsCount: number;
+  securityHash: string;
+  downloadUrl?: string;
+  contentSnippet?: string;
+}
+
+export interface ClientInvoice {
+  id: string;
+  invoiceNumber: string;
+  projectId?: string;
+  projectTitle: string;
+  issueDate: string;
+  dueDate: string;
+  amount: number;
+  taxAmount?: number;
+  status: 'PAID' | 'UNPAID' | 'PROCESSING' | 'OVERDUE';
+  paymentMethod: string;
+  items: {
+    description: string;
+    quantity: number;
+    unitPrice: number;
+    total: number;
+  }[];
+  notes?: string;
+  pdfUrl?: string;
+}
+
+export interface ClientProject {
+  id: string;
+  userId: string;
+  title: string;
+  category: string;
+  status: 'In Progress' | 'Under Review' | 'Deliverables Ready' | 'Completed' | 'On Hold';
+  progressPercentage: number;
+  leadEngineer: string;
+  techStack: string[];
+  startDate: string;
+  estimatedCompletion: string;
+  totalBudget: number;
+  paidAmount: number;
+  repositoryUrl?: string;
+  previewUrl?: string;
+  milestones: ProjectMilestone[];
+  deliverables: Deliverable[];
+  invoices: ClientInvoice[];
+}
