@@ -385,7 +385,7 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
                 </label>
                 <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-center space-y-3">
                   <p className="text-xs text-slate-300 leading-relaxed">
-                    Connect directly with <strong className="text-white">Waleed Khan Afridi</strong> on WhatsApp to pay via Local Bank Transfer, EasyPaisa, JazzCash, Wise, or custom arrangements.
+                    Connect directly with <strong className="text-white">Waleed Khan Afridi</strong> on WhatsApp to pay via Local Bank Transfer, JazzCash, Wise, or custom arrangements.
                   </p>
                   <a
                     href={`https://wa.me/${(whatsappNumber || '+923416860077').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(`Hi Waleed! I would like to buy ${serviceTitle ? serviceTitle : 'a digital service'} ($${totalAmount.toFixed(2)}) via WhatsApp Direct Payment.`)}`}

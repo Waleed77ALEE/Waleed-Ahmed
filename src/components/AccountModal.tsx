@@ -556,8 +556,8 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                           icon: Sparkles
                         },
                         {
-                          id: 'JazzCash / EasyPaisa',
-                          title: 'JazzCash / EasyPaisa',
+                          id: 'JazzCash',
+                          title: 'JazzCash Transfer',
                           desc: '03416860077 (Waleed Khan Afridi)',
                           badge: 'Local PKR',
                           icon: Coins
@@ -619,7 +619,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
 
                   {topupMethod.includes('JazzCash') && (
                     <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs space-y-1 text-slate-300 font-mono">
-                      <p className="font-bold text-emerald-300">JazzCash / EasyPaisa / Nayapay PKR Account:</p>
+                      <p className="font-bold text-emerald-300">JazzCash PKR Account:</p>
                       <p>Account Number: <strong className="text-white">03416860077</strong></p>
                       <p>Account Title: <strong className="text-white">Waleed Khan Afridi</strong></p>
                       <p className="text-[10px] text-slate-400 mt-1">Rate conversion: 1 USD = ~278 PKR</p>

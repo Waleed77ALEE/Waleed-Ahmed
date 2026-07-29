@@ -898,7 +898,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                       <h3 className="text-sm font-extrabold text-white">Direct Admin Top-Up / Credit Balance</h3>
                     </div>
                     <p className="text-slate-400 text-[11px]">
-                      Verified customer payment via Binance, Payoneer, Card, or EasyPaisa? Select the registered user and credit their wallet balance directly.
+                      Verified customer payment via Binance, Payoneer, Card, or JazzCash? Select the registered user and credit their wallet balance directly.
                     </p>
 
                     <form onSubmit={handleManualCreditSubmit} className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-1">
