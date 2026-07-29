@@ -5,6 +5,7 @@ import { About } from './components/About';
 import { CoreServices } from './components/CoreServices';
 import { DigitalServices } from './components/DigitalServices';
 import { AiSubscriptionMarketplace } from './components/AiSubscriptionMarketplace';
+import { StatsSection } from './components/StatsSection';
 import { Projects } from './components/Projects';
 import { Testimonials } from './components/Testimonials';
 import { Contact } from './components/Contact';
@@ -239,6 +240,9 @@ export default function App() {
           <Hero onNavigate={scrollToSection} onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)} />
         </SectionTransition>
 
+        {/* Live Animated Stats Section */}
+        <StatsSection />
+
         {/* 2. Overview About Section */}
         <SectionTransition id="about">
           <About />
@@ -258,6 +262,9 @@ export default function App() {
             onBuyNow={handleBuyNow}
           />
         </SectionTransition>
+
+        {/* Official AI Subscriptions Marketplace */}
+        <AiSubscriptionMarketplace whatsappNumber={whatsappNumber} />
 
         {/* 5. Featured Portfolio Projects Section */}
         <SectionTransition id="projects">

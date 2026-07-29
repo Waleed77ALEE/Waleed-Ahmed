@@ -261,20 +261,32 @@ class ProductStore {
   public addOrder(orderData: Partial<AdminOrder>): AdminOrder {
     const orders = this.getOrders();
     const newOrder: AdminOrder = {
-      id: `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
+      id: orderData.id || `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
       customerName: orderData.customerName || 'Guest Customer',
       customerEmail: orderData.customerEmail || 'customer@example.com',
       items: orderData.items || [],
       totalAmount: orderData.totalAmount || 0,
       paymentMethod: orderData.paymentMethod || 'WhatsApp Direct Order',
-      status: 'Pending',
-      createdAt: new Date().toISOString(),
+      status: orderData.status || 'Pending',
+      createdAt: orderData.createdAt || new Date().toISOString(),
       txId: orderData.txId || ''
     };
     orders.unshift(newOrder);
     localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
     this.notify();
     return newOrder;
+  }
+
+  public saveOrder(order: AdminOrder): void {
+    const orders = this.getOrders();
+    const existingIndex = orders.findIndex((o) => o.id === order.id);
+    if (existingIndex >= 0) {
+      orders[existingIndex] = order;
+    } else {
+      orders.unshift(order);
+    }
+    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
+    this.notify();
   }
 
   public updateOrderStatus(id: string, status: AdminOrder['status']): boolean {
