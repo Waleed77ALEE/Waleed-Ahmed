@@ -6,6 +6,15 @@ import {
 } from '../services/productStore';
 import { PlatformLogo } from './PlatformLogo';
 import {
+  loadUserWallet,
+  getAllUserWallets,
+  adminCreditUserWallet,
+  adminApproveTopupRequest,
+  adminRejectTopupRequest,
+  subscribeWallet,
+  UserWallet
+} from '../services/walletStore';
+import {
   X,
   LayoutDashboard,
   Package,
@@ -36,7 +45,11 @@ import {
   Layers,
   ArrowRight,
   TrendingUp,
-  AlertCircle
+  AlertCircle,
+  Wallet,
+  Users,
+  Coins,
+  UserCheck
 } from 'lucide-react';
 
 interface AdminPanelModalProps {
@@ -54,13 +67,20 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
 
   // Active Tab
   const [activeTab, setActiveTab] = useState<
-    'dashboard' | 'products' | 'categories' | 'orders' | 'seo' | 'database'
+    'dashboard' | 'products' | 'categories' | 'orders' | 'wallets' | 'seo' | 'database'
   >('dashboard');
 
   // Store State Sync
   const [products, setProducts] = useState<ExtendedProductItem[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [orders, setOrders] = useState<AdminOrder[]>([]);
+
+  // User Wallets State
+  const [userWallets, setUserWallets] = useState<UserWallet[]>([]);
+  const [selectedUserIdForCredit, setSelectedUserIdForCredit] = useState<string>('');
+  const [creditAmountInput, setCreditAmountInput] = useState<string>('50');
+  const [creditNoteInput, setCreditNoteInput] = useState<string>('');
+  const [creditMsg, setCreditMsg] = useState<string>('');
 
   // Search & Filters in Products
   const [productSearch, setProductSearch] = useState<string>('');
@@ -85,12 +105,48 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
       setProducts(productStore.getProducts(true));
       setCategories(productStore.getCategories());
       setOrders(productStore.getOrders());
+      setUserWallets(getAllUserWallets());
     };
 
     syncState();
-    const unsubscribe = productStore.subscribe(syncState);
-    return () => unsubscribe();
+    const unsubscribeProduct = productStore.subscribe(syncState);
+    const unsubscribeWallet = subscribeWallet(() => {
+      setUserWallets(getAllUserWallets());
+    });
+
+    return () => {
+      unsubscribeProduct();
+      unsubscribeWallet();
+    };
   }, [isOpen]);
+
+  const handleManualCreditSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const amt = parseFloat(creditAmountInput);
+    if (!selectedUserIdForCredit || isNaN(amt) || amt <= 0) return;
+
+    adminCreditUserWallet(selectedUserIdForCredit, amt, creditNoteInput || 'Manual Admin Top-Up Credit');
+    setUserWallets(getAllUserWallets());
+    setCreditMsg(`Successfully added +$${amt.toFixed(2)} to user wallet!`);
+    setCreditNoteInput('');
+    setTimeout(() => setCreditMsg(''), 4000);
+  };
+
+  const handleApproveTopup = (userId: string, txId: string) => {
+    const success = adminApproveTopupRequest(userId, txId);
+    if (success) {
+      setUserWallets(getAllUserWallets());
+      setCreditMsg('Top-Up request approved & funds credited!');
+      setTimeout(() => setCreditMsg(''), 4000);
+    }
+  };
+
+  const handleRejectTopup = (userId: string, txId: string) => {
+    const success = adminRejectTopupRequest(userId, txId);
+    if (success) {
+      setUserWallets(getAllUserWallets());
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -364,6 +420,35 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                 <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-400 font-mono">
                   {orders.length}
                 </span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('wallets')}
+                className={`w-full px-3 py-2.5 rounded-xl text-xs font-bold flex items-center justify-between transition-colors ${
+                  activeTab === 'wallets'
+                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-black'
+                    : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'
+                }`}
+              >
+                <span className="flex items-center gap-2.5">
+                  <Wallet className="w-4 h-4 text-emerald-400" />
+                  <span>Users &amp; Wallets</span>
+                </span>
+                {(() => {
+                  const pendingCount = userWallets.reduce(
+                    (acc, w) => acc + w.transactions.filter((t) => t.status === 'Pending').length,
+                    0
+                  );
+                  return (
+                    <span
+                      className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono ${
+                        pendingCount > 0 ? 'bg-amber-500/20 text-amber-400 font-bold animate-pulse' : 'bg-slate-800 text-slate-300'
+                      }`}
+                    >
+                      {pendingCount > 0 ? `${pendingCount} Req` : userWallets.length}
+                    </span>
+                  );
+                })()}
               </button>
 
               <button
@@ -746,6 +831,252 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                         ))}
                       </tbody>
                     </table>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB: USERS & WALLETS MANAGEMENT */}
+              {activeTab === 'wallets' && (
+                <div className="space-y-6 text-xs text-slate-300">
+                  {/* Top Notification / Alert */}
+                  {creditMsg && (
+                    <div className="p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold flex items-center justify-between">
+                      <span className="flex items-center gap-2">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                        <span>{creditMsg}</span>
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Header Metrics */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-slate-400 font-medium font-bold">Registered Accounts</p>
+                        <h3 className="text-2xl font-black text-white mt-1">{userWallets.length} Users</h3>
+                        <p className="text-[11px] text-emerald-400 mt-1">Wallet Accounts Active</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+                        <Users className="w-6 h-6" />
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-slate-400 font-medium font-bold">Pending Top-Up Requests</p>
+                        <h3 className="text-2xl font-black text-amber-400 mt-1">
+                          {userWallets.reduce(
+                            (acc, w) => acc + w.transactions.filter((t) => t.status === 'Pending').length,
+                            0
+                          )}
+                        </h3>
+                        <p className="text-[11px] text-amber-400/80 mt-1">Requires Admin Review</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
+                        <Coins className="w-6 h-6" />
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-slate-400 font-medium font-bold">Total Store Wallet Funds</p>
+                        <h3 className="text-2xl font-black font-mono text-emerald-400 mt-1">
+                          ${userWallets.reduce((acc, w) => acc + w.balance, 0).toFixed(2)} USD
+                        </h3>
+                        <p className="text-[11px] text-slate-400 mt-1">User Balances in System</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+                        <Wallet className="w-6 h-6" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section 1: Admin Add / Credit Wallet Amount Form */}
+                  <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-950/30 via-slate-950 to-teal-950/30 border border-emerald-500/30 space-y-4 shadow-xl">
+                    <div className="flex items-center gap-2">
+                      <Plus className="w-5 h-5 text-emerald-400" />
+                      <h3 className="text-sm font-extrabold text-white">Direct Admin Top-Up / Credit Balance</h3>
+                    </div>
+                    <p className="text-slate-400 text-[11px]">
+                      Verified customer payment via Binance, Payoneer, Card, or EasyPaisa? Select the registered user and credit their wallet balance directly.
+                    </p>
+
+                    <form onSubmit={handleManualCreditSubmit} className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-1">
+                      <div className="sm:col-span-2">
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Select Registered User</label>
+                        <select
+                          value={selectedUserIdForCredit}
+                          onChange={(e) => setSelectedUserIdForCredit(e.target.value)}
+                          className="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white font-bold focus:outline-none focus:border-emerald-500"
+                          required
+                        >
+                          <option value="">-- Choose User Account --</option>
+                          {userWallets.map((w) => (
+                            <option key={w.userId} value={w.userId}>
+                              {w.userEmail || w.userName || w.userId} (${w.balance.toFixed(2)} balance)
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Amount ($ USD)</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="1"
+                          value={creditAmountInput}
+                          onChange={(e) => setCreditAmountInput(e.target.value)}
+                          placeholder="50.00"
+                          className="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs font-mono font-bold text-emerald-400 focus:outline-none focus:border-emerald-500"
+                          required
+                        />
+                      </div>
+
+                      <div className="flex items-end">
+                        <button
+                          type="submit"
+                          className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-black text-xs hover:brightness-110 transition-all shadow-lg flex items-center justify-center gap-1.5 cursor-pointer"
+                        >
+                          <Coins className="w-4 h-4" />
+                          <span>Add Balance</span>
+                        </button>
+                      </div>
+
+                      <div className="sm:col-span-4">
+                        <input
+                          type="text"
+                          value={creditNoteInput}
+                          onChange={(e) => setCreditNoteInput(e.target.value)}
+                          placeholder="Optional Payment Note / Transaction Ref (e.g. Verified Binance Pay #948271)"
+                          className="w-full bg-slate-900/60 border border-slate-800/80 rounded-xl p-2 text-[11px] text-slate-300 placeholder-slate-600 focus:outline-none focus:border-emerald-500"
+                        />
+                      </div>
+                    </form>
+                  </div>
+
+                  {/* Section 2: Pending User Top-Up Requests */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-amber-400" />
+                        <span>Pending Payment Verification Requests</span>
+                      </h3>
+                    </div>
+
+                    {userWallets.flatMap((w) =>
+                      w.transactions
+                        .filter((t) => t.status === 'Pending')
+                        .map((t) => ({ user: w, tx: t }))
+                    ).length === 0 ? (
+                      <div className="p-6 text-center rounded-2xl bg-slate-950 border border-slate-800 text-slate-500 font-medium">
+                        No pending top-up requests at the moment. All payment verifications are clear.
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {userWallets
+                          .flatMap((w) =>
+                            w.transactions
+                              .filter((t) => t.status === 'Pending')
+                              .map((t) => ({ user: w, tx: t }))
+                          )
+                          .map(({ user: w, tx }) => (
+                            <div
+                              key={tx.id}
+                              className="p-4 rounded-2xl bg-slate-950 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                            >
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-bold text-white">{w.userEmail || w.userName || w.userId}</span>
+                                  <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-mono font-bold">
+                                    Pending Review
+                                  </span>
+                                </div>
+                                <div className="text-[11px] text-slate-400 flex flex-wrap gap-x-4 gap-y-1">
+                                  <span>Method: <strong className="text-slate-200">{tx.paymentMethod}</strong></span>
+                                  <span>Ref: <strong className="text-emerald-400 font-mono">{tx.referenceId}</strong></span>
+                                  <span>Submitted: {new Date(tx.createdAt).toLocaleTimeString()}</span>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-3 shrink-0 w-full sm:w-auto justify-between sm:justify-end">
+                                <span className="text-xl font-black font-mono text-emerald-400">+${tx.amount.toFixed(2)} USD</span>
+                                <div className="flex items-center gap-2">
+                                  <button
+                                    onClick={() => handleApproveTopup(w.userId, tx.id)}
+                                    className="px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition-colors flex items-center gap-1 cursor-pointer"
+                                  >
+                                    <CheckCircle2 className="w-4 h-4" />
+                                    <span>Approve &amp; Credit</span>
+                                  </button>
+                                  <button
+                                    onClick={() => handleRejectTopup(w.userId, tx.id)}
+                                    className="px-2.5 py-2 rounded-xl bg-slate-800 hover:bg-rose-900/60 text-rose-400 font-bold text-xs transition-colors cursor-pointer"
+                                  >
+                                    Reject
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Section 3: All Registered User Wallets */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
+                      <Users className="w-4 h-4 text-cyan-400" />
+                      <span>All Registered User Wallets</span>
+                    </h3>
+
+                    {userWallets.length === 0 ? (
+                      <div className="p-6 text-center rounded-2xl bg-slate-950 border border-slate-800 text-slate-500 font-medium">
+                        No registered users found in the system yet.
+                      </div>
+                    ) : (
+                      <div className="border border-slate-800 rounded-2xl overflow-x-auto bg-slate-950">
+                        <table className="w-full text-left text-xs text-slate-300">
+                          <thead className="bg-slate-900 border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px]">
+                            <tr>
+                              <th className="p-3">User Email / ID</th>
+                              <th className="p-3">Current Balance</th>
+                              <th className="p-3">Transactions</th>
+                              <th className="p-3">Last Activity</th>
+                              <th className="p-3 text-right">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-800/60">
+                            {userWallets.map((w) => (
+                              <tr key={w.userId} className="hover:bg-slate-900/40">
+                                <td className="p-3 font-bold text-white">
+                                  {w.userEmail || w.userName || w.userId}
+                                  <div className="text-[10px] font-mono text-slate-500 font-normal">{w.userId}</div>
+                                </td>
+                                <td className="p-3 font-mono font-black text-emerald-400 text-sm">
+                                  ${w.balance.toFixed(2)} USD
+                                </td>
+                                <td className="p-3 text-slate-400">{w.transactions.length} records</td>
+                                <td className="p-3 text-slate-500 text-[11px]">
+                                  {new Date(w.lastUpdated).toLocaleDateString()}
+                                </td>
+                                <td className="p-3 text-right">
+                                  <button
+                                    onClick={() => {
+                                      setSelectedUserIdForCredit(w.userId);
+                                      setCreditAmountInput('50');
+                                    }}
+                                    className="px-2.5 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 text-[11px] font-bold transition-all cursor-pointer"
+                                  >
+                                    + Add Amount
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

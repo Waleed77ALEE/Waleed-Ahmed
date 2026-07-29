@@ -21,11 +21,20 @@ import {
   ChevronRight,
   Sparkles,
   Check,
-  AlertCircle
+  AlertCircle,
+  Wallet,
+  CreditCard,
+  PlusCircle,
+  ArrowDownRight,
+  ArrowUpRight,
+  Coins,
+  QrCode,
+  Copy
 } from 'lucide-react';
 import { UserProfile, SupabaseOrder, fetchUserOrders, upsertProfile } from '../lib/supabase';
 import { ClientProject, Deliverable, ClientInvoice } from '../types';
 import { loadClientProjects, triggerFileDownload, printInvoice } from '../services/clientDashboardStore';
+import { loadUserWallet, requestWalletTopup, subscribeWallet, UserWallet } from '../services/walletStore';
 
 interface AccountModalProps {
   isOpen: boolean;
@@ -46,7 +55,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   onSignOut,
   whatsappNumber
 }) => {
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'projects' | 'deliverables' | 'invoices' | 'orders' | 'profile'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'wallet' | 'projects' | 'deliverables' | 'invoices' | 'orders' | 'profile'>('dashboard');
   const [fullName, setFullName] = useState(profile?.full_name || '');
   const [whatsapp, setWhatsapp] = useState(profile?.whatsapp || '');
   const [saving, setSaving] = useState(false);
@@ -54,9 +63,34 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   const [orders, setOrders] = useState<SupabaseOrder[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
 
+  // Wallet State
+  const [wallet, setWallet] = useState<UserWallet>(() => loadUserWallet(user?.id, user?.email, profile?.full_name));
+  const [topupAmount, setTopupAmount] = useState<number>(50);
+  const [topupCustomAmount, setTopupCustomAmount] = useState<string>('');
+  const [topupMethod, setTopupMethod] = useState<string>('Binance Pay (USDT)');
+  const [topupRefId, setTopupRefId] = useState<string>('');
+  const [isProcessingTopup, setIsProcessingTopup] = useState(false);
+  const [topupSuccess, setTopupSuccess] = useState(false);
+  const [copiedBinanceId, setCopiedBinanceId] = useState(false);
+
   // Client Dashboard State
   const [projects, setProjects] = useState<ClientProject[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<string>('');
+
+  useEffect(() => {
+    if (user?.id) {
+      setWallet(loadUserWallet(user.id, user.email, profile?.full_name));
+    }
+  }, [user, profile]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeWallet((updatedWallet) => {
+      if (updatedWallet.userId === (user?.id || 'guest')) {
+        setWallet(updatedWallet);
+      }
+    });
+    return unsubscribe;
+  }, [user]);
 
   useEffect(() => {
     if (profile) {
@@ -82,6 +116,30 @@ export const AccountModal: React.FC<AccountModalProps> = ({
     const data = await fetchUserOrders(user.id);
     setOrders(data);
     setLoadingOrders(false);
+  };
+
+  const handleTopupSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const finalAmount = topupCustomAmount ? parseFloat(topupCustomAmount) : topupAmount;
+    if (!finalAmount || finalAmount <= 0) return;
+
+    setIsProcessingTopup(true);
+    await new Promise((r) => setTimeout(r, 800));
+
+    requestWalletTopup(
+      user?.id,
+      user?.email,
+      profile?.full_name,
+      finalAmount,
+      topupMethod,
+      topupRefId || undefined
+    );
+
+    setIsProcessingTopup(false);
+    setTopupSuccess(true);
+    setTopupRefId('');
+    setTopupCustomAmount('');
+    setTimeout(() => setTopupSuccess(false), 5000);
   };
 
   const selectedProject = useMemo(() => {
@@ -195,6 +253,21 @@ export const AccountModal: React.FC<AccountModalProps> = ({
           </button>
 
           <button
+            onClick={() => setActiveTab('wallet')}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-2 ${
+              activeTab === 'wallet'
+                ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black shadow-md shadow-emerald-500/20'
+                : 'bg-slate-950/60 text-emerald-400 hover:text-emerald-300 hover:bg-slate-800 border border-emerald-500/30'
+            }`}
+          >
+            <Wallet className="w-4 h-4 text-emerald-400" />
+            <span>Wallet & Top-Up</span>
+            <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-300 font-mono font-bold border border-emerald-500/30">
+              ${wallet.balance.toFixed(2)}
+            </span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('projects')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-2 ${
               activeTab === 'projects'
@@ -266,6 +339,287 @@ export const AccountModal: React.FC<AccountModalProps> = ({
 
         {/* TAB 1: CLIENT DASHBOARD OVERVIEW */}
         <div className="overflow-y-auto flex-1 pr-1 custom-scrollbar">
+          {/* WALLET & TOP-UP TAB */}
+          {activeTab === 'wallet' && (
+            <div className="space-y-6">
+              {/* Wallet Main Balance Hero Banner */}
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-950/90 via-slate-900 to-teal-950/90 border border-emerald-500/30 p-6 sm:p-8 shadow-2xl">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Wallet className="w-5 h-5 text-emerald-400" />
+                      <span className="text-xs font-bold uppercase tracking-wider text-emerald-300">Available Wallet Balance</span>
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 border border-emerald-500/40 text-emerald-300">
+                        USD $
+                      </span>
+                    </div>
+                    <h2 className="text-4xl sm:text-5xl font-black font-mono text-white tracking-tight">
+                      ${wallet.balance.toFixed(2)}
+                    </h2>
+                    <p className="text-xs text-slate-400 mt-2 flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>Use wallet balance for instant 1-click checkout on AI Accounts & Digital Services</span>
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col gap-2 w-full md:w-auto">
+                    <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-3.5 flex items-center gap-3">
+                      <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 shrink-0">
+                        <Coins className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-slate-400 font-bold uppercase block">Instant Delivery Guarantee</span>
+                        <span className="text-xs font-black text-white">Zero Waiting • 24/7 Handover</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Top-up Form Section */}
+              <div className="bg-slate-950/80 border border-slate-800 rounded-3xl p-6 sm:p-7 space-y-5">
+                <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 rounded-xl bg-cyan-500/20 text-cyan-400">
+                      <PlusCircle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-base font-black text-white">Top Up Wallet Balance</h3>
+                      <p className="text-xs text-slate-400">Select deposit amount and preferred payment channel</p>
+                    </div>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
+                    Secure Top-up
+                  </span>
+                </div>
+
+                <form onSubmit={handleTopupSubmit} className="space-y-5">
+                  {/* Preset Amount Selection */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-300 mb-2">1. Select Preset Top-up Amount</label>
+                    <div className="grid grid-cols-3 sm:grid-cols-5 gap-2.5">
+                      {[25, 50, 100, 250, 500].map((amt) => {
+                        const isSelected = topupAmount === amt && !topupCustomAmount;
+                        return (
+                          <button
+                            key={amt}
+                            type="button"
+                            onClick={() => {
+                              setTopupAmount(amt);
+                              setTopupCustomAmount('');
+                            }}
+                            className={`py-3 px-3 rounded-2xl text-sm font-black font-mono transition-all border ${
+                              isSelected
+                                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 border-emerald-400 shadow-lg shadow-emerald-500/20 scale-105'
+                                : 'bg-slate-900 text-slate-300 border-slate-800 hover:border-slate-700 hover:text-white'
+                            }`}
+                          >
+                            ${amt}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Custom Amount */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-300 mb-1.5">Or Enter Custom Top-up Amount ($ USD)</label>
+                    <input
+                      type="number"
+                      min="5"
+                      max="10000"
+                      value={topupCustomAmount}
+                      onChange={(e) => setTopupCustomAmount(e.target.value)}
+                      placeholder="e.g. 75, 150, 300..."
+                      className="w-full bg-slate-900 border border-slate-800 rounded-2xl py-3 px-4 text-sm font-mono text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition-colors"
+                    />
+                  </div>
+
+                  {/* Payment Channel */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-300 mb-2">2. Choose Top-up Payment Method</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {[
+                        {
+                          id: 'Binance Pay (USDT)',
+                          title: 'Binance Pay (USDT / Crypto)',
+                          desc: 'Pay ID: 787445946 • Zero Fee Instant',
+                          icon: QrCode
+                        },
+                        {
+                          id: 'Credit / Debit Card (Stripe)',
+                          title: 'Credit / Debit Card (USD)',
+                          desc: 'Visa, Mastercard, Amex • Instant',
+                          icon: CreditCard
+                        },
+                        {
+                          id: 'Payoneer Email Transfer',
+                          title: 'Payoneer Transfer',
+                          desc: 'waleedkhanafridi7@gmail.com',
+                          icon: Sparkles
+                        },
+                        {
+                          id: 'EasyPaisa / JazzCash / Local PKR',
+                          title: 'EasyPaisa / JazzCash / Nayapay',
+                          desc: 'Direct PKR conversion ($1 = ~278 PKR)',
+                          icon: Coins
+                        }
+                      ].map((item) => {
+                        const isSelected = topupMethod === item.id;
+                        const IconComponent = item.icon;
+                        return (
+                          <div
+                            key={item.id}
+                            onClick={() => setTopupMethod(item.id)}
+                            className={`p-3.5 rounded-2xl border cursor-pointer transition-all flex items-start gap-3 ${
+                              isSelected
+                                ? 'bg-emerald-500/10 border-emerald-500/60 shadow-md shadow-emerald-500/10'
+                                : 'bg-slate-900/80 border-slate-800/80 hover:border-slate-700'
+                            }`}
+                          >
+                            <div className={`p-2 rounded-xl shrink-0 mt-0.5 ${isSelected ? 'bg-emerald-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>
+                              <IconComponent className="w-4 h-4" />
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="text-xs font-bold text-white">{item.title}</h4>
+                              <p className="text-[11px] text-slate-400 mt-0.5">{item.desc}</p>
+                            </div>
+                            {isSelected && <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-1" />}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Binance Pay Merchant Details Info */}
+                  {topupMethod.includes('Binance') && (
+                    <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-2 text-xs">
+                      <div className="flex items-center justify-between text-amber-300 font-bold">
+                        <span>Binance Pay Merchant ID:</span>
+                        <div className="flex items-center gap-1.5 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800 font-mono text-white">
+                          <span>787445946</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              navigator.clipboard.writeText('787445946');
+                              setCopiedBinanceId(true);
+                              setTimeout(() => setCopiedBinanceId(false), 2000);
+                            }}
+                            className="text-amber-400 hover:text-white"
+                          >
+                            {copiedBinanceId ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                          </button>
+                        </div>
+                      </div>
+                      <p className="text-slate-400 text-[11px]">
+                        Open Binance App → Pay → Send → Enter Pay ID <strong>787445946</strong>.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Optional Reference TxID */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-300 mb-1">Payment Reference / TxID (Optional)</label>
+                    <input
+                      type="text"
+                      value={topupRefId}
+                      onChange={(e) => setTopupRefId(e.target.value)}
+                      placeholder="e.g. Binance Order ID, Card TxID, or EasyPaisa Reference"
+                      className="w-full bg-slate-900 border border-slate-800 rounded-2xl py-2.5 px-4 text-xs font-mono text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition-colors"
+                    />
+                  </div>
+
+                  {topupSuccess && (
+                    <div className="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-2">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                      <span>Top-Up payment request submitted! The Admin will review your payment and credit your wallet shortly.</span>
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={isProcessingTopup}
+                    className="w-full py-3 px-6 rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 text-slate-950 font-black text-sm hover:brightness-110 transition-all shadow-xl shadow-emerald-500/20 flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    {isProcessingTopup ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Submitting Top-Up Request...</span>
+                      </>
+                    ) : (
+                      <>
+                        <PlusCircle className="w-4 h-4" />
+                        <span>Submit Top-Up Request (${topupCustomAmount || topupAmount})</span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
+
+              {/* Transaction History */}
+              <div className="bg-slate-950/80 border border-slate-800 rounded-3xl p-6 sm:p-7 space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                  <h3 className="text-base font-black text-white flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-cyan-400" />
+                    <span>Wallet Transaction History</span>
+                  </h3>
+                  <span className="text-xs font-mono text-slate-400">
+                    {wallet.transactions.length} records
+                  </span>
+                </div>
+
+                <div className="space-y-2.5">
+                  {wallet.transactions.length === 0 ? (
+                    <p className="text-xs text-slate-500 text-center py-6">No transaction history found.</p>
+                  ) : (
+                    wallet.transactions.map((tx) => (
+                      <div
+                        key={tx.id}
+                        className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800/80 flex items-center justify-between gap-3"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`p-2 rounded-xl shrink-0 ${
+                              tx.type === 'deposit' || tx.type === 'bonus' || tx.type === 'refund'
+                                ? 'bg-emerald-500/20 text-emerald-400'
+                                : 'bg-red-500/20 text-red-400'
+                            }`}
+                          >
+                            {tx.type === 'deposit' || tx.type === 'bonus' || tx.type === 'refund' ? (
+                              <ArrowDownRight className="w-4 h-4" />
+                            ) : (
+                              <ArrowUpRight className="w-4 h-4" />
+                            )}
+                          </div>
+                          <div>
+                            <h4 className="text-xs font-bold text-white">{tx.description}</h4>
+                            <p className="text-[10px] text-slate-400 font-mono mt-0.5">
+                              {new Date(tx.createdAt).toLocaleString()} • {tx.paymentMethod || 'Wallet'}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="text-right">
+                          <span
+                            className={`text-sm font-black font-mono block ${
+                              tx.amount > 0 ? 'text-emerald-400' : 'text-slate-300'
+                            }`}
+                          >
+                            {tx.amount > 0 ? `+${tx.amount.toFixed(2)}` : `${tx.amount.toFixed(2)}`}
+                          </span>
+                          <span className="px-2 py-0.2 rounded-full text-[9px] font-extrabold bg-slate-800 text-slate-300 uppercase">
+                            {tx.status}
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
               {/* Summary Metric Cards */}

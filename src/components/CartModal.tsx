@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { X, Trash2, ShoppingCart, ArrowRight, ShieldCheck, CheckCircle2, MessageSquare, Loader2, Sparkles, Copy, Check, Upload, Image as ImageIcon, QrCode } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Trash2, ShoppingCart, ArrowRight, ShieldCheck, CheckCircle2, MessageSquare, Loader2, Sparkles, Copy, Check, Upload, Image as ImageIcon, QrCode, Wallet } from 'lucide-react';
 import { SupabaseCartItem, createOrderDB, clearCartDB } from '../lib/supabase';
 import { PlatformLogo } from './PlatformLogo';
+import { loadUserWallet, deductWalletBalance, subscribeWallet, UserWallet } from '../services/walletStore';
 
 interface CartModalProps {
   isOpen: boolean;
@@ -29,7 +30,8 @@ export const CartModal: React.FC<CartModalProps> = ({
   const [checkoutStep, setCheckoutStep] = useState<'cart' | 'checkout' | 'success'>('cart');
   const [contactWhatsapp, setContactWhatsapp] = useState('');
   const [notes, setNotes] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('Payoneer Email Transfer (waleedkhanafridi7@gmail.com)');
+  const [wallet, setWallet] = useState<UserWallet>(() => loadUserWallet(user?.id));
+  const [paymentMethod, setPaymentMethod] = useState(`Wallet Balance ($${wallet.balance.toFixed(2)} Available)`);
   const [binanceTxId, setBinanceTxId] = useState('');
   const [proofImage, setProofImage] = useState<string | null>(null);
   const [proofFileName, setProofFileName] = useState('');
@@ -37,6 +39,22 @@ export const CartModal: React.FC<CartModalProps> = ({
   const [copiedPayoneerEmail, setCopiedPayoneerEmail] = useState(false);
   const [isPlacing, setIsPlacing] = useState(false);
   const [createdOrderNumber, setCreatedOrderNumber] = useState('');
+  const [walletError, setWalletError] = useState('');
+
+  useEffect(() => {
+    if (user?.id) {
+      setWallet(loadUserWallet(user.id));
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeWallet((updated) => {
+      if (updated.userId === (user?.id || 'guest')) {
+        setWallet(updated);
+      }
+    });
+    return unsubscribe;
+  }, [user]);
 
   const payoneerEmail = 'waleedkhanafridi7@gmail.com';
   const payoneerName = 'Waleed Khan Afridi';
@@ -73,9 +91,27 @@ export const CartModal: React.FC<CartModalProps> = ({
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (cart.length === 0) return;
+    setWalletError('');
+
+    const isWalletPay = paymentMethod.includes('Wallet Balance');
+    if (isWalletPay) {
+      if (wallet.balance < totalAmount) {
+        setWalletError(`Insufficient Wallet Balance ($${wallet.balance.toFixed(2)}). Please top up your wallet or select another payment method.`);
+        return;
+      }
+    }
 
     setIsPlacing(true);
     const orderNum = 'WKA-' + Math.floor(100000 + Math.random() * 900000);
+
+    if (isWalletPay) {
+      const deducted = deductWalletBalance(user?.id, totalAmount, orderNum);
+      if (!deducted) {
+        setIsPlacing(false);
+        setWalletError('Failed to deduct wallet balance. Please top up funds.');
+        return;
+      }
+    }
 
     const orderPayload = {
       order_number: orderNum,
@@ -89,11 +125,11 @@ export const CartModal: React.FC<CartModalProps> = ({
         delivery: i.delivery
       })),
       total_amount: totalAmount,
-      status: 'Pending' as const,
+      status: isWalletPay ? ('Processing' as const) : ('Pending' as const),
       payment_method: paymentMethod,
       contact_whatsapp: contactWhatsapp,
       notes: notes,
-      binance_tx_id: binanceTxId,
+      binance_tx_id: isWalletPay ? `WALLET-PAID-${orderNum}` : binanceTxId,
       payment_proof: proofImage || ''
     };
 
@@ -256,9 +292,15 @@ export const CartModal: React.FC<CartModalProps> = ({
               <label className="block text-[11px] font-bold text-slate-400 mb-1">Payment Method Preference</label>
               <select
                 value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-4 text-xs text-white focus:outline-none focus:border-amber-500 transition-colors"
+                onChange={(e) => {
+                  setPaymentMethod(e.target.value);
+                  setWalletError('');
+                }}
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-4 text-xs text-white focus:outline-none focus:border-amber-500 transition-colors font-bold"
               >
+                <option value={`Wallet Balance ($${wallet.balance.toFixed(2)} Available)`}>
+                  💳 Store Wallet Balance (${wallet.balance.toFixed(2)} Available)
+                </option>
                 <option value="Payoneer Email Transfer (waleedkhanafridi7@gmail.com)">
                   Payoneer Email Transfer (waleedkhanafridi7@gmail.com)
                 </option>
@@ -267,6 +309,12 @@ export const CartModal: React.FC<CartModalProps> = ({
                 <option value="Bank Transfer / Wise / Wire">Bank Transfer / Wise / Wire</option>
               </select>
             </div>
+
+            {walletError && (
+              <div className="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-bold flex flex-col gap-2">
+                <span>{walletError}</span>
+              </div>
+            )}
 
             {/* Payoneer Details Box */}
             {paymentMethod.includes('Payoneer') && (

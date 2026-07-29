@@ -71,50 +71,31 @@ export const CoreServices: React.FC<CoreServicesProps> = ({ onNavigate }) => {
             <motion.div
               key={service.id}
               variants={cardVariants}
-              whileHover={{ y: -6, transition: { duration: 0.2 } }}
-              className="bg-slate-900/60 border border-slate-800/90 hover:border-cyan-500/50 rounded-2xl p-7 transition-all duration-300 flex flex-col justify-between group shadow-2xl backdrop-blur-xl relative overflow-hidden"
+              whileHover={{ y: -6 }}
+              className="bg-slate-900/60 border border-slate-800/80 hover:border-cyan-500/40 rounded-2xl p-7 transition-all duration-300 flex flex-col justify-between group shadow-xl backdrop-blur-xl relative"
             >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/15 transition-all pointer-events-none" />
-
               <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800/80 group-hover:scale-110 group-hover:border-cyan-500/40 transition-all shadow-lg">
-                    {getIcon(service.icon)}
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[10px] text-slate-400 uppercase font-bold tracking-widest block">Starting</span>
-                    <span className="text-xl font-black text-white tracking-tight">{service.startingPrice}</span>
-                  </div>
+                <div className="p-3.5 w-fit rounded-xl bg-slate-950 border border-slate-800 mb-5 group-hover:scale-110 group-hover:border-cyan-500/40 transition-all shadow-md">
+                  {getIcon(service.icon)}
                 </div>
 
-                <h3 className="text-xl font-extrabold text-white mb-3 group-hover:text-cyan-300 transition-colors">
+                <h3 className="text-xl font-bold text-white mb-2.5 group-hover:text-cyan-300 transition-colors">
                   {service.title}
                 </h3>
 
-                <p className="text-xs text-slate-300 leading-relaxed mb-6">
-                  {service.description}
+                <p className="text-sm text-slate-300 leading-relaxed mb-6">
+                  {service.description.split('.')[0]}.
                 </p>
-
-                <div className="space-y-2.5 mb-8">
-                  {service.deliverables.map((item, i) => (
-                    <div key={i} className="flex items-center gap-2.5 text-xs text-slate-200">
-                      <div className="w-4 h-4 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shrink-0">
-                        <CheckCircle className="w-3 h-3 text-emerald-400" />
-                      </div>
-                      <span className="font-medium">{item}</span>
-                    </div>
-                  ))}
-                </div>
               </div>
 
               <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between">
-                <span className="text-xs text-slate-400 font-medium">Turnaround: <strong className="text-slate-200 font-semibold">{service.turnaround}</strong></span>
+                <span className="text-xs font-mono font-bold text-slate-400">{service.startingPrice}</span>
                 <button
                   onClick={() => onNavigate('contact')}
-                  className="px-3.5 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-xs font-bold text-cyan-300 hover:text-cyan-200 flex items-center gap-1.5 group-hover:translate-x-0.5 transition-all cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white flex items-center gap-1.5 transition-all cursor-pointer"
                 >
-                  <span>Request Quote</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span>Learn More</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-cyan-400" />
                 </button>
               </div>
             </motion.div>

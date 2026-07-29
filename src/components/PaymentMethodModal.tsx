@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { X, Copy, Check, QrCode, Upload, ShieldCheck, CheckCircle2, Image as ImageIcon, Sparkles, Key, RefreshCw, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Copy, Check, QrCode, Upload, ShieldCheck, CheckCircle2, Image as ImageIcon, Sparkles, Key, RefreshCw, MessageSquare, Wallet } from 'lucide-react';
 import paymentData from '../data/paymentMethods.json';
+import { loadUserWallet, deductWalletBalance, subscribeWallet, UserWallet } from '../services/walletStore';
 
 export interface PaymentMethodModalProps {
   isOpen: boolean;
@@ -22,7 +23,16 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
   onPaymentSubmitted
 }) => {
   const { merchant, paymentMethods } = paymentData;
-  const [activeTab, setActiveTab] = useState<string>('binance_pay');
+  const [activeTab, setActiveTab] = useState<string>('wallet_pay');
+  const [wallet, setWallet] = useState<UserWallet>(() => loadUserWallet());
+  const [walletError, setWalletError] = useState('');
+
+  useEffect(() => {
+    const unsubscribe = subscribeWallet((updated) => {
+      setWallet(updated);
+    });
+    return unsubscribe;
+  }, []);
 
   const [copiedPayId, setCopiedPayId] = useState(false);
   const [copiedPayoneerEmail, setCopiedPayoneerEmail] = useState(false);
@@ -42,6 +52,30 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
   const [isKeySaved, setIsKeySaved] = useState(false);
 
   if (!isOpen) return null;
+
+  const handlePayWithWallet = async () => {
+    setWalletError('');
+    if (wallet.balance < totalAmount) {
+      setWalletError(`Insufficient Wallet Balance ($${wallet.balance.toFixed(2)} available). Please top up your wallet.`);
+      return;
+    }
+
+    setIsSubmitting(true);
+    await new Promise((r) => setTimeout(r, 800));
+
+    const orderRef = orderNumber || `ORDER-${Math.floor(100000 + Math.random() * 900000)}`;
+    const deducted = deductWalletBalance(wallet.userId, totalAmount, orderRef);
+
+    setIsSubmitting(false);
+    if (deducted) {
+      setIsSuccess(true);
+      if (onPaymentSubmitted) {
+        onPaymentSubmitted(`WALLET-PAID-${orderRef}`, 'Store Wallet Balance Deduction');
+      }
+    } else {
+      setWalletError('Failed to process wallet payment. Please try again.');
+    }
+  };
 
   const handleCopy = (text: string, type: 'payId' | 'payoneer' | 'trc20' | 'bep20') => {
     navigator.clipboard.writeText(text);
@@ -127,6 +161,18 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
 
         {/* Data-driven Navigation Tabs */}
         <div className="flex flex-wrap items-center gap-2 border-b border-slate-800 pb-3 mb-5 overflow-x-auto custom-scrollbar">
+          <button
+            onClick={() => setActiveTab('wallet_pay')}
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+              activeTab === 'wallet_pay'
+                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
+                : 'bg-slate-800/80 text-emerald-400 hover:text-emerald-300'
+            }`}
+          >
+            <Wallet className="w-4 h-4 text-emerald-400" />
+            <span>Wallet Balance (${wallet.balance.toFixed(2)})</span>
+          </button>
+
           {paymentMethods.map((method) => {
             const isActive = activeTab === method.id;
             return (
@@ -169,6 +215,63 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
                 </span>
               </div>
               <span className="text-2xl font-black font-mono text-cyan-400">${totalAmount.toFixed(2)} USD</span>
+            </div>
+          )}
+
+          {/* WALLET BALANCE TAB CONTENT */}
+          {activeTab === 'wallet_pay' && (
+            <div className="p-5 rounded-2xl bg-slate-950 border border-emerald-500/30 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Wallet className="w-5 h-5 text-emerald-400" />
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-300">
+                    Store Wallet Balance
+                  </span>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-black uppercase tracking-wider border border-emerald-500/30">
+                  Instant Deduction
+                </span>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase block">Your Available Balance</span>
+                  <span className="text-3xl font-black font-mono text-white">${wallet.balance.toFixed(2)} USD</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase block">Order Total</span>
+                  <span className="text-xl font-black font-mono text-emerald-400">${totalAmount.toFixed(2)} USD</span>
+                </div>
+              </div>
+
+              {walletError && (
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-xs font-bold">
+                  {walletError}
+                </div>
+              )}
+
+              {isSuccess ? (
+                <div className="p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                  <span>Order paid successfully using your Wallet Balance! Processing handover now.</span>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handlePayWithWallet}
+                  disabled={isSubmitting}
+                  className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 text-slate-950 font-black text-sm hover:brightness-110 transition-all shadow-xl shadow-emerald-500/20 flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  {isSubmitting ? (
+                    <span>Deducting Wallet Balance...</span>
+                  ) : (
+                    <>
+                      <Wallet className="w-4 h-4" />
+                      <span>Pay ${totalAmount.toFixed(2)} Now with Wallet Balance</span>
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           )}
 
