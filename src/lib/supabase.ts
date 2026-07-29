@@ -173,6 +173,36 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- 6. AUTOMATIC EDGE FUNCTION ORDER EMAIL NOTIFICATION TRIGGER
+-- (Requires pg_net extension enabled in Supabase)
+CREATE OR REPLACE FUNCTION public.notify_admin_on_new_order()
+RETURNS TRIGGER AS $$
+DECLARE
+  edge_url TEXT := 'https://bspuihgnwkpcfkfvffum.supabase.co/functions/v1/send-order-email';
+  anon_key TEXT := 'sb_publishable_Y7tDSyXyvW0dNgtfq3AUoQ_z7i_odLs';
+BEGIN
+  PERFORM
+    net.http_post(
+      url := edge_url,
+      headers := jsonb_build_object(
+        'Content-Type', 'application/json',
+        'Authorization', 'Bearer ' || anon_key,
+        'apikey', anon_key
+      ),
+      body := jsonb_build_object('record', row_to_json(NEW))
+    );
+  RETURN NEW;
+EXCEPTION WHEN OTHERS THEN
+  -- Fallback gracefully if pg_net is not yet enabled
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_new_order_placed ON public.orders;
+CREATE TRIGGER on_new_order_placed
+  AFTER INSERT ON public.orders
+  FOR EACH ROW EXECUTE FUNCTION public.notify_admin_on_new_order();
 `;
 
 // Supabase Helper Functions with Local Storage Fallback for Guest Users
@@ -370,18 +400,27 @@ export async function createOrderDB(order: Omit<SupabaseOrder, 'id' | 'created_a
       .select('*')
       .single();
 
+    let createdOrderObj: SupabaseOrder;
     if (error) {
       console.warn('Supabase createOrder error, utilizing offline order creation:', error.message);
       // Create local fallback order object
-      const fallbackOrder: SupabaseOrder = {
+      createdOrderObj = {
         id: 'ord_' + Date.now(),
         ...order,
         created_at: new Date().toISOString()
       };
-      saveLocalOrder(fallbackOrder);
-      return fallbackOrder;
+      saveLocalOrder(createdOrderObj);
+    } else {
+      createdOrderObj = data;
     }
-    return data;
+
+    // Trigger Supabase Edge Function email alert for admin
+    const { sendOrderEmailNotification } = await import('../services/emailNotificationService');
+    sendOrderEmailNotification(createdOrderObj).catch((err) =>
+      console.warn('Failed to send order email notification:', err)
+    );
+
+    return createdOrderObj;
   } catch (err) {
     console.error('createOrderDB exception:', err);
     const fallbackOrder: SupabaseOrder = {

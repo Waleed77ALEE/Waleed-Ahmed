@@ -1,5 +1,6 @@
 import { ServiceItem } from '../types';
 import servicesInitialData from '../../public/services.json';
+import { sendOrderEmailNotification } from './emailNotificationService';
 
 export interface ExtendedProductItem extends ServiceItem {
   discountPrice?: number;
@@ -274,12 +275,19 @@ class ProductStore {
     orders.unshift(newOrder);
     localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
     this.notify();
+
+    // Trigger Supabase Edge Function email alert for admin
+    sendOrderEmailNotification(newOrder).catch((err) =>
+      console.warn('Failed to send order email alert:', err)
+    );
+
     return newOrder;
   }
 
   public saveOrder(order: AdminOrder): void {
     const orders = this.getOrders();
     const existingIndex = orders.findIndex((o) => o.id === order.id);
+    const isNew = existingIndex === -1;
     if (existingIndex >= 0) {
       orders[existingIndex] = order;
     } else {
@@ -287,6 +295,13 @@ class ProductStore {
     }
     localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders));
     this.notify();
+
+    if (isNew) {
+      // Trigger Supabase Edge Function email alert for admin
+      sendOrderEmailNotification(order).catch((err) =>
+        console.warn('Failed to send order email alert:', err)
+      );
+    }
   }
 
   public updateOrderStatus(id: string, status: AdminOrder['status']): boolean {

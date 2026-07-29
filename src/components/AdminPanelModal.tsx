@@ -14,6 +14,7 @@ import {
   subscribeWallet,
   UserWallet
 } from '../services/walletStore';
+import { sendOrderEmailNotification } from '../services/emailNotificationService';
 import {
   X,
   LayoutDashboard,
@@ -49,7 +50,9 @@ import {
   Wallet,
   Users,
   Coins,
-  UserCheck
+  UserCheck,
+  Mail,
+  Send
 } from 'lucide-react';
 
 interface AdminPanelModalProps {
@@ -97,6 +100,37 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
   // Backup Import JSON State
   const [importJsonInput, setImportJsonInput] = useState<string>('');
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
+
+  // Email Notification Test State
+  const [isSendingTestEmail, setIsSendingTestEmail] = useState<boolean>(false);
+  const [testEmailResult, setTestEmailResult] = useState<{ success?: boolean; message?: string } | null>(null);
+
+  const handleTestEmailAlert = async () => {
+    setIsSendingTestEmail(true);
+    setTestEmailResult(null);
+    const sampleOrder: AdminOrder = {
+      id: `TEST-${Math.floor(10000 + Math.random() * 90000)}`,
+      customerName: 'Waleed Khan (Test)',
+      customerEmail: 'waleedkhanafridi7@gmail.com',
+      items: [
+        {
+          service_id: 'test-heygen-pro',
+          title: 'HeyGen Pro Plan (1 Year)',
+          price: 180,
+          quantity: 1
+        }
+      ],
+      totalAmount: 180,
+      paymentMethod: 'Binance Pay USDT',
+      status: 'Pending',
+      createdAt: new Date().toISOString(),
+      txId: 'TX-882910481'
+    };
+
+    const res = await sendOrderEmailNotification(sampleOrder);
+    setIsSendingTestEmail(false);
+    setTestEmailResult(res);
+  };
 
   useEffect(() => {
     if (!isOpen) return;
@@ -1099,9 +1133,65 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                 </div>
               )}
 
-              {/* TAB 6: BACKUP & MIGRATION */}
+              {/* TAB 6: BACKUP & MIGRATION & EDGE FUNCTIONS */}
               {activeTab === 'database' && (
                 <div className="space-y-6 text-xs">
+                  {/* Supabase Edge Function Email Alert Card */}
+                  <div className="p-5 rounded-2xl bg-slate-950 border border-emerald-500/30 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                          <Mail className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                            <span>Supabase Edge Function Email Notification System</span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-300 font-mono">
+                              send-order-email
+                            </span>
+                          </h3>
+                          <p className="text-slate-400 text-[11px] mt-0.5">
+                            Automatically emails admin (<strong className="text-white">waleedkhanafridi7@gmail.com</strong>) on every new order placement.
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={handleTestEmailAlert}
+                        disabled={isSendingTestEmail}
+                        className="px-3.5 py-2 rounded-xl bg-emerald-500 text-slate-950 font-extrabold text-xs hover:bg-emerald-400 transition-all flex items-center gap-1.5 shadow-md shadow-emerald-500/20 cursor-pointer disabled:opacity-50"
+                      >
+                        {isSendingTestEmail ? (
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Send className="w-3.5 h-3.5" />
+                        )}
+                        <span>{isSendingTestEmail ? 'Triggering...' : 'Test Email Alert'}</span>
+                      </button>
+                    </div>
+
+                    {testEmailResult && (
+                      <div className={`p-3 rounded-xl border text-xs flex items-center justify-between ${
+                        testEmailResult.success
+                          ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                          : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+                      }`}>
+                        <span>{testEmailResult.message}</span>
+                        <span className="text-[10px] font-mono opacity-80">Target: waleedkhanafridi7@gmail.com</span>
+                      </div>
+                    )}
+
+                    <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2 text-[11px]">
+                      <div className="font-bold text-slate-300 flex items-center justify-between">
+                        <span>Edge Function Source Location:</span>
+                        <span className="font-mono text-emerald-400">/supabase/functions/send-order-email/index.ts</span>
+                      </div>
+                      <div className="text-slate-400 leading-relaxed">
+                        Features clean HTML formatting, customer breakdown, order totals, and a direct WhatsApp quick action link. Integrates with Resend API or Supabase DB Webhook triggers.
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-4">
                     <h3 className="text-sm font-bold text-white flex items-center gap-2">
                       <Database className="w-4 h-4 text-cyan-400" />
