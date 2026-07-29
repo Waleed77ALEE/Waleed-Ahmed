@@ -234,7 +234,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-slate-950">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden relative bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-slate-950">
       {/* Dynamic SEO JSON-LD Schemas */}
       <SeoSchemas />
 
@@ -256,7 +256,7 @@ export default function App() {
       />
 
       {/* Main Content Sections */}
-      <main>
+      <main className="w-full max-w-full overflow-x-hidden relative">
         {/* 1. Hero Section */}
         <SectionTransition id="hero">
           <Hero onNavigate={scrollToSection} onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)} />
