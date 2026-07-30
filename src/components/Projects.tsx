@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import { PORTFOLIO_PROJECTS } from '../data/portfolioData';
-import { FolderGit2, ExternalLink, Github, ArrowUpRight, Code, Sparkles } from 'lucide-react';
+import { FolderGit2, ExternalLink, Github, ArrowUpRight, Code, Sparkles, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { ProjectDetailsModal } from './ProjectDetailsModal';
+import { Project } from '../types';
 
-export const Projects: React.FC = () => {
+interface ProjectsProps {
+  onNavigateContact?: () => void;
+}
+
+export const Projects: React.FC<ProjectsProps> = ({ onNavigateContact }) => {
   const [filter, setFilter] = useState<string>('All');
+  const [selectedCaseStudy, setSelectedCaseStudy] = useState<Project | null>(null);
 
   const categories = ['All', 'Full Stack & Web', 'AI Apps', 'SEO & Tools', 'Automation & APIs'];
 
@@ -28,13 +35,13 @@ export const Projects: React.FC = () => {
         >
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-4 shadow-lg">
             <FolderGit2 className="w-3.5 h-3.5" />
-            <span>Featured Portfolio Projects</span>
+            <span>Featured Portfolio Case Studies</span>
           </div>
           <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-            Handcrafted Software & Web Platforms
+            Handcrafted Software &amp; Web Platforms
           </h2>
           <p className="mt-4 text-slate-300 text-base leading-relaxed">
-            Selected engineering projects demonstrating full-stack architecture, AI SDK integration, and technical SEO performance optimization.
+            Selected engineering case studies demonstrating full-stack architecture, AI SDK integration, and technical SEO performance optimization.
           </p>
         </motion.div>
 
@@ -68,7 +75,8 @@ export const Projects: React.FC = () => {
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                 key={project.id}
-                className="group bg-slate-900/60 border border-slate-800/90 hover:border-cyan-500/50 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 flex flex-col justify-between backdrop-blur-xl"
+                className="group bg-slate-900/60 border border-slate-800/90 hover:border-cyan-500/50 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 flex flex-col justify-between backdrop-blur-xl cursor-pointer"
+                onClick={() => setSelectedCaseStudy(project)}
               >
                 <div>
                   {/* Project Image Container */}
@@ -117,24 +125,35 @@ export const Projects: React.FC = () => {
 
                 {/* Action Links */}
                 <div className="px-7 pb-6 pt-3 flex items-center justify-between border-t border-slate-800/80">
-                  <span className="text-xs text-slate-500 font-mono">waleedkhanafridi.online</span>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedCaseStudy(project);
+                    }}
+                    className="text-xs text-cyan-400 font-bold hover:text-cyan-300 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <BookOpen className="w-3.5 h-3.5" />
+                    <span>View Detailed Case Study</span>
+                  </button>
                   <div className="flex items-center gap-3">
-                    {project.githubUrl && (
+                    {project.githubUrl && project.githubUrl !== '#' && (
                       <a
                         href={project.githubUrl}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
                         className="p-2.5 text-slate-300 hover:text-white rounded-xl bg-slate-950 border border-slate-800 hover:border-slate-700 transition-all shadow-md"
                         title="GitHub Source Code"
                       >
                         <Github className="w-4 h-4" />
                       </a>
                     )}
-                    {project.liveUrl && (
+                    {project.liveUrl && project.liveUrl !== '#' && (
                       <a
                         href={project.liveUrl}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
                         className="px-4 py-2 text-xs font-bold text-slate-950 bg-gradient-to-r from-cyan-400 to-sky-300 hover:from-cyan-300 hover:to-sky-200 rounded-xl shadow-lg shadow-cyan-500/20 transition-all flex items-center gap-1.5 cursor-pointer"
                       >
                         <span>Live Demo</span>
@@ -148,6 +167,13 @@ export const Projects: React.FC = () => {
           </AnimatePresence>
         </motion.div>
       </div>
+
+      {/* Case Study Details Modal */}
+      <ProjectDetailsModal
+        project={selectedCaseStudy}
+        onClose={() => setSelectedCaseStudy(null)}
+        onContactClick={onNavigateContact}
+      />
     </div>
   );
 };

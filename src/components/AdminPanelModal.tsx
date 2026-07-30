@@ -358,6 +358,8 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
+  if (!isOpen) return null;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/90 backdrop-blur-md overflow-y-auto">
       <div className="relative w-full max-w-6xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">

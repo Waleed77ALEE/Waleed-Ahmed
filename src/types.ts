@@ -27,6 +27,27 @@ export interface Project {
   githubUrl?: string;
   featured?: boolean;
   metrics?: string;
+  // Deep Case Study details for AdSense & Trust Quality
+  overview?: string;
+  clientGoals?: string;
+  challenges?: string;
+  developmentProcess?: string[];
+  keyFeatures?: string[];
+  performanceResults?: {
+    lighthouse: number;
+    loadTime: string;
+    trafficGain: string;
+    conversionBoost: string;
+  };
+  seoImprovements?: string[];
+  mobileOptimization?: string;
+  galleryImages?: string[];
+  testimonial?: {
+    quote: string;
+    clientName: string;
+    role: string;
+    avatar: string;
+  };
 }
 
 export interface CoreService {

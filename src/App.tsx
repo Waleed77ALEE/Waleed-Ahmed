@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
+import { AboutMeEnd } from './components/AboutMeEnd';
 import { CoreServices } from './components/CoreServices';
 import { DigitalServices } from './components/DigitalServices';
 import { AiSubscriptionMarketplace } from './components/AiSubscriptionMarketplace';
 import { SoftwareServices } from './components/SoftwareServices';
 import { StatsSection } from './components/StatsSection';
 import { Projects } from './components/Projects';
+import { BlogSection } from './components/BlogSection';
 import { Testimonials } from './components/Testimonials';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
@@ -19,6 +21,7 @@ import { SupabaseSqlModal } from './components/SupabaseSqlModal';
 import { BinancePayModal } from './components/BinancePayModal';
 import { AdminPanelModal } from './components/AdminPanelModal';
 import { AndroidAppModal } from './components/AndroidAppModal';
+import { LegalPagesModal } from './components/LegalPagesModal';
 import { SeoSchemas } from './components/SeoSchemas';
 import { SectionTransition } from './components/SectionTransition';
 import { ServiceItem } from './types';
@@ -53,6 +56,8 @@ export default function App() {
   const [isBinanceModalOpen, setIsBinanceModalOpen] = useState(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [isAndroidAppModalOpen, setIsAndroidAppModalOpen] = useState(false);
+  const [isLegalModalOpen, setIsLegalModalOpen] = useState(false);
+  const [legalActiveTab, setLegalActiveTab] = useState<'privacy' | 'terms' | 'disclaimer' | 'cookies'>('privacy');
 
   // PWA Install Prompt State
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -93,11 +98,17 @@ export default function App() {
       }
     });
 
-    // Check hash for #admin or #apk
+    // Check hash for #admin or #apk or #privacy or #terms
     if (window.location.hash === '#admin') {
       setIsAdminModalOpen(true);
     } else if (window.location.hash === '#apk' || window.location.hash === '#android') {
       setIsAndroidAppModalOpen(true);
+    } else if (window.location.hash === '#privacy') {
+      setLegalActiveTab('privacy');
+      setIsLegalModalOpen(true);
+    } else if (window.location.hash === '#terms') {
+      setLegalActiveTab('terms');
+      setIsLegalModalOpen(true);
     }
 
     // Keyboard shortcut (Ctrl+Shift+A) to open Admin Portal
@@ -113,7 +124,7 @@ export default function App() {
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          const sections = ['hero', 'about', 'services', 'digital-services', 'projects', 'testimonials', 'contact'];
+          const sections = ['hero', 'about', 'services', 'digital-services', 'projects', 'blog', 'testimonials', 'contact'];
           const scrollPos = window.scrollY + 200;
 
           for (let i = sections.length - 1; i >= 0; i--) {
@@ -227,6 +238,11 @@ export default function App() {
     }
   };
 
+  const openLegalModal = (tab: 'privacy' | 'terms' | 'disclaimer' | 'cookies' = 'privacy') => {
+    setLegalActiveTab(tab);
+    setIsLegalModalOpen(true);
+  };
+
   const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleBuyNow = (service: ServiceItem) => {
@@ -305,19 +321,25 @@ export default function App() {
         {/* 3. Overview About Section */}
         <SectionTransition id="about">
           <About />
+          <AboutMeEnd whatsappNumber={whatsappNumber} onContactClick={() => scrollToSection('contact')} />
         </SectionTransition>
 
         {/* 4. Featured Portfolio Projects Section */}
         <SectionTransition id="projects">
-          <Projects />
+          <Projects onNavigateContact={() => scrollToSection('contact')} />
         </SectionTransition>
 
-        {/* 5. Testimonials & Client Reviews Section */}
+        {/* 5. Knowledge Center & Engineering Blog Section (SEO Content Depth) */}
+        <SectionTransition id="blog">
+          <BlogSection onContactClick={() => scrollToSection('contact')} />
+        </SectionTransition>
+
+        {/* 6. Testimonials & Client Reviews Section */}
         <SectionTransition id="testimonials">
           <Testimonials />
         </SectionTransition>
 
-        {/* 6. Contact & Direct Order Section */}
+        {/* 7. Contact & Direct Order Section */}
         <SectionTransition id="contact">
           <Contact whatsappNumber={whatsappNumber} user={user} />
         </SectionTransition>
@@ -329,6 +351,7 @@ export default function App() {
         whatsappNumber={whatsappNumber}
         onOpenAdmin={() => setIsAdminModalOpen(true)}
         onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)}
+        onOpenLegal={openLegalModal}
       />
 
       {/* Service Details Modal */}
@@ -338,6 +361,13 @@ export default function App() {
         whatsappNumber={whatsappNumber}
         onContactClick={() => scrollToSection('contact')}
         onBuyNow={handleBuyNow}
+      />
+
+      {/* Legal Pages Modal (Privacy, Terms, Disclaimer, Cookie Policy) */}
+      <LegalPagesModal
+        isOpen={isLegalModalOpen}
+        onClose={() => setIsLegalModalOpen(false)}
+        initialTab={legalActiveTab}
       />
 
       {/* Supabase Authentication Modal */}
