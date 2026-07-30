@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
+import { GoogleAd } from './components/GoogleAd';
 import { About } from './components/About';
 import { AboutMeEnd } from './components/AboutMeEnd';
 import { CoreServices } from './components/CoreServices';
@@ -280,6 +281,9 @@ export default function App() {
         <SectionTransition id="hero">
           <Hero onNavigate={scrollToSection} onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)} />
         </SectionTransition>
+
+        {/* Google AdSense Responsive Banner */}
+        <GoogleAd client="ca-pub-4721034449965472" slot="5355102710" />
 
         {/* Live Animated Stats Section */}
         <SectionTransition id="stats">
