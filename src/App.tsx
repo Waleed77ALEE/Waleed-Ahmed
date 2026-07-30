@@ -270,51 +270,54 @@ export default function App() {
           <StatsSection />
         </SectionTransition>
 
-        {/* Professional Software Licenses & Digital Products Section */}
-        <SectionTransition id="software-services">
-          <SoftwareServices
-            user={user}
-            profile={profile}
-            onOpenAccount={() => setIsAccountModalOpen(true)}
-          />
-        </SectionTransition>
+        {/* 2. Unified Services Section Hub (Software, Core Web, Digital Services & AI Subscriptions) */}
+        <div id="services">
+          {/* Professional Software Licenses & Digital Products Section */}
+          <SectionTransition id="software-services">
+            <SoftwareServices
+              user={user}
+              profile={profile}
+              onOpenAccount={() => setIsAccountModalOpen(true)}
+            />
+          </SectionTransition>
 
-        {/* 2. Overview About Section */}
+          {/* Core Web & SEO Services Section */}
+          <SectionTransition id="core-services">
+            <CoreServices onNavigate={scrollToSection} />
+          </SectionTransition>
+
+          {/* Social Media & Digital Services Marketplace Section */}
+          <SectionTransition id="digital-services">
+            <DigitalServices
+              onSelectService={(service) => setSelectedService(service)}
+              whatsappNumber={whatsappNumber}
+              onAddToCart={handleAddToCart}
+              onBuyNow={handleBuyNow}
+            />
+          </SectionTransition>
+
+          {/* Official AI Subscriptions Marketplace */}
+          <SectionTransition id="ai-subscriptions">
+            <AiSubscriptionMarketplace whatsappNumber={whatsappNumber} />
+          </SectionTransition>
+        </div>
+
+        {/* 3. Overview About Section */}
         <SectionTransition id="about">
           <About />
         </SectionTransition>
 
-        {/* 3. Core Web & SEO Services Section */}
-        <SectionTransition id="services">
-          <CoreServices onNavigate={scrollToSection} />
-        </SectionTransition>
-
-        {/* 4. Social Media & Digital Services Marketplace Section */}
-        <SectionTransition id="digital-services">
-          <DigitalServices
-            onSelectService={(service) => setSelectedService(service)}
-            whatsappNumber={whatsappNumber}
-            onAddToCart={handleAddToCart}
-            onBuyNow={handleBuyNow}
-          />
-        </SectionTransition>
-
-        {/* Official AI Subscriptions Marketplace */}
-        <SectionTransition id="ai-subscriptions">
-          <AiSubscriptionMarketplace whatsappNumber={whatsappNumber} />
-        </SectionTransition>
-
-        {/* 5. Featured Portfolio Projects Section */}
+        {/* 4. Featured Portfolio Projects Section */}
         <SectionTransition id="projects">
           <Projects />
         </SectionTransition>
 
-        {/* 6. Testimonials & Client Reviews Section */}
+        {/* 5. Testimonials & Client Reviews Section */}
         <SectionTransition id="testimonials">
           <Testimonials />
         </SectionTransition>
 
-        {/* 7. Contact & Direct Order Section */}
+        {/* 6. Contact & Direct Order Section */}
         <SectionTransition id="contact">
           <Contact whatsappNumber={whatsappNumber} user={user} />
         </SectionTransition>
