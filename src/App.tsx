@@ -5,6 +5,7 @@ import { About } from './components/About';
 import { CoreServices } from './components/CoreServices';
 import { DigitalServices } from './components/DigitalServices';
 import { AiSubscriptionMarketplace } from './components/AiSubscriptionMarketplace';
+import { SoftwareServices } from './components/SoftwareServices';
 import { StatsSection } from './components/StatsSection';
 import { Projects } from './components/Projects';
 import { Testimonials } from './components/Testimonials';
@@ -253,6 +254,8 @@ export default function App() {
         onOpenBinancePay={() => setIsBinanceModalOpen(true)}
         onOpenAdmin={() => setIsAdminModalOpen(true)}
         onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)}
+        onAddToCart={handleAddToCart}
+        onBuyNow={handleBuyNow}
       />
 
       {/* Main Content Sections */}
@@ -263,7 +266,18 @@ export default function App() {
         </SectionTransition>
 
         {/* Live Animated Stats Section */}
-        <StatsSection />
+        <SectionTransition id="stats">
+          <StatsSection />
+        </SectionTransition>
+
+        {/* Professional Software Licenses & Digital Products Section */}
+        <SectionTransition id="software-services">
+          <SoftwareServices
+            user={user}
+            profile={profile}
+            onOpenAccount={() => setIsAccountModalOpen(true)}
+          />
+        </SectionTransition>
 
         {/* 2. Overview About Section */}
         <SectionTransition id="about">
@@ -286,7 +300,9 @@ export default function App() {
         </SectionTransition>
 
         {/* Official AI Subscriptions Marketplace */}
-        <AiSubscriptionMarketplace whatsappNumber={whatsappNumber} />
+        <SectionTransition id="ai-subscriptions">
+          <AiSubscriptionMarketplace whatsappNumber={whatsappNumber} />
+        </SectionTransition>
 
         {/* 5. Featured Portfolio Projects Section */}
         <SectionTransition id="projects">

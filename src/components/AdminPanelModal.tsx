@@ -20,6 +20,8 @@ import {
   RegisteredUserRecord,
   subscribeUserStore
 } from '../services/userStore';
+import { softwareStore } from '../services/softwareStore';
+import { SoftwareOrder } from '../data/softwareData';
 import {
   X,
   LayoutDashboard,
@@ -42,6 +44,7 @@ import {
   Upload,
   RefreshCw,
   Sparkles,
+  Zap,
   ShieldCheck,
   Check,
   Copy,
@@ -75,13 +78,16 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
 
   // Active Tab
   const [activeTab, setActiveTab] = useState<
-    'dashboard' | 'products' | 'categories' | 'orders' | 'users' | 'wallets' | 'seo' | 'database'
+    'dashboard' | 'products' | 'categories' | 'orders' | 'software-orders' | 'users' | 'wallets' | 'seo' | 'database'
   >('dashboard');
 
   // Store State Sync
   const [products, setProducts] = useState<ExtendedProductItem[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [softwareOrders, setSoftwareOrders] = useState<SoftwareOrder[]>(() =>
+    softwareStore.getOrders()
+  );
 
   // Registered Users Directory State
   const [registeredUsers, setRegisteredUsers] = useState<RegisteredUserRecord[]>([]);
@@ -163,12 +169,16 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
       setCategories(productStore.getCategories());
       setOrders(productStore.getOrders());
       setUserWallets(getAllUserWallets());
+      setSoftwareOrders(softwareStore.getOrders());
     };
 
     syncState();
     refreshUsersList();
 
     const unsubscribeProduct = productStore.subscribe(syncState);
+    const unsubscribeSoftware = softwareStore.subscribe(() => {
+      setSoftwareOrders(softwareStore.getOrders());
+    });
     const unsubscribeWallet = subscribeWallet(() => {
       setUserWallets(getAllUserWallets());
       refreshUsersList();
@@ -179,6 +189,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
 
     return () => {
       unsubscribeProduct();
+      unsubscribeSoftware();
       unsubscribeWallet();
       unsubscribeUser();
     };
@@ -479,10 +490,27 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
               >
                 <span className="flex items-center gap-2.5">
                   <ShoppingBag className="w-4 h-4" />
-                  <span>Orders</span>
+                  <span>General Orders</span>
                 </span>
                 <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-emerald-500/20 text-emerald-400 font-mono">
                   {orders.length}
+                </span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('software-orders')}
+                className={`w-full px-3 py-2.5 rounded-xl text-xs font-bold flex items-center justify-between transition-colors ${
+                  activeTab === 'software-orders'
+                    ? 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 font-black'
+                    : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'
+                }`}
+              >
+                <span className="flex items-center gap-2.5">
+                  <Zap className="w-4 h-4 text-cyan-400" />
+                  <span>Software Orders</span>
+                </span>
+                <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-cyan-500/20 text-cyan-300 font-mono font-bold">
+                  {softwareOrders.length}
                 </span>
               </button>
 
@@ -912,6 +940,139 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                         ))}
                       </tbody>
                     </table>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB: SOFTWARE ORDERS MANAGEMENT */}
+              {activeTab === 'software-orders' && (
+                <div className="space-y-6 text-xs text-slate-300">
+                  <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                      <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+                        <Zap className="w-5 h-5 text-cyan-400" />
+                        <span>Software Licenses Orders Portal</span>
+                      </h3>
+                      <p className="text-xs text-slate-400 mt-1">
+                        Fulfill digital license keys, update payment verifications, and manage software downloads.
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 font-mono font-bold text-xs">
+                        {softwareOrders.length} Total Software Orders
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Software Orders Table */}
+                  <div className="rounded-2xl bg-slate-950/80 border border-slate-800 overflow-hidden shadow-xl">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="border-b border-slate-800 bg-slate-900/60 text-slate-400 font-mono text-[11px] uppercase">
+                            <th className="p-3">Order ID</th>
+                            <th className="p-3">Customer Details</th>
+                            <th className="p-3">Software &amp; Version</th>
+                            <th className="p-3">Price</th>
+                            <th className="p-3">Payment</th>
+                            <th className="p-3">Payment Status</th>
+                            <th className="p-3">Fulfillment Status</th>
+                            <th className="p-3">Delivery Key / Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800/80 font-mono text-xs">
+                          {softwareOrders.length === 0 ? (
+                            <tr>
+                              <td colSpan={8} className="p-8 text-center text-slate-500">
+                                No software orders placed yet.
+                              </td>
+                            </tr>
+                          ) : (
+                            softwareOrders.map((swOrd) => (
+                              <tr key={swOrd.id} className="hover:bg-slate-900/40 transition-colors">
+                                <td className="p-3 font-bold text-cyan-400">{swOrd.id}</td>
+                                <td className="p-3 font-sans">
+                                  <div className="font-bold text-white">{swOrd.customerName}</div>
+                                  <div className="text-[11px] text-slate-400 font-mono">{swOrd.customerEmail}</div>
+                                </td>
+                                <td className="p-3 font-sans">
+                                  <div className="font-bold text-white">{swOrd.productName}</div>
+                                  <div className="text-[10px] text-cyan-400 font-mono">{swOrd.version}</div>
+                                </td>
+                                <td className="p-3 font-bold text-emerald-400">${swOrd.price} USD</td>
+                                <td className="p-3 font-sans">
+                                  <div className="text-slate-200">{swOrd.paymentMethod}</div>
+                                  {swOrd.txRef && (
+                                    <div className="text-[10px] text-slate-500 font-mono">
+                                      Ref: {swOrd.txRef}
+                                    </div>
+                                  )}
+                                </td>
+                                <td className="p-3">
+                                  <select
+                                    value={swOrd.paymentStatus}
+                                    onChange={(e) =>
+                                      softwareStore.updateSoftwareOrderStatus(swOrd.id, {
+                                        paymentStatus: e.target.value as SoftwareOrder['paymentStatus']
+                                      })
+                                    }
+                                    className="px-2 py-1 rounded bg-slate-900 border border-slate-800 text-[11px] font-bold text-white focus:outline-none"
+                                  >
+                                    <option value="Pending Verification">Pending Verification</option>
+                                    <option value="Paid">Paid</option>
+                                    <option value="Refunded">Refunded</option>
+                                  </select>
+                                </td>
+                                <td className="p-3">
+                                  <select
+                                    value={swOrd.orderStatus}
+                                    onChange={(e) =>
+                                      softwareStore.updateSoftwareOrderStatus(swOrd.id, {
+                                        orderStatus: e.target.value as SoftwareOrder['orderStatus']
+                                      })
+                                    }
+                                    className="px-2 py-1 rounded bg-slate-900 border border-slate-800 text-[11px] font-bold text-white focus:outline-none"
+                                  >
+                                    <option value="Processing">Processing</option>
+                                    <option value="Fulfilled">Fulfilled</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                  </select>
+                                </td>
+                                <td className="p-3 font-sans">
+                                  <div className="flex flex-col gap-1.5">
+                                    {swOrd.deliveryKey ? (
+                                      <div className="text-[10px] font-mono text-emerald-400 bg-emerald-950/40 p-1.5 rounded border border-emerald-500/20 truncate max-w-[150px]" title={swOrd.deliveryKey}>
+                                        Key: {swOrd.deliveryKey}
+                                      </div>
+                                    ) : null}
+
+                                    <button
+                                      onClick={() => {
+                                        const key = prompt('Enter License Serial Key / Code:', swOrd.deliveryKey || '');
+                                        if (key !== null) {
+                                          const dl = prompt('Enter Download Link (optional):', swOrd.downloadLink || 'https://creativecloud.adobe.com');
+                                          softwareStore.updateSoftwareOrderStatus(swOrd.id, {
+                                            deliveryKey: key,
+                                            downloadLink: dl || '',
+                                            orderStatus: 'Fulfilled',
+                                            paymentStatus: 'Paid'
+                                          });
+                                          alert(`Order #${swOrd.id} fulfilled with key!`);
+                                        }
+                                      }}
+                                      className="px-2.5 py-1 rounded bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 border border-cyan-500/30 text-[11px] font-bold transition-colors cursor-pointer text-center"
+                                    >
+                                      {swOrd.deliveryKey ? 'Edit Key / Link' : 'Fulfill & Add Key'}
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               )}

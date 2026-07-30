@@ -1,0 +1,668 @@
+export interface SoftwareProduct {
+  id: string;
+  name: string;
+  version: string;
+  category:
+    | 'Adobe Products'
+    | 'Microsoft Products'
+    | 'Autodesk'
+    | 'Video Editing'
+    | 'Music Production'
+    | 'Utilities'
+    | 'Security';
+  price: number;
+  originalPrice?: number;
+  licenseType: string;
+  description: string;
+  features: string[];
+  icon: string;
+  badge?: string;
+  platform: 'Windows' | 'Mac' | 'Multi-Platform';
+  downloadSize?: string;
+  instantDelivery: boolean;
+  slug: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  downloadUrl?: string;
+  activationInstructions?: string;
+}
+
+export interface SoftwareOrder {
+  id: string;
+  customerName: string;
+  customerEmail: string;
+  productId: string;
+  productName: string;
+  version: string;
+  price: number;
+  paymentMethod: 'Binance Pay' | 'Payoneer' | 'JazzCash' | 'Wallet Balance';
+  paymentProofUrl?: string;
+  paymentStatus: 'Pending Verification' | 'Paid' | 'Refunded';
+  orderStatus: 'Processing' | 'Fulfilled' | 'Cancelled';
+  deliveryKey?: string;
+  downloadLink?: string;
+  createdAt: string;
+  txRef?: string;
+  notes?: string;
+}
+
+export const SOFTWARE_CATEGORIES = [
+  'All Software',
+  'Adobe Products',
+  'Microsoft Products',
+  'Autodesk',
+  'Video Editing',
+  'Music Production',
+  'Utilities',
+  'Security'
+] as const;
+
+export const SOFTWARE_PRODUCTS: SoftwareProduct[] = [
+  // ADOBE PRODUCTS
+  {
+    id: 'sw-adobe-photoshop-2026',
+    name: 'Adobe Photoshop 2026',
+    version: '2026 (v27.0)',
+    category: 'Adobe Products',
+    price: 25,
+    originalPrice: 239,
+    licenseType: 'Genuine Lifetime License',
+    description: 'The industry standard in digital photo editing, neural filters, AI generative fill, and graphic design.',
+    features: ['Firefly AI Generative Fill', 'Neural Filters 2026', 'Cloud Document Sync', 'Full Commercial License'],
+    icon: 'Palette',
+    badge: 'Best Seller',
+    platform: 'Multi-Platform',
+    downloadSize: '3.8 GB',
+    instantDelivery: true,
+    slug: 'adobe-photoshop-2026',
+    seoTitle: 'Adobe Photoshop 2026 Lifetime License - Genuine Digital Download',
+    seoDescription: 'Buy Adobe Photoshop 2026 with Firefly AI generative fill and neural filters. Lifetime genuine activation with 24/7 support.',
+    downloadUrl: 'https://creativecloud.adobe.com',
+    activationInstructions: 'Sign in to Adobe Creative Cloud or redeem the provided digital serial key upon order fulfillment.'
+  },
+  {
+    id: 'sw-adobe-illustrator-2026',
+    name: 'Adobe Illustrator 2026',
+    version: '2026 (v30.0)',
+    category: 'Adobe Products',
+    price: 25,
+    originalPrice: 239,
+    licenseType: 'Genuine Lifetime License',
+    description: 'Vector graphics creation suite for logos, icons, typography, and high-resolution illustrations.',
+    features: ['Generative Vector Graphics', 'Text to Vector AI', 'Dimension Tooling', 'Precision Color Palette'],
+    icon: 'Palette',
+    badge: 'Essential',
+    platform: 'Multi-Platform',
+    downloadSize: '2.4 GB',
+    instantDelivery: true,
+    slug: 'adobe-illustrator-2026',
+    seoTitle: 'Adobe Illustrator 2026 License Key - Official Vector Software',
+    seoDescription: 'Order Adobe Illustrator 2026 vector graphics suite with instant digital key delivery and step-by-step setup.'
+  },
+  {
+    id: 'sw-adobe-premiere-2026',
+    name: 'Adobe Premiere Pro 2026',
+    version: '2026 (v25.0)',
+    category: 'Adobe Products',
+    price: 25,
+    originalPrice: 239,
+    licenseType: 'Genuine Lifetime License',
+    description: 'Professional NLE video editing software with AI text-based editing, color grading, and Lumetri tools.',
+    features: ['Speech-to-Text Auto Subtitles', 'Enhance Speech AI', 'GPU Hardware Acceleration', '4K/8K HDR Timeline'],
+    icon: 'Video',
+    badge: 'Popular',
+    platform: 'Multi-Platform',
+    downloadSize: '4.2 GB',
+    instantDelivery: true,
+    slug: 'adobe-premiere-pro-2026',
+    seoTitle: 'Adobe Premiere Pro 2026 Video Editor - Instant License Key',
+    seoDescription: 'Buy Adobe Premiere Pro 2026 for fast 4K/8K video editing and AI audio enhancement. Genuine software download.'
+  },
+  {
+    id: 'sw-adobe-after-effects-2026',
+    name: 'Adobe After Effects 2026 (v26.x)',
+    version: 'v26.x (2026)',
+    category: 'Adobe Products',
+    price: 25,
+    originalPrice: 239,
+    licenseType: 'Genuine Lifetime License',
+    description: 'Cinematic visual effects, 3D motion graphics, rotoscoping, and composite animation environment.',
+    features: ['Next-Gen 3D Workspace', 'Advanced Roto Brush 3', 'Multi-Frame Rendering', 'Motion Tracking AI'],
+    icon: 'Sparkles',
+    badge: 'Pro Grade',
+    platform: 'Multi-Platform',
+    downloadSize: '3.6 GB',
+    instantDelivery: true,
+    slug: 'adobe-after-effects-2026',
+    seoTitle: 'Adobe After Effects 2026 (v26.x) - Visual Effects Software License',
+    seoDescription: 'Get official Adobe After Effects 2026 for motion graphics and VFX. Full version key with instant delivery.'
+  },
+  {
+    id: 'sw-adobe-lightroom-2026',
+    name: 'Adobe Lightroom Classic 2026',
+    version: '2026 (v14.0)',
+    category: 'Adobe Products',
+    price: 25,
+    originalPrice: 149,
+    licenseType: 'Genuine Lifetime License',
+    description: 'Professional RAW photo editing, catalog organization, Lens Blur AI, and precise masking.',
+    features: ['AI Lens Blur & Bokeh', 'Point Color Precision', 'Batch RAW Processing', 'HDR Output Support'],
+    icon: 'Camera',
+    platform: 'Multi-Platform',
+    downloadSize: '2.1 GB',
+    instantDelivery: true,
+    slug: 'adobe-lightroom-classic-2026',
+    seoTitle: 'Adobe Lightroom Classic 2026 - RAW Photo Editing License',
+    seoDescription: 'Order Adobe Lightroom Classic 2026 for professional photographer RAW editing and cataloging.'
+  },
+  {
+    id: 'sw-adobe-acrobat-2026',
+    name: 'Adobe Acrobat Pro 2026',
+    version: '2026 Continuous',
+    category: 'Adobe Products',
+    price: 25,
+    originalPrice: 199,
+    licenseType: 'Genuine Lifetime License',
+    description: 'Create, edit, sign, protect, and convert PDF documents seamlessly with AI document assistant.',
+    features: ['AI PDF Summarizer', 'E-Sign & Document Protection', 'OCR Text Recognition', 'PDF to Word/Excel Export'],
+    icon: 'FileText',
+    platform: 'Multi-Platform',
+    downloadSize: '1.2 GB',
+    instantDelivery: true,
+    slug: 'adobe-acrobat-pro-2026',
+    seoTitle: 'Adobe Acrobat Pro 2026 PDF Editor License Key - Instant Digital',
+    seoDescription: 'Buy Adobe Acrobat Pro 2026 PDF editor and e-signature suite with genuine activation key.'
+  },
+  {
+    id: 'sw-adobe-cc-all-apps-2026',
+    name: 'Adobe Creative Cloud All Apps 2026',
+    version: '2026 Complete Suite',
+    category: 'Adobe Products',
+    price: 45,
+    originalPrice: 659,
+    licenseType: '1-Year Official Subscription',
+    description: 'Complete suite of 20+ Adobe creative desktop & mobile applications with 100GB cloud storage.',
+    features: ['20+ Apps (Photoshop, Premiere, etc.)', '100GB Adobe Cloud Storage', 'Adobe Fonts & Stock Access', 'Official Account Upgrade'],
+    icon: 'Layers',
+    badge: 'Ultimate Value',
+    platform: 'Multi-Platform',
+    downloadSize: 'Cloud Access',
+    instantDelivery: true,
+    slug: 'adobe-creative-cloud-all-apps-2026',
+    seoTitle: 'Adobe Creative Cloud All Apps 2026 Subscription Key - 1 Year',
+    seoDescription: 'Upgrade your personal email to Adobe Creative Cloud All Apps 2026. 20+ applications with official cloud access.'
+  },
+
+  // MICROSOFT PRODUCTS
+  {
+    id: 'sw-ms-365-personal',
+    name: 'Microsoft 365 Personal',
+    version: '2026 Edition',
+    category: 'Microsoft Products',
+    price: 30,
+    originalPrice: 69,
+    licenseType: '1-Year Official Subscription',
+    description: 'Word, Excel, PowerPoint, Outlook, OneNote, and 1TB OneDrive cloud storage for 1 user (5 devices).',
+    features: ['1TB OneDrive Cloud Storage', 'Word, Excel, PowerPoint, Outlook', 'Copilot AI Features Enabled', 'Works on PC, Mac, iOS, Android'],
+    icon: 'Layers',
+    badge: 'Official',
+    platform: 'Multi-Platform',
+    downloadSize: 'Online Installer',
+    instantDelivery: true,
+    slug: 'microsoft-365-personal',
+    seoTitle: 'Microsoft 365 Personal 1-Year License Key - 1TB Cloud Storage',
+    seoDescription: 'Official Microsoft 365 Personal subscription with 1TB OneDrive storage and full Office apps desktop install.'
+  },
+  {
+    id: 'sw-ms-365-family',
+    name: 'Microsoft 365 Family',
+    version: '2026 Edition (6 Users)',
+    category: 'Microsoft Products',
+    price: 45,
+    originalPrice: 99,
+    licenseType: '1-Year Family Subscription',
+    description: 'Complete Office suite for up to 6 family members or team members with 6TB total OneDrive storage.',
+    features: ['Up to 6 Independent Accounts', '6TB Total OneDrive (1TB per person)', 'Full Premium Office Suite', 'Family Safety Controls'],
+    icon: 'Users',
+    badge: 'Family Value',
+    platform: 'Multi-Platform',
+    downloadSize: 'Online Installer',
+    instantDelivery: true,
+    slug: 'microsoft-365-family',
+    seoTitle: 'Microsoft 365 Family 1-Year License - 6 Users 6TB OneDrive',
+    seoDescription: 'Buy Microsoft 365 Family subscription for up to 6 users with 6TB storage and Office desktop suite.'
+  },
+  {
+    id: 'sw-win-11-home',
+    name: 'Windows 11 Home',
+    version: '23H2 / 24H2',
+    category: 'Microsoft Products',
+    price: 25,
+    originalPrice: 139,
+    licenseType: 'Retail Lifetime Activation Key',
+    description: 'Sleek, secure, and intuitive operating system for home computing, casual gaming, and personal productivity.',
+    features: ['Windows Copilot AI Integrated', 'DirectStorage & Auto HDR Gaming', 'Biometric Windows Hello', 'Lifetime Online Activation'],
+    icon: 'Cpu',
+    platform: 'Windows',
+    downloadSize: 'ISO / Media Creator',
+    instantDelivery: true,
+    slug: 'windows-11-home-key',
+    seoTitle: 'Windows 11 Home Product Key - Genuine Lifetime Retail License',
+    seoDescription: 'Official Windows 11 Home 64-bit activation key. Lifetime genuine license with instant email key delivery.'
+  },
+  {
+    id: 'sw-win-11-pro',
+    name: 'Windows 11 Pro',
+    version: '23H2 / 24H2',
+    category: 'Microsoft Products',
+    price: 35,
+    originalPrice: 199,
+    licenseType: 'Retail Lifetime Activation Key',
+    description: 'Advanced operating system with BitLocker Encryption, Hyper-V virtualization, Remote Desktop, and enterprise security.',
+    features: ['BitLocker Drive Encryption', 'Hyper-V Virtualization Suite', 'Windows Sandbox & Remote Desktop', 'Supports Up to 2TB RAM'],
+    icon: 'ShieldCheck',
+    badge: 'Most Popular',
+    platform: 'Windows',
+    downloadSize: 'ISO / Media Creator',
+    instantDelivery: true,
+    slug: 'windows-11-pro-key',
+    seoTitle: 'Windows 11 Pro Retail Product Key - 32/64 Bit Lifetime License',
+    seoDescription: 'Buy genuine Windows 11 Pro key with BitLocker and Remote Desktop support. Instant activation & support.'
+  },
+  {
+    id: 'sw-office-home-business-2024',
+    name: 'Office Home & Business 2024',
+    version: '2024 Bindable Key',
+    category: 'Microsoft Products',
+    price: 50,
+    originalPrice: 249,
+    licenseType: 'Lifetime Retail License',
+    description: 'Classic 2024 desktop versions of Word, Excel, PowerPoint, Outlook, and OneNote bound directly to your Microsoft account.',
+    features: ['Tied Directly to Microsoft Account', 'Word, Excel, PowerPoint, Outlook', 'One-Time Purchase Lifetime Use', 'No Monthly Subscription Fee'],
+    icon: 'FileText',
+    badge: 'No Subscription',
+    platform: 'Multi-Platform',
+    downloadSize: '4.1 GB',
+    instantDelivery: true,
+    slug: 'office-home-business-2024',
+    seoTitle: 'Microsoft Office Home & Business 2024 Bindable License Key',
+    seoDescription: 'Get Microsoft Office 2024 Home & Business bindable key. One-time purchase for PC or Mac with lifetime access.'
+  },
+  {
+    id: 'sw-visual-studio-pro-2022',
+    name: 'Visual Studio Professional 2022',
+    version: '2022 v17.10',
+    category: 'Microsoft Products',
+    price: 50,
+    originalPrice: 499,
+    licenseType: 'Genuine Lifetime Key',
+    description: 'Comprehensive IDE for .NET, C++, Python, JavaScript, Cloud apps, and enterprise software engineering.',
+    features: ['Full .NET 8 / C++ Compiler Suite', 'Git Integration & CodeLens', 'IntelliCode AI Completion', 'Commercial License Key'],
+    icon: 'Code',
+    platform: 'Windows',
+    downloadSize: 'Installer Web/Offline',
+    instantDelivery: true,
+    slug: 'visual-studio-professional-2022',
+    seoTitle: 'Visual Studio Professional 2022 License Key - Developer IDE',
+    seoDescription: 'Buy Visual Studio 2022 Professional genuine product key for developer IDE with full C#/.NET toolsets.'
+  },
+
+  // AUTODESK
+  {
+    id: 'sw-autocad-2026',
+    name: 'AutoCAD 2026',
+    version: '2026 Commercial',
+    category: 'Autodesk',
+    price: 55,
+    originalPrice: 1975,
+    licenseType: '1-Year Commercial License',
+    description: 'Industry standard 2D and 3D CAD design software for architectural drafting, engineering, and construction layout.',
+    features: ['Smart Blocks & Markup Assist', 'Specialized Toolsets Included', 'AutoCAD Web & Mobile Access', 'Full Commercial License'],
+    icon: 'Layers',
+    badge: 'Industry Standard',
+    platform: 'Multi-Platform',
+    downloadSize: '4.8 GB',
+    instantDelivery: true,
+    slug: 'autocad-2026-license',
+    seoTitle: 'AutoCAD 2026 Commercial License - Official Autodesk Software',
+    seoDescription: 'Buy Autodesk AutoCAD 2026 1-Year commercial license for architects and engineers. Fast email delivery.'
+  },
+  {
+    id: 'sw-autodesk-maya-2026',
+    name: 'Autodesk Maya 2026',
+    version: '2026 Commercial',
+    category: 'Autodesk',
+    price: 55,
+    originalPrice: 1875,
+    licenseType: '1-Year Commercial License',
+    description: '3D computer animation, modeling, simulation, and rendering software for movies, VFX, and game development.',
+    features: ['Bifrost Procedural Effects', 'Arnold Integrated Renderer', 'Advanced Rigging & Character Tooling', 'Substance Texturing Support'],
+    icon: 'Sparkles',
+    platform: 'Multi-Platform',
+    downloadSize: '5.2 GB',
+    instantDelivery: true,
+    slug: 'autodesk-maya-2026-license',
+    seoTitle: 'Autodesk Maya 2026 3D Animation Software Commercial License',
+    seoDescription: 'Order Autodesk Maya 2026 for 3D character animation and CGI rendering. Official account license activation.'
+  },
+  {
+    id: 'sw-autodesk-3dsmax-2026',
+    name: 'Autodesk 3ds Max 2026',
+    version: '2026 Commercial',
+    category: 'Autodesk',
+    price: 55,
+    originalPrice: 1875,
+    licenseType: '1-Year Commercial License',
+    description: '3D modeling and rendering software for design visualization, architectural walkthroughs, and game assets.',
+    features: ['OpenUSD Support & Retopology', 'Arnold High-End Renderer', 'Smart Extrude & Mesh Modeling', 'Architectural Render Engine'],
+    icon: 'Layers',
+    platform: 'Windows',
+    downloadSize: '5.5 GB',
+    instantDelivery: true,
+    slug: 'autodesk-3ds-max-2026-license',
+    seoTitle: 'Autodesk 3ds Max 2026 License Key - 3D Rendering & Modeling',
+    seoDescription: 'Buy Autodesk 3ds Max 2026 commercial license key. High performance 3D render engine for architectural visualization.'
+  },
+
+  // VIDEO EDITING
+  {
+    id: 'sw-davinci-resolve-20',
+    name: 'DaVinci Resolve Studio 20',
+    version: 'v20.0 Studio',
+    category: 'Video Editing',
+    price: 55,
+    originalPrice: 295,
+    licenseType: 'Lifetime Full Studio Activation',
+    description: 'Professional color grading, Fairlight audio, Fusion visual effects, and Neural Engine AI video editing suite.',
+    features: ['Magic Mask & Object Removal AI', 'Voice Isolation & Fairlight Audio', 'Hardware Accelerated Multi-GPU', 'Full Studio Activation Key'],
+    icon: 'Video',
+    badge: 'Hollywood Standard',
+    platform: 'Multi-Platform',
+    downloadSize: '3.9 GB',
+    instantDelivery: true,
+    slug: 'davinci-resolve-studio-20',
+    seoTitle: 'DaVinci Resolve Studio 20 Activation Key - Lifetime License',
+    seoDescription: 'Buy Blackmagic DaVinci Resolve Studio 20 activation code. Full neural engine AI features and multi-GPU acceleration.'
+  },
+  {
+    id: 'sw-filmora',
+    name: 'Filmora',
+    version: 'v13 / v14 Pro',
+    category: 'Video Editing',
+    price: 25,
+    originalPrice: 79,
+    licenseType: 'Lifetime Pro Activation',
+    description: 'User-friendly AI video editing software packed with motion tracking, AI portrait tools, and thousands of effect presets.',
+    features: ['AI Smart Cutout & Portrait', 'AI Audio Stretch & Denoise', '10,000+ Effects & Transitions', 'No Watermark Commercial Render'],
+    icon: 'Video',
+    badge: 'Creator Favorite',
+    platform: 'Multi-Platform',
+    downloadSize: '1.8 GB',
+    instantDelivery: true,
+    slug: 'wondershare-filmora-license',
+    seoTitle: 'Filmora Lifetime License Key - AI Video Editor Software',
+    seoDescription: 'Order Wondershare Filmora lifetime license key for YouTube, TikTok, and video creators. Fast delivery.'
+  },
+  {
+    id: 'sw-camtasia',
+    name: 'Camtasia',
+    version: '2024 Studio',
+    category: 'Video Editing',
+    price: 40,
+    originalPrice: 299,
+    licenseType: 'Genuine Lifetime License',
+    description: 'Screen recorder and video editor for tutorials, course creation, webinars, and product demo presentations.',
+    features: ['4K 60FPS Screen Recording', 'Interactive Quizzes & Cursor FX', 'Royalty-Free Asset Library', 'Export to MP4 / YouTube'],
+    icon: 'Video',
+    platform: 'Multi-Platform',
+    downloadSize: '1.4 GB',
+    instantDelivery: true,
+    slug: 'techsmith-camtasia-2024-license',
+    seoTitle: 'TechSmith Camtasia 2024 Screen Recorder & Editor License',
+    seoDescription: 'Buy TechSmith Camtasia 2024 lifetime license key for tutorial videos and screen capturing.'
+  },
+
+  // MUSIC PRODUCTION
+  {
+    id: 'sw-fl-studio-producer',
+    name: 'FL Studio Producer',
+    version: 'v21 / v22 Producer',
+    category: 'Music Production',
+    price: 50,
+    originalPrice: 199,
+    licenseType: 'Lifetime Free Updates',
+    description: 'The iconic DAW for beatmakers, electronic music producers, audio recording, mixing, and mastering.',
+    features: ['Unlimited Audio Tracks & VSTs', 'FL Cloud Sound Library Access', 'Lifetime Free Version Upgrades', 'Includes Edison & Sytrus Synthesizers'],
+    icon: 'Sparkles',
+    badge: 'Producer Must-Have',
+    platform: 'Multi-Platform',
+    downloadSize: '1.1 GB',
+    instantDelivery: true,
+    slug: 'fl-studio-producer-edition-license',
+    seoTitle: 'FL Studio Producer Edition License Key - Lifetime Free Updates',
+    seoDescription: 'Buy official Image-Line FL Studio Producer Edition with lifetime free updates. Beatmaker DAW license.'
+  },
+  {
+    id: 'sw-ableton-live-12',
+    name: 'Ableton Live 12 Standard',
+    version: 'Live 12 Standard',
+    category: 'Music Production',
+    price: 55,
+    originalPrice: 439,
+    licenseType: 'Lifetime Genuine License',
+    description: 'Fluid, creative Digital Audio Workstation for live performance, MIDI sequencing, synthesis, and studio production.',
+    features: ['Session & Arrangement View', 'Roar Distortion & Meld Synth', 'Advanced MIDI Transformation', 'Full MPE Support'],
+    icon: 'Sparkles',
+    platform: 'Multi-Platform',
+    downloadSize: '3.2 GB',
+    instantDelivery: true,
+    slug: 'ableton-live-12-standard-license',
+    seoTitle: 'Ableton Live 12 Standard License Key - Genuine DAW Software',
+    seoDescription: 'Order Ableton Live 12 Standard serial key for electronic music production and stage performances.'
+  },
+
+  // UTILITIES
+  {
+    id: 'sw-idm',
+    name: 'Internet Download Manager',
+    version: 'v6.42 Lifetime',
+    category: 'Utilities',
+    price: 25,
+    originalPrice: 49,
+    licenseType: 'Genuine Lifetime License',
+    description: 'Accelerate downloads by up to 5x with multi-threaded technology, browser integration, and auto-resume.',
+    features: ['5x Speed Download Accelerator', 'YouTube & Video Grabber Panel', 'Browser Extension Integration', 'Automatic Resume Capability'],
+    icon: 'Download',
+    badge: 'Top Utility',
+    platform: 'Windows',
+    downloadSize: '12 MB',
+    instantDelivery: true,
+    slug: 'internet-download-manager-idm-key',
+    seoTitle: 'IDM (Internet Download Manager) Lifetime License Serial Key',
+    seoDescription: 'Buy genuine Internet Download Manager (IDM) lifetime registration key with 5x download acceleration.'
+  },
+  {
+    id: 'sw-winrar',
+    name: 'WinRAR',
+    version: 'v7.00 Premium',
+    category: 'Utilities',
+    price: 25,
+    originalPrice: 39,
+    licenseType: 'Lifetime Unlimited License',
+    description: 'The ultimate compression utility for creating, extracting, and encrypting RAR and ZIP archives.',
+    features: ['AES-256 Bit Encryption', 'RAR5 Compression Format', 'Repairs Damaged Archives', 'Commercial License Key'],
+    icon: 'Layers',
+    platform: 'Windows',
+    downloadSize: '4 MB',
+    instantDelivery: true,
+    slug: 'winrar-premium-license-key',
+    seoTitle: 'WinRAR Premium License Key - Lifetime Registration',
+    seoDescription: 'Buy official WinRAR premium lifetime license key. Remove evaluation notifications with genuine license file.'
+  },
+  {
+    id: 'sw-vmware-workstation-pro',
+    name: 'VMware Workstation Pro',
+    version: 'v17.5 Pro',
+    category: 'Utilities',
+    price: 30,
+    originalPrice: 199,
+    licenseType: 'Perpetual Retail Key',
+    description: 'Run multiple x86 operating systems simultaneously on a single PC with desktop virtualization.',
+    features: ['DirectX 11 & OpenGL 4.3 3D FX', 'Encrypted VM Container Support', 'Snapshot & Cloning Tools', 'Supports Win 11 & Linux VMs'],
+    icon: 'Cpu',
+    platform: 'Multi-Platform',
+    downloadSize: '600 MB',
+    instantDelivery: true,
+    slug: 'vmware-workstation-pro-license',
+    seoTitle: 'VMware Workstation Pro 17 License Key - Lifetime Virtualization',
+    seoDescription: 'Buy VMware Workstation 17 Pro perpetual activation key. Run Windows, Linux, and macOS virtual machines.'
+  },
+  {
+    id: 'sw-parallels-desktop',
+    name: 'Parallels Desktop',
+    version: 'v19 / v20 Pro for Mac',
+    category: 'Utilities',
+    price: 40,
+    originalPrice: 129,
+    licenseType: 'Pro Lifetime Key',
+    description: 'Seamlessly run Windows 11 on Apple Silicon (M1/M2/M3/M4) Mac computers without rebooting.',
+    features: ['Optimized for Apple Silicon M-Series', 'Coherence Mode (Windows inside Mac)', 'DirectX 12 Graphics Acceleration', 'Supports Windows 11 ARM'],
+    icon: 'Cpu',
+    badge: 'Mac Essential',
+    platform: 'Mac',
+    downloadSize: '350 MB',
+    instantDelivery: true,
+    slug: 'parallels-desktop-mac-license',
+    seoTitle: 'Parallels Desktop for Mac License Key - Windows 11 on M1/M2/M3',
+    seoDescription: 'Buy Parallels Desktop Pro activation key for Mac. Run Windows applications smoothly on Apple Silicon.'
+  },
+  {
+    id: 'sw-acronis-true-image',
+    name: 'Acronis True Image',
+    version: 'Cyber Protect 2026',
+    category: 'Utilities',
+    price: 35,
+    originalPrice: 99,
+    licenseType: 'Perpetual Lifetime License',
+    description: 'Comprehensive system backup, disk cloning, ransomware protection, and bare-metal recovery.',
+    features: ['Full Image Backup & Disk Clone', 'Active Ransomware Shield AI', 'Universal Restore to New Hardware', 'Cloud & Local Destination'],
+    icon: 'ShieldCheck',
+    platform: 'Multi-Platform',
+    downloadSize: '850 MB',
+    instantDelivery: true,
+    slug: 'acronis-true-image-cyber-protect',
+    seoTitle: 'Acronis True Image Cyber Protect License Key - System Backup',
+    seoDescription: 'Buy Acronis True Image Cyber Protect license key for full disk cloning, backup, and anti-ransomware protection.'
+  },
+  {
+    id: 'sw-easeus-recovery',
+    name: 'EaseUS Data Recovery Wizard',
+    version: 'v18.0 Pro',
+    category: 'Utilities',
+    price: 35,
+    originalPrice: 99,
+    licenseType: 'Lifetime Activation Key',
+    description: 'Recover deleted files, formatted hard drives, RAW partitions, and lost photos/documents with 99.7% accuracy.',
+    features: ['Recovers Formatted & RAW Drives', 'Deep Scan AI Search Algorithm', 'Supports Hard Drives, USBs, SD Cards', 'Preview Files Before Recovery'],
+    icon: 'Database',
+    platform: 'Multi-Platform',
+    downloadSize: '75 MB',
+    instantDelivery: true,
+    slug: 'easeus-data-recovery-wizard-key',
+    seoTitle: 'EaseUS Data Recovery Wizard Pro License Key - Lifetime License',
+    seoDescription: 'Get EaseUS Data Recovery Wizard Pro serial code. Recover formatted hard drives, SD cards, and lost files.'
+  },
+  {
+    id: 'sw-coreldraw',
+    name: 'CorelDRAW',
+    version: 'Graphics Suite 2026',
+    category: 'Utilities',
+    price: 45,
+    originalPrice: 549,
+    licenseType: 'Genuine Lifetime License',
+    description: 'Vector illustration, layout design, photo editing, and typography suite for graphic artists.',
+    features: ['LiveSketch AI Vector Draw', 'Corel PHOTO-PAINT Included', 'Font Management Engine', 'Full Commercial License'],
+    icon: 'Palette',
+    platform: 'Multi-Platform',
+    downloadSize: '1.9 GB',
+    instantDelivery: true,
+    slug: 'coreldraw-graphics-suite-2026-license',
+    seoTitle: 'CorelDRAW Graphics Suite 2026 Serial Key - Vector Design Software',
+    seoDescription: 'Buy CorelDRAW Graphics Suite 2026 lifetime serial number with full vector design tools.'
+  },
+
+  // SECURITY
+  {
+    id: 'sw-bitdefender-total-security',
+    name: 'Bitdefender Total Security',
+    version: '2026 Multi-Device',
+    category: 'Security',
+    price: 30,
+    originalPrice: 89,
+    licenseType: '1-Year / 5 Devices License',
+    description: 'Award-winning antivirus, multi-layer ransomware protection, web threat prevention, and VPN.',
+    features: ['Zero Performance Impact', 'Multi-Layer Ransomware Defense', 'Secure Banking & Password Vault', 'Covers Windows, Mac, Android, iOS'],
+    icon: 'ShieldCheck',
+    badge: 'Top Antivirus',
+    platform: 'Multi-Platform',
+    downloadSize: 'Online Setup',
+    instantDelivery: true,
+    slug: 'bitdefender-total-security-key',
+    seoTitle: 'Bitdefender Total Security 2026 Activation Code - 5 Devices 1 Year',
+    seoDescription: 'Buy Bitdefender Total Security 2026 key for 5 devices with 1-year official subscription and VPN.'
+  },
+  {
+    id: 'sw-malwarebytes-premium',
+    name: 'Malwarebytes Premium',
+    version: 'v5.0 Premium',
+    category: 'Security',
+    price: 30,
+    originalPrice: 59,
+    licenseType: '1-Year License Key',
+    description: 'Real-time anti-malware, anti-spyware, phishing protection, and malicious website blocker.',
+    features: ['Real-Time Malware & Ransomware Shield', 'Blocks Malicious Phishing Sites', 'Exploit Defense Engine', 'Lightweight Background Scanner'],
+    icon: 'ShieldCheck',
+    platform: 'Multi-Platform',
+    downloadSize: 'Online Setup',
+    instantDelivery: true,
+    slug: 'malwarebytes-premium-license-key',
+    seoTitle: 'Malwarebytes Premium 2026 Activation Key - Real-Time Malware Defense',
+    seoDescription: 'Buy Malwarebytes Premium activation key for real-time malware, spyware, and phishing protection.'
+  },
+  {
+    id: 'sw-norton-360-deluxe',
+    name: 'Norton 360 Deluxe',
+    version: '2026 Deluxe Suite',
+    category: 'Security',
+    price: 35,
+    originalPrice: 109,
+    licenseType: '1-Year / 5 Devices License',
+    description: 'All-in-one protection including device security, Secure VPN, Dark Web Monitoring, and 50GB Cloud Backup.',
+    features: ['50GB Encrypted Cloud Backup', 'Unlimited Secure VPN Included', 'Dark Web & Identity Alerts', 'Protects Up to 5 Devices'],
+    icon: 'ShieldCheck',
+    platform: 'Multi-Platform',
+    downloadSize: 'Online Setup',
+    instantDelivery: true,
+    slug: 'norton-360-deluxe-license-key',
+    seoTitle: 'Norton 360 Deluxe 2026 License Key - 5 Devices VPN + Cloud Backup',
+    seoDescription: 'Order Norton 360 Deluxe subscription key for 5 devices. Includes Secure VPN and Dark Web monitoring.'
+  },
+  {
+    id: 'sw-kaspersky-premium',
+    name: 'Kaspersky Premium',
+    version: '2026 Premium Suite',
+    category: 'Security',
+    price: 35,
+    originalPrice: 99,
+    licenseType: '1-Year License Key',
+    description: 'Complete cybersecurity suite with real-time antivirus, identity protection, unlimited VPN, and Wi-Fi security.',
+    features: ['Identity Theft Defense', 'Unlimited Fast VPN', 'Password Manager & Vault', 'Smart Home & Wi-Fi Monitor'],
+    icon: 'ShieldCheck',
+    platform: 'Multi-Platform',
+    downloadSize: 'Online Setup',
+    instantDelivery: true,
+    slug: 'kaspersky-premium-2026-key',
+    seoTitle: 'Kaspersky Premium 2026 Activation Code - Cyber Security License',
+    seoDescription: 'Buy Kaspersky Premium 2026 activation license key with unlimited VPN and Identity Vault.'
+  }
+];

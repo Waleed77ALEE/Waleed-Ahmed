@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck, Smartphone, Wallet } from 'lucide-react';
+import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck, Smartphone, Wallet, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../lib/supabase';
 import brandLogoImg from '../assets/images/brand_logo_1785031049165.jpg';
 import { loadUserWallet, subscribeWallet, UserWallet } from '../services/walletStore';
+import { HeaderSearchModal } from './HeaderSearchModal';
+import { ServiceItem } from '../types';
 
 interface HeaderProps {
   activeSection: string;
@@ -19,6 +21,8 @@ interface HeaderProps {
   onOpenBinancePay?: () => void;
   onOpenAdmin?: () => void;
   onOpenAndroidApp?: () => void;
+  onAddToCart?: (service: ServiceItem) => void;
+  onBuyNow?: (service: ServiceItem) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -34,15 +38,30 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSql,
   onOpenBinancePay,
   onOpenAdmin,
-  onOpenAndroidApp
+  onOpenAndroidApp,
+  onAddToCart,
+  onBuyNow
 }) => {
 
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [initialSearchQuery, setInitialSearchQuery] = useState('');
   const [wallet, setWallet] = useState<UserWallet>(() =>
     loadUserWallet(user?.id, user?.email, profile?.full_name)
   );
   const [balanceHighlight, setBalanceHighlight] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   useEffect(() => {
     const fresh = loadUserWallet(user?.id, user?.email, profile?.full_name);
@@ -86,6 +105,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   const navItems = [
     { id: 'hero', label: 'Home' },
+    { id: 'software-services', label: 'Software Services' },
     { id: 'ai-subscriptions', label: 'AI Subscriptions' },
     { id: 'services', label: 'Services' },
     { id: 'projects', label: 'Portfolio' },
@@ -168,6 +188,22 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Right Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-2.5">
+            {/* Global Search Trigger Button */}
+            <button
+              onClick={() => {
+                setInitialSearchQuery('');
+                setIsSearchOpen(true);
+              }}
+              className="p-2 px-2.5 sm:px-3 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/50 text-slate-300 hover:text-cyan-300 text-xs font-medium transition-all flex items-center gap-2 cursor-pointer shadow-sm group"
+              title="Global Search (Ctrl + K)"
+            >
+              <Search className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+              <span className="hidden lg:inline text-slate-400 group-hover:text-slate-200">Search...</span>
+              <kbd className="hidden xl:inline-block px-1.5 py-0.5 text-[9px] font-mono font-bold bg-slate-800 border border-slate-700 text-slate-400 rounded-md">
+                Ctrl K
+              </kbd>
+            </button>
+
             {/* Wallet Balance Button - Shown when user is logged in or has active balance */}
             {(user || wallet.balance > 0 || wallet.userId !== 'guest') && (
               <button
@@ -241,6 +277,24 @@ export const Header: React.FC<HeaderProps> = ({
             className="xl:hidden fixed inset-x-0 top-[65px] bg-slate-950/95 border-b border-slate-800/90 backdrop-blur-xl p-4 shadow-2xl z-40"
           >
             <div className="flex flex-col gap-2">
+              {/* Mobile Drawer Search Bar */}
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setInitialSearchQuery('');
+                  setIsSearchOpen(true);
+                }}
+                className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-slate-400 hover:text-white text-xs font-medium flex items-center justify-between transition-all"
+              >
+                <span className="flex items-center gap-2">
+                  <Search className="w-4 h-4 text-cyan-400" />
+                  <span>Search services, portfolio, marketplace...</span>
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-slate-800 text-[10px] font-mono font-bold text-slate-400">
+                  Search
+                </span>
+              </button>
+
               {navItems.map((item) => (
                 <button
                   key={item.id}
@@ -327,6 +381,16 @@ export const Header: React.FC<HeaderProps> = ({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Global Search Modal */}
+      <HeaderSearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onNavigate={onNavigate}
+        onAddToCart={onAddToCart}
+        onBuyNow={onBuyNow}
+        initialQuery={initialSearchQuery}
+      />
     </header>
   );
 };

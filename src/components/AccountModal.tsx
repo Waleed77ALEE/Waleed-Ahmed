@@ -38,6 +38,8 @@ import { UserProfile, SupabaseOrder, fetchUserOrders, upsertProfile } from '../l
 import { ClientProject, Deliverable, ClientInvoice } from '../types';
 import { loadClientProjects, triggerFileDownload, printInvoice } from '../services/clientDashboardStore';
 import { loadUserWallet, requestWalletTopup, subscribeWallet, UserWallet } from '../services/walletStore';
+import { softwareStore } from '../services/softwareStore';
+import { SoftwareOrder } from '../data/softwareData';
 
 interface AccountModalProps {
   isOpen: boolean;
@@ -65,6 +67,11 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [orders, setOrders] = useState<SupabaseOrder[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
+
+  // Software Orders State
+  const [softwareOrders, setSoftwareOrders] = useState<SoftwareOrder[]>(() =>
+    softwareStore.getOrdersByEmail(user?.email || profile?.whatsapp || '')
+  );
 
   // Wallet State
   const [wallet, setWallet] = useState<UserWallet>(() => loadUserWallet(user?.id, user?.email, profile?.full_name));
@@ -155,11 +162,13 @@ export const AccountModal: React.FC<AccountModalProps> = ({
   }, [user]);
 
   useEffect(() => {
-    if (profile) {
-      setFullName(profile.full_name || '');
-      setWhatsapp(profile.whatsapp || '');
-    }
-  }, [profile]);
+    const updateSw = () => {
+      setSoftwareOrders(softwareStore.getOrdersByEmail(user?.email || profile?.whatsapp || ''));
+    };
+    updateSw();
+    const unsubscribe = softwareStore.subscribe(updateSw);
+    return unsubscribe;
+  }, [user, profile]);
 
   useEffect(() => {
     if (isOpen && user) {
@@ -1234,13 +1243,112 @@ export const AccountModal: React.FC<AccountModalProps> = ({
 
           {/* TAB 5: ORDER HISTORY */}
           {activeTab === 'orders' && (
-            <div className="space-y-4">
+            <div className="space-y-6">
+              {/* Software Purchases Section */}
+              {softwareOrders.length > 0 && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-black uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-cyan-400" />
+                      <span>Software Licenses &amp; Digital Products</span>
+                    </h4>
+                    <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-900 px-2.5 py-1 rounded-lg border border-slate-800">
+                      {softwareOrders.length} Software Item(s)
+                    </span>
+                  </div>
+
+                  <div className="space-y-3">
+                    {softwareOrders.map((swOrder) => (
+                      <div
+                        key={swOrder.id}
+                        className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-3 hover:border-slate-700 transition-all"
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-bold font-mono text-cyan-400">
+                                #{swOrder.id}
+                              </span>
+                              <span className="px-2 py-0.2 rounded-md bg-slate-900 text-[10px] font-mono text-slate-300 border border-slate-800">
+                                {swOrder.paymentMethod}
+                              </span>
+                            </div>
+                            <h5 className="text-sm font-bold text-white mt-1">
+                              {swOrder.productName}
+                            </h5>
+                            <span className="text-[10px] text-slate-400 font-mono">
+                              Version: {swOrder.version} • Date: {new Date(swOrder.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                                swOrder.orderStatus === 'Fulfilled'
+                                  ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                                  : swOrder.orderStatus === 'Cancelled'
+                                  ? 'bg-rose-500/20 text-rose-400 border-rose-500/30'
+                                  : 'bg-amber-500/20 text-amber-400 border-amber-500/30'
+                              }`}
+                            >
+                              {swOrder.orderStatus}
+                            </span>
+                            <span className="text-sm font-black font-mono text-white">
+                              ${swOrder.price.toFixed(2)} USD
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* License Key & Fulfillment info */}
+                        {swOrder.deliveryKey ? (
+                          <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/30 space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-bold uppercase font-mono text-emerald-400">
+                                License Serial Key
+                              </span>
+                              {swOrder.downloadLink && (
+                                <a
+                                  href={swOrder.downloadLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-[10px] font-bold text-cyan-400 hover:underline flex items-center gap-1"
+                                >
+                                  <span>Official Download</span>
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              )}
+                            </div>
+                            <div className="p-2 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between font-mono text-xs font-bold text-emerald-300">
+                              <span>{swOrder.deliveryKey}</span>
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(swOrder.deliveryKey!);
+                                  alert('License Key copied to clipboard!');
+                                }}
+                                className="px-2 py-1 rounded bg-slate-800 text-slate-200 hover:text-white text-[10px] font-mono cursor-pointer"
+                              >
+                                Copy Key
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+                            <span>Key verification in progress. Key will appear here upon approval.</span>
+                            <span className="text-[10px] font-mono text-amber-400">Pending</span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {loadingOrders ? (
                 <div className="py-12 text-center text-slate-400 text-xs flex items-center justify-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
                   <span>Fetching orders from Supabase...</span>
                 </div>
-              ) : orders.length === 0 ? (
+              ) : orders.length === 0 && softwareOrders.length === 0 ? (
                 <div className="py-12 text-center bg-slate-950/60 rounded-2xl border border-slate-800/80 p-8">
                   <Package className="w-10 h-10 text-slate-600 mx-auto mb-3" />
                   <p className="text-sm font-bold text-white">No Orders Found Yet</p>
