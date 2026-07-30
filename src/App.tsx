@@ -120,34 +120,11 @@ export default function App() {
       }
     };
 
-    // Scroll Spy Listener with requestAnimationFrame throttling for ultra-fast 60fps scrolling
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const sections = ['hero', 'about', 'services', 'digital-services', 'projects', 'blog', 'testimonials', 'contact'];
-          const scrollPos = window.scrollY + 200;
-
-          for (let i = sections.length - 1; i >= 0; i--) {
-            const elem = document.getElementById(sections[i]);
-            if (elem && elem.offsetTop <= scrollPos) {
-              setActiveSection(sections[i]);
-              break;
-            }
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
     window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => {
       subscription.unsubscribe();
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -233,10 +210,16 @@ export default function App() {
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    
+    // Switch page/tab and scroll to section or top of the page elegantly
+    setTimeout(() => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 60);
   };
 
   const openLegalModal = (tab: 'privacy' | 'terms' | 'disclaimer' | 'cookies' = 'privacy') => {
@@ -276,77 +259,93 @@ export default function App() {
       />
 
       {/* Main Content Sections */}
-      <main className="w-full max-w-full overflow-x-hidden relative">
+      <main className="w-full max-w-full overflow-x-hidden relative pt-20">
         {/* 1. Hero Section */}
-        <SectionTransition id="hero">
-          <Hero onNavigate={scrollToSection} onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)} />
-        </SectionTransition>
+        {activeSection === 'hero' && (
+          <>
+            <SectionTransition id="hero">
+              <Hero onNavigate={scrollToSection} onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)} />
+            </SectionTransition>
 
-        {/* Google AdSense Responsive Banner */}
-        <GoogleAd client="ca-pub-4721034449965472" slot="5355102710" />
+            {/* Google AdSense Responsive Banner */}
+            <GoogleAd client="ca-pub-4721034449965472" slot="5355102710" />
 
-        {/* Live Animated Stats Section */}
-        <SectionTransition id="stats">
-          <StatsSection />
-        </SectionTransition>
+            {/* Live Animated Stats Section */}
+            <SectionTransition id="stats">
+              <StatsSection />
+            </SectionTransition>
+          </>
+        )}
 
         {/* 2. Unified Services Section Hub (Software, Core Web, Digital Services & AI Subscriptions) */}
-        <div id="services">
-          {/* Professional Software Licenses & Digital Products Section */}
-          <SectionTransition id="software-services">
-            <SoftwareServices
-              user={user}
-              profile={profile}
-              onOpenAccount={() => setIsAccountModalOpen(true)}
-            />
-          </SectionTransition>
+        {['services', 'software-services', 'core-services', 'digital-services', 'ai-subscriptions'].includes(activeSection) && (
+          <div id="services">
+            {/* Professional Software Licenses & Digital Products Section */}
+            <SectionTransition id="software-services">
+              <SoftwareServices
+                user={user}
+                profile={profile}
+                onOpenAccount={() => setIsAccountModalOpen(true)}
+              />
+            </SectionTransition>
 
-          {/* Core Web & SEO Services Section */}
-          <SectionTransition id="core-services">
-            <CoreServices onNavigate={scrollToSection} />
-          </SectionTransition>
+            {/* Core Web & SEO Services Section */}
+            <SectionTransition id="core-services">
+              <CoreServices onNavigate={scrollToSection} />
+            </SectionTransition>
 
-          {/* Social Media & Digital Services Marketplace Section */}
-          <SectionTransition id="digital-services">
-            <DigitalServices
-              onSelectService={(service) => setSelectedService(service)}
-              whatsappNumber={whatsappNumber}
-              onAddToCart={handleAddToCart}
-              onBuyNow={handleBuyNow}
-            />
-          </SectionTransition>
+            {/* Social Media & Digital Services Marketplace Section */}
+            <SectionTransition id="digital-services">
+              <DigitalServices
+                onSelectService={(service) => setSelectedService(service)}
+                whatsappNumber={whatsappNumber}
+                onAddToCart={handleAddToCart}
+                onBuyNow={handleBuyNow}
+              />
+            </SectionTransition>
 
-          {/* Official AI Subscriptions Marketplace */}
-          <SectionTransition id="ai-subscriptions">
-            <AiSubscriptionMarketplace whatsappNumber={whatsappNumber} />
-          </SectionTransition>
-        </div>
+            {/* Official AI Subscriptions Marketplace */}
+            <SectionTransition id="ai-subscriptions">
+              <AiSubscriptionMarketplace whatsappNumber={whatsappNumber} />
+            </SectionTransition>
+          </div>
+        )}
 
         {/* 3. Overview About Section */}
-        <SectionTransition id="about">
-          <About />
-          <AboutMeEnd whatsappNumber={whatsappNumber} onContactClick={() => scrollToSection('contact')} />
-        </SectionTransition>
+        {activeSection === 'about' && (
+          <SectionTransition id="about">
+            <About />
+            <AboutMeEnd whatsappNumber={whatsappNumber} onContactClick={() => scrollToSection('contact')} />
+          </SectionTransition>
+        )}
 
         {/* 4. Featured Portfolio Projects Section */}
-        <SectionTransition id="projects">
-          <Projects onNavigateContact={() => scrollToSection('contact')} />
-        </SectionTransition>
+        {activeSection === 'projects' && (
+          <SectionTransition id="projects">
+            <Projects onNavigateContact={() => scrollToSection('contact')} />
+          </SectionTransition>
+        )}
 
         {/* 5. Knowledge Center & Engineering Blog Section (SEO Content Depth) */}
-        <SectionTransition id="blog">
-          <BlogSection onContactClick={() => scrollToSection('contact')} />
-        </SectionTransition>
+        {activeSection === 'blog' && (
+          <SectionTransition id="blog">
+            <BlogSection onContactClick={() => scrollToSection('contact')} />
+          </SectionTransition>
+        )}
 
         {/* 6. Testimonials & Client Reviews Section */}
-        <SectionTransition id="testimonials">
-          <Testimonials />
-        </SectionTransition>
+        {activeSection === 'testimonials' && (
+          <SectionTransition id="testimonials">
+            <Testimonials />
+          </SectionTransition>
+        )}
 
         {/* 7. Contact & Direct Order Section */}
-        <SectionTransition id="contact">
-          <Contact whatsappNumber={whatsappNumber} user={user} />
-        </SectionTransition>
+        {activeSection === 'contact' && (
+          <SectionTransition id="contact">
+            <Contact whatsappNumber={whatsappNumber} user={user} />
+          </SectionTransition>
+        )}
       </main>
 
       {/* Footer */}
