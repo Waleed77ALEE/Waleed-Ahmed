@@ -52,8 +52,9 @@ export const CoreServices: React.FC<CoreServicesProps> = ({ onNavigate }) => {
             <Code className="w-3.5 h-3.5" />
             <span>Development & SEO Services</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-            Custom Software & Engineering Solutions
+          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight flex items-center justify-center gap-3 flex-wrap">
+            <Code className="w-8 h-8 sm:w-10 sm:h-10 text-indigo-400 shrink-0" />
+            <span>Custom Software & Engineering Solutions</span>
           </h2>
           <p className="mt-4 text-slate-300 text-base leading-relaxed">
             High-caliber web development, pixel-perfect UI designs, and technical SEO architecture engineered for conversion.

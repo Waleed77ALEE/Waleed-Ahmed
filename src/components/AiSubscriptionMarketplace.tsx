@@ -207,8 +207,9 @@ export const AiSubscriptionMarketplace: React.FC<AiSubscriptionMarketplaceProps>
             <span>Official AI Subscription Marketplace</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
-            Premium AI Tools & Video Generators
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight flex items-center justify-center gap-3 flex-wrap">
+            <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-emerald-400 shrink-0" />
+            <span>Premium AI Tools & Video Generators</span>
           </h2>
 
           <p className="text-slate-400 text-sm sm:text-base leading-relaxed">

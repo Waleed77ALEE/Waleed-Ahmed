@@ -67,8 +67,9 @@ export const Contact: React.FC<ContactProps> = ({ whatsappNumber, user }) => {
             <MessageSquare className="w-3.5 h-3.5" />
             <span>Direct Client Support & Orders</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Get In Touch & Place Your Order
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight flex items-center justify-center gap-3 flex-wrap">
+            <MessageSquare className="w-8 h-8 text-emerald-400 shrink-0" />
+            <span>Get In Touch & Place Your Order</span>
           </h2>
           <p className="mt-4 text-slate-400 text-base">
             Have questions about digital services, need custom web development, or want instant account handover? Connect directly via WhatsApp or Email.

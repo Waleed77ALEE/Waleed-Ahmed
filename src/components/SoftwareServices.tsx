@@ -122,8 +122,9 @@ export const SoftwareServices: React.FC<SoftwareServicesProps> = ({
             <span>Official Reseller &amp; Genuine License Hub</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
-            Premium <span className="bg-gradient-to-r from-cyan-400 via-indigo-300 to-amber-400 bg-clip-text text-transparent">Software Licenses</span>
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight flex items-center justify-center gap-3 flex-wrap">
+            <Laptop className="w-8 h-8 sm:w-12 sm:h-12 text-cyan-400 shrink-0" />
+            <span>Premium <span className="bg-gradient-to-r from-cyan-400 via-indigo-300 to-amber-400 bg-clip-text text-transparent">Software Licenses</span></span>
           </h1>
 
           <p className="text-sm sm:text-base lg:text-lg text-slate-300 max-w-3xl mx-auto font-normal leading-relaxed">

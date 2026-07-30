@@ -208,8 +208,9 @@ export const DigitalServices: React.FC<DigitalServicesProps> = ({ onSelectServic
             <ShoppingBag className="w-3.5 h-3.5" />
             <span>Digital Services Marketplace</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-            Social Media & Digital Services
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight flex items-center justify-center gap-3 flex-wrap">
+            <ShoppingBag className="w-8 h-8 sm:w-10 sm:h-10 text-cyan-400 shrink-0" />
+            <span>Social Media & Digital Services</span>
           </h2>
           <p className="mt-4 text-slate-300 text-base sm:text-lg leading-relaxed">
             Verified AI Accounts & Subscriptions ($50 – $450 Tiers), High-Retention Social Media Growth, Aged Accounts, and Digital Vouchers with instant WhatsApp handover & 100% replacement warranty.

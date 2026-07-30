@@ -67,8 +67,9 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onNavigateContact }) =
             <BookOpen className="w-4 h-4 text-cyan-400" />
             <span>Knowledge Center &amp; Engineering Articles</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mb-4">
-            Technical Insights, SEO &amp; <span className="bg-gradient-to-r from-cyan-400 via-amber-300 to-emerald-400 bg-clip-text text-transparent">Web Engineering</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight mb-4 flex items-center justify-center gap-3 flex-wrap">
+            <BookOpen className="w-8 h-8 sm:w-10 sm:h-10 text-cyan-400 shrink-0" />
+            <span>Technical Insights, SEO &amp; <span className="bg-gradient-to-r from-cyan-400 via-amber-300 to-emerald-400 bg-clip-text text-transparent">Web Engineering</span></span>
           </h2>
           <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
             In-depth engineering masterclasses, Google AdSense optimization checklists, WordPress technical guides, and full-stack performance blueprints authored by Waleed Khan Afridi.

@@ -35,8 +35,9 @@ export const About: React.FC = () => {
             <User className="w-3.5 h-3.5" />
             <span>About Waleed Khan Afridi</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Bridging Software Engineering & Digital Growth
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight flex items-center justify-center gap-3 flex-wrap">
+            <User className="w-8 h-8 text-cyan-400 shrink-0" />
+            <span>Bridging Software Engineering & Digital Growth</span>
           </h2>
           <p className="mt-4 text-slate-400 text-base">
             Dedicated Full Stack Engineer, UI Designer, and Digital Service Merchant based online. I build resilient software and provide instant digital assets to propel individuals and organizations.

@@ -35,8 +35,9 @@ export const Testimonials: React.FC = () => {
             <Award className="w-3.5 h-3.5" />
             <span>Client Reviews & Marketplace Reputation</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-            Trusted by Creators, Agencies & Global Clients
+          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight flex items-center justify-center gap-3 flex-wrap">
+            <Award className="w-8 h-8 sm:w-10 sm:h-10 text-amber-400 shrink-0" />
+            <span>Trusted by Creators, Agencies & Global Clients</span>
           </h2>
           <p className="mt-4 text-slate-300 text-base leading-relaxed">
             Verified feedback from Instant Services buyers, freelance engineering clients, and digital asset customers worldwide.

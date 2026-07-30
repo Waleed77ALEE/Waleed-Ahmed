@@ -37,8 +37,9 @@ export const Projects: React.FC<ProjectsProps> = ({ onNavigateContact }) => {
             <FolderGit2 className="w-3.5 h-3.5" />
             <span>Featured Portfolio Case Studies</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-            Handcrafted Software &amp; Web Platforms
+          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight flex items-center justify-center gap-3 flex-wrap">
+            <FolderGit2 className="w-8 h-8 sm:w-10 sm:h-10 text-cyan-400 shrink-0" />
+            <span>Handcrafted Software &amp; Web Platforms</span>
           </h2>
           <p className="mt-4 text-slate-300 text-base leading-relaxed">
             Selected engineering case studies demonstrating full-stack architecture, AI SDK integration, and technical SEO performance optimization.
