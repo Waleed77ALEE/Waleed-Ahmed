@@ -1,18 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { Header } from './components/Header';
-import { Hero } from './components/Hero';
-import { GoogleAd } from './components/GoogleAd';
-import { About } from './components/About';
-import { AboutMeEnd } from './components/AboutMeEnd';
-import { CoreServices } from './components/CoreServices';
-import { DigitalServices } from './components/DigitalServices';
-import { AiSubscriptionMarketplace } from './components/AiSubscriptionMarketplace';
-import { SoftwareServices } from './components/SoftwareServices';
-import { StatsSection } from './components/StatsSection';
-import { Projects } from './components/Projects';
-import { BlogSection } from './components/BlogSection';
-import { Testimonials } from './components/Testimonials';
-import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { ServiceDetailsModal } from './components/ServiceDetailsModal';
 import { AuthModal } from './components/AuthModal';
@@ -24,8 +12,20 @@ import { AdminPanelModal } from './components/AdminPanelModal';
 import { AndroidAppModal } from './components/AndroidAppModal';
 import { LegalPagesModal, LegalTabType } from './components/LegalPagesModal';
 import { SeoSchemas } from './components/SeoSchemas';
-import { SectionTransition } from './components/SectionTransition';
 import { ServiceItem } from './types';
+
+// Page Imports
+import { HomePage } from './pages/HomePage';
+import { ServicesOverviewPage } from './pages/services/ServicesOverviewPage';
+import { WebDevelopmentPage } from './pages/services/WebDevelopmentPage';
+import { MobileAppDevelopmentPage } from './pages/services/MobileAppDevelopmentPage';
+import { UiUxDesignPage } from './pages/services/UiUxDesignPage';
+import { SeoPage } from './pages/services/SeoPage';
+import { EcommerceDevelopmentPage } from './pages/services/EcommerceDevelopmentPage';
+import { AiAutomationPage } from './pages/services/AiAutomationPage';
+import { WebsiteMaintenancePage } from './pages/services/WebsiteMaintenancePage';
+import { SingleServicePage } from './pages/services/SingleServicePage';
+
 import {
   supabase,
   UserProfile,
@@ -38,6 +38,11 @@ import {
   clearCartDB
 } from './lib/supabase';
 import { recordUserSignup } from './services/userStore';
+
+const DynamicServiceRoute: React.FC<{ onOpenContact: () => void }> = ({ onOpenContact }) => {
+  const { slug } = useParams<{ slug: string }>();
+  return <SingleServicePage slug={slug || ''} onOpenContact={onOpenContact} />;
+};
 
 export default function App() {
   const [activeSection, setActiveSection] = useState<string>('hero');
@@ -260,92 +265,107 @@ export default function App() {
 
       {/* Main Content Sections */}
       <main className="w-full max-w-full overflow-x-hidden relative pt-20">
-        {/* 1. Hero Section */}
-        {activeSection === 'hero' && (
-          <>
-            <SectionTransition id="hero">
-              <Hero onNavigate={scrollToSection} onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)} />
-            </SectionTransition>
-
-            {/* Google AdSense Responsive Banner */}
-            <GoogleAd client="ca-pub-4721034449965472" slot="5355102710" />
-
-            {/* Live Animated Stats Section */}
-            <SectionTransition id="stats">
-              <StatsSection />
-            </SectionTransition>
-          </>
-        )}
-
-        {/* 2. Unified Services Section Hub (Software, Core Web, Digital Services & AI Subscriptions) */}
-        {['services', 'software-services', 'core-services', 'digital-services', 'ai-subscriptions'].includes(activeSection) && (
-          <div id="services">
-            {/* Professional Software Licenses & Digital Products Section */}
-            <SectionTransition id="software-services">
-              <SoftwareServices
+        <Routes>
+          {/* Home Page */}
+          <Route
+            path="/"
+            element={
+              <HomePage
+                activeSection={activeSection}
+                scrollToSection={scrollToSection}
                 user={user}
                 profile={profile}
                 onOpenAccount={() => setIsAccountModalOpen(true)}
-              />
-            </SectionTransition>
-
-            {/* Core Web & SEO Services Section */}
-            <SectionTransition id="core-services">
-              <CoreServices onNavigate={scrollToSection} />
-            </SectionTransition>
-
-            {/* Social Media & Digital Services Marketplace Section */}
-            <SectionTransition id="digital-services">
-              <DigitalServices
                 onSelectService={(service) => setSelectedService(service)}
-                whatsappNumber={whatsappNumber}
                 onAddToCart={handleAddToCart}
                 onBuyNow={handleBuyNow}
+                whatsappNumber={whatsappNumber}
+                onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)}
               />
-            </SectionTransition>
+            }
+          />
 
-            {/* Official AI Subscriptions Marketplace */}
-            <SectionTransition id="ai-subscriptions">
-              <AiSubscriptionMarketplace whatsappNumber={whatsappNumber} />
-            </SectionTransition>
-          </div>
-        )}
+          {/* Requirement 2: Services Overview Route */}
+          <Route
+            path="/services"
+            element={
+              <ServicesOverviewPage
+                onOpenContact={() => scrollToSection('contact')}
+              />
+            }
+          />
 
-        {/* 3. Overview About Section */}
-        {activeSection === 'about' && (
-          <SectionTransition id="about">
-            <About />
-            <AboutMeEnd whatsappNumber={whatsappNumber} onContactClick={() => scrollToSection('contact')} />
-          </SectionTransition>
-        )}
+          {/* Requirement 2 & 3: Individual Service Page Routes */}
+          <Route
+            path="/services/web-development"
+            element={
+              <WebDevelopmentPage
+                onOpenContact={() => scrollToSection('contact')}
+              />
+            }
+          />
+          <Route
+            path="/services/mobile-app-development"
+            element={
+              <MobileAppDevelopmentPage
+                onOpenContact={() => scrollToSection('contact')}
+              />
+            }
+          />
+          <Route
+            path="/services/ui-ux-design"
+            element={
+              <UiUxDesignPage
+                onOpenContact={() => scrollToSection('contact')}
+              />
+            }
+          />
+          <Route
+            path="/services/seo"
+            element={
+              <SeoPage
+                onOpenContact={() => scrollToSection('contact')}
+              />
+            }
+          />
+          <Route
+            path="/services/ecommerce-development"
+            element={
+              <EcommerceDevelopmentPage
+                onOpenContact={() => scrollToSection('contact')}
+              />
+            }
+          />
+          <Route
+            path="/services/ai-automation"
+            element={
+              <AiAutomationPage
+                onOpenContact={() => scrollToSection('contact')}
+              />
+            }
+          />
+          <Route
+            path="/services/website-maintenance"
+            element={
+              <WebsiteMaintenancePage
+                onOpenContact={() => scrollToSection('contact')}
+              />
+            }
+          />
 
-        {/* 4. Featured Portfolio Projects Section */}
-        {activeSection === 'projects' && (
-          <SectionTransition id="projects">
-            <Projects onNavigateContact={() => scrollToSection('contact')} />
-          </SectionTransition>
-        )}
+          {/* Dynamic Fallback Service Slug */}
+          <Route
+            path="/services/:slug"
+            element={
+              <DynamicServiceRoute
+                onOpenContact={() => scrollToSection('contact')}
+              />
+            }
+          />
 
-        {/* 5. Knowledge Center & Engineering Blog Section (SEO Content Depth) */}
-        {activeSection === 'blog' && (
-          <SectionTransition id="blog">
-            <BlogSection onContactClick={() => scrollToSection('contact')} />
-          </SectionTransition>
-        )}
-
-        {/* 6. Testimonials & Client Reviews Section */}
-        {activeSection === 'testimonials' && (
-          <SectionTransition id="testimonials">
-            <Testimonials />
-          </SectionTransition>
-        )}
-
-        {/* 7. Contact & Direct Order Section */}
-        {activeSection === 'contact' && (
-          <SectionTransition id="contact">
-            <Contact whatsappNumber={whatsappNumber} user={user} />
-          </SectionTransition>
-        )}
+          {/* Catch-all fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
 
       {/* Footer */}

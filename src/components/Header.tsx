@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck, Smartphone, Wallet, Search } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck, Smartphone, Wallet, Search, ChevronDown, Code2, Palette, ShoppingBag as ShopIcon, Cpu, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../lib/supabase';
 import brandLogoImg from '../assets/images/brand_logo_1785031049165.jpg';
@@ -42,6 +43,9 @@ export const Header: React.FC<HeaderProps> = ({
   onAddToCart,
   onBuyNow
 }) => {
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -114,8 +118,20 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   const handleNavClick = (id: string) => {
-    onNavigate(id);
     setMobileMenuOpen(false);
+    if (id === 'services') {
+      navigate('/services');
+      return;
+    }
+
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        onNavigate(id);
+      }, 100);
+    } else {
+      onNavigate(id);
+    }
   };
 
   const waClean = (whatsappNumber || '+923416860077').replace(/[^0-9]/g, '');

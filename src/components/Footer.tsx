@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowUp, Code2, Globe, ShieldCheck, MessageSquare, Smartphone, FileText, BookOpen, Shield, RefreshCw, Truck, Building2, Lock } from 'lucide-react';
 import { SocialLinks } from './SocialLinks';
 import { LegalTabType } from './LegalPagesModal';
@@ -76,9 +77,9 @@ export const Footer: React.FC<FooterProps> = ({
                 </button>
               </li>
               <li>
-                <button onClick={() => onNavigate('services')} className="hover:text-cyan-400 transition-colors cursor-pointer">
-                  Web &amp; SEO Services
-                </button>
+                <Link to="/services" className="hover:text-cyan-400 transition-colors cursor-pointer text-slate-300">
+                  Services Catalog &amp; Solutions
+                </Link>
               </li>
               <li>
                 <button onClick={() => onNavigate('digital-services')} className="hover:text-cyan-400 transition-colors text-emerald-400 cursor-pointer">
