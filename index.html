@@ -1,6 +1,30 @@
 <!doctype html>
 <html lang="en" class="dark scroll-smooth">
   <head>
+    <script data-cfasync="false">
+      (function() {
+        var hostname = window.location.hostname;
+        var isDevOrPreview = 
+          hostname.indexOf('run.app') !== -1 || 
+          hostname.indexOf('localhost') !== -1 || 
+          hostname.indexOf('127.0.0.1') !== -1 ||
+          hostname.indexOf('aistudio') !== -1 ||
+          hostname.indexOf('webcontainer') !== -1 ||
+          hostname.indexOf('stackblitz') !== -1 ||
+          window.self !== window.top;
+
+        if (!isDevOrPreview) {
+          var s = document.createElement('script');
+          s.src = 'https://quge5.com/88/tag.min.js';
+          s.async = true;
+          s.setAttribute('data-zone', '265589');
+          s.setAttribute('data-cfasync', 'false');
+          document.head.appendChild(s);
+        } else {
+          console.warn('Ad network script deferred in development/preview environment to prevent React 19 hook dispatcher conflicts.');
+        }
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     
