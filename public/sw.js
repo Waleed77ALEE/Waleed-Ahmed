@@ -1,9 +1,24 @@
-self.options = {
-    "domain": "3nbf4.com",
-    "zoneId": 11465678
+const hostname = self.location.hostname;
+const isDevOrPreview = 
+  hostname.indexOf('run.app') !== -1 || 
+  hostname.indexOf('localhost') !== -1 || 
+  hostname.indexOf('127.0.0.1') !== -1 ||
+  hostname.indexOf('aistudio') !== -1 ||
+  hostname.indexOf('webcontainer') !== -1 ||
+  hostname.indexOf('stackblitz') !== -1;
+
+if (!isDevOrPreview) {
+  self.options = {
+      "domain": "3nbf4.com",
+      "zoneId": 11465678
+  };
+  self.lary = "";
+  try {
+    importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw');
+  } catch (err) {
+    console.error('Failed to import Monetag service worker:', err);
+  }
 }
-self.lary = ""
-importScripts('https://3nbf4.com/act/files/service-worker.min.js?r=sw')
 
 // Service Worker for Waleed Khan Afridi Digital Platform PWA & WebAPK
 const CACHE_NAME = 'wka-digital-v2.5-fast';
