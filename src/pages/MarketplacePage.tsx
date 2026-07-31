@@ -23,10 +23,18 @@ export const MarketplacePage: React.FC<MarketplacePageProps> = ({
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setDocumentSeo(
-      'Official Products & Software Licenses Marketplace | Waleed Khan Afridi',
-      'Browse and buy genuine, high-quality software licenses, custom tools, premium resources, and official AI tool subscriptions.'
-    );
+    setDocumentSeo({
+      title: 'Official Products & Software Licenses Marketplace | Waleed Khan Afridi',
+      description: 'Browse and buy genuine, high-quality software licenses, custom web tools, digital assets, and verified AI service subscriptions.',
+      url: 'https://waleedkhanafridi.online/#marketplace',
+      image: 'https://waleedkhanafridi.online/brand-logo.jpg',
+      imageAlt: 'Waleed Khan Afridi Digital Products Marketplace',
+      type: 'website',
+      siteName: 'Waleed Khan Afridi Marketplace',
+      twitterCard: 'summary_large_image',
+      twitterCreator: '@waleedkhanafridi',
+      keywords: 'Marketplace, Software Licenses, Web Development Tools, AI Subscriptions, Waleed Khan Afridi, Digital Assets'
+    });
     window.scrollTo(0, 0);
 
     // Simulate Supabase data load with graceful minimum threshold to prevent layout flicker

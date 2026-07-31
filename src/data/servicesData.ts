@@ -6,6 +6,7 @@ export interface DetailedServicePageData {
   badge: string;
   metaTitle: string;
   metaDescription: string;
+  ogImage?: string;
   shortDescription: string;
   detailedDescription: string;
   heroStats: { label: string; value: string }[];

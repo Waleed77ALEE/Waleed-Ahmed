@@ -28,10 +28,18 @@ export const ServicesOverviewPage: React.FC<ServicesOverviewPageProps> = ({ onOp
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setDocumentSeo(
-      'Professional Web & Digital Growth Services | Waleed Khan Afridi',
-      'Explore full-stack web development, mobile apps, UI/UX design, technical SEO, e-commerce stores, AI workflow automation, and website maintenance services.'
-    );
+    setDocumentSeo({
+      title: 'Professional Web & Digital Growth Services | Waleed Khan Afridi',
+      description: 'Explore full-stack web development, mobile apps, UI/UX design, technical SEO, e-commerce stores, AI workflow automation, and website maintenance services by Waleed Khan Afridi.',
+      url: 'https://waleedkhanafridi.online/services',
+      image: 'https://waleedkhanafridi.online/brand-logo.jpg',
+      imageAlt: 'Waleed Khan Afridi Digital Services Catalog',
+      type: 'website',
+      siteName: 'Waleed Khan Afridi Digital Services',
+      twitterCard: 'summary_large_image',
+      twitterCreator: '@waleedkhanafridi',
+      keywords: 'Services, Web Development, Mobile Apps, UI UX Design, Technical SEO, E-Commerce, AI Automation, Website Maintenance, Waleed Khan Afridi'
+    });
     window.scrollTo(0, 0);
 
     const timer = setTimeout(() => {

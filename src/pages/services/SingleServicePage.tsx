@@ -24,8 +24,74 @@ export const SingleServicePage: React.FC<SingleServicePageProps> = ({ slug, onOp
 
   useEffect(() => {
     if (service) {
-      setDocumentSeo(service.metaTitle, service.metaDescription);
+      const canonicalUrl = `https://waleedkhanafridi.online/services/${service.slug}`;
+      const techKeywords = service.techStack.map((t) => t.name).join(', ');
+      const keywords = `${service.title}, ${service.slug}, Waleed Khan Afridi, ${techKeywords}, ${service.subtitle}, Pakistan Web Developer, Freelance Engineer`;
+
+      setDocumentSeo({
+        title: service.metaTitle,
+        description: service.metaDescription,
+        url: canonicalUrl,
+        image: service.ogImage || 'https://waleedkhanafridi.online/brand-logo.jpg',
+        imageAlt: `${service.title} - Waleed Khan Afridi Digital Services`,
+        type: 'service',
+        siteName: 'Waleed Khan Afridi Digital Services',
+        twitterCard: 'summary_large_image',
+        twitterCreator: '@waleedkhanafridi',
+        keywords
+      });
+
+      // Inject rich dynamic JSON-LD Service Schema for social and search crawlers
+      const serviceSchemaData = {
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        '@id': `${canonicalUrl}#service`,
+        name: service.title,
+        serviceType: service.subtitle,
+        description: service.shortDescription,
+        url: canonicalUrl,
+        provider: {
+          '@type': 'Person',
+          name: 'Waleed Khan Afridi',
+          url: 'https://waleedkhanafridi.online',
+          jobTitle: 'Senior Full Stack Developer, UI/UX Designer & SEO Specialist'
+        },
+        areaServed: {
+          '@type': 'AdministrativeArea',
+          name: 'Worldwide'
+        },
+        hasOfferCatalog: {
+          '@type': 'OfferCatalog',
+          name: service.title,
+          itemListElement: service.pricingPackages.map((pkg, idx) => ({
+            '@type': 'Offer',
+            position: idx + 1,
+            itemOffered: {
+              '@type': 'Service',
+              name: pkg.name,
+              description: pkg.description
+            },
+            price: pkg.price.replace(/[^0-9.]/g, '') || '0',
+            priceCurrency: 'USD'
+          }))
+        }
+      };
+
+      let script = document.getElementById('single-service-jsonld') as HTMLScriptElement;
+      if (!script) {
+        script = document.createElement('script');
+        script.id = 'single-service-jsonld';
+        script.type = 'application/ld+json';
+        document.head.appendChild(script);
+      }
+      script.text = JSON.stringify(serviceSchemaData);
+    } else {
+      setDocumentSeo({
+        title: 'Service Not Found | Waleed Khan Afridi',
+        description: 'The requested service page does not exist or has been relocated.'
+      });
     }
+
     window.scrollTo(0, 0);
 
     // Keep skeleton visible for a clean 550ms transition
@@ -34,7 +100,11 @@ export const SingleServicePage: React.FC<SingleServicePageProps> = ({ slug, onOp
       setIsLoading(false);
     }, 550);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      const existingScript = document.getElementById('single-service-jsonld');
+      if (existingScript) existingScript.remove();
+    };
   }, [slug, service]);
 
   if (!service) {
