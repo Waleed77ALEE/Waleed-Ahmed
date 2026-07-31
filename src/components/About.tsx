@@ -16,7 +16,7 @@ export const About: React.FC = () => {
     '5+ Years of Full-Stack Web Development',
     'Top-Rated Merchant on Digital Marketplaces',
     'Guaranteed 100% Non-Drop Social Media Services',
-    'Expertise in Custom SaaS & E-Commerce Platforms',
+    'Expertise in Custom Software & E-Commerce Platforms',
     'Official Authorized Digital Subscription Reseller',
     '24/7 Dedicated Client Support via WhatsApp'
   ];

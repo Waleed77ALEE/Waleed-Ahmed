@@ -112,8 +112,8 @@ export const PORTFOLIO_PROJECTS: Project[] = [
   },
   {
     id: 'ai-content-suite',
-    title: 'AI Studio SaaS - Multi-Model Generator',
-    description: 'Full stack AI SaaS web app integrating OpenAI GPT-4o, Claude 3.5 Sonnet, and Gemini models with real-time streaming output.',
+    title: 'AI Studio App - Multi-Model Generator',
+    description: 'Full stack AI web app integrating OpenAI GPT-4o, Claude 3.5 Sonnet, and Gemini models with real-time streaming output.',
     category: 'AI Apps',
     image: 'https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=1200&q=80',
     tags: ['Next.js', 'TypeScript', 'OpenAI API', 'Gemini SDK', 'Tailwind'],
@@ -291,7 +291,7 @@ export const TESTIMONIALS: Testimonial[] = [
   {
     id: 'test-4',
     name: 'Alexandre Dubois',
-    role: 'SaaS Lead Engineer',
+    role: 'Lead Software Engineer',
     platform: 'Instant Services',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80',
     comment: 'Bought Aged Instagram Accounts and Microsoft 365 keys for my sales team. Flawless accounts with full email access handed over in less than 10 minutes.',

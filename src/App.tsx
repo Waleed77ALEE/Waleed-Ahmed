@@ -16,6 +16,7 @@ import { ServiceItem } from './types';
 
 // Page Imports
 import { HomePage } from './pages/HomePage';
+import { MarketplacePage } from './pages/MarketplacePage';
 import { ServicesOverviewPage } from './pages/services/ServicesOverviewPage';
 import { WebDevelopmentPage } from './pages/services/WebDevelopmentPage';
 import { MobileAppDevelopmentPage } from './pages/services/MobileAppDevelopmentPage';
@@ -281,6 +282,19 @@ export default function App() {
                 onBuyNow={handleBuyNow}
                 whatsappNumber={whatsappNumber}
                 onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)}
+              />
+            }
+          />
+
+          {/* Marketplace Subpage */}
+          <Route
+            path="/market"
+            element={
+              <MarketplacePage
+                user={user}
+                profile={profile}
+                onOpenAccount={() => setIsAccountModalOpen(true)}
+                whatsappNumber={whatsappNumber}
               />
             }
           />

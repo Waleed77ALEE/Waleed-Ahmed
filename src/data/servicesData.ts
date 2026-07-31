@@ -36,7 +36,7 @@ export const SERVICES_LIST: DetailedServicePageData[] = [
     metaTitle: 'Expert Web Development Services | Custom React, Next.js & Full-Stack Apps',
     metaDescription: 'Hire Waleed Khan Afridi for custom web development. Fast, secure, SEO-optimized web applications built with React, Next.js, Node.js, and modern APIs.',
     shortDescription: 'Custom, high-performance web applications built with React, Next.js, Node.js, and modern cloud architecture for maximum speed and scale.',
-    detailedDescription: 'Transform your business with modern, high-speed web engineering. I build custom web applications, SaaS platforms, and enterprise web solutions using cutting-edge technologies like React 19, Next.js, Node.js, TypeScript, and Supabase. Every build is engineered for lightning-fast performance, rock-solid security, WCAG accessibility, and seamless responsive behavior on all devices.',
+    detailedDescription: 'Transform your business with modern, high-speed web engineering. I build custom web applications, custom platforms, and enterprise web solutions using cutting-edge technologies like React 19, Next.js, Node.js, TypeScript, and Supabase. Every build is engineered for lightning-fast performance, rock-solid security, WCAG accessibility, and seamless responsive behavior on all devices.',
     heroStats: [
       { label: 'Lighthouse Score', value: '98+' },
       { label: 'Avg. Load Speed', value: '< 1.2s' },
@@ -106,7 +106,7 @@ export const SERVICES_LIST: DetailedServicePageData[] = [
         ctaText: 'Start Web Project'
       },
       {
-        name: 'Full-Stack SaaS / Portal',
+        name: 'Full-Stack Portal / Software',
         price: '$1,299',
         popular: true,
         description: 'Complete custom web application with database and auth capabilities.',
@@ -378,7 +378,7 @@ export const SERVICES_LIST: DetailedServicePageData[] = [
         name: 'Complete Web / App UI UX',
         price: '$799',
         popular: true,
-        description: 'Full product interface design for web apps, SaaS, or mobile platforms.',
+        description: 'Full product interface design for web apps, platforms, or mobile apps.',
         features: [
           'Up to 10 Custom Unique Screen Layouts',
           'Complete User Flow & Wireframing',
@@ -719,7 +719,7 @@ export const SERVICES_LIST: DetailedServicePageData[] = [
       },
       {
         title: 'AI-Powered Search & Recommendations',
-        description: 'Semantic vector search and personalized AI recommendation engines for e-commerce and SaaS platforms.',
+        description: 'Semantic vector search and personalized AI recommendation engines for e-commerce and software platforms.',
         icon: 'Search'
       },
       {

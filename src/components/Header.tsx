@@ -119,7 +119,7 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   const productsDropdownItems = [
-    { label: 'SaaS Products', sectionId: 'software-services', description: 'Full-stack software and tools' },
+    { label: 'Software Products', sectionId: 'software-services', description: 'Full-stack software and tools' },
     { label: 'AI Tools', sectionId: 'ai-subscriptions', description: 'AI subscriptions and services' },
     { label: 'Digital Downloads', sectionId: 'software-services', description: 'Premium codebases & assets' },
     { label: 'Templates', sectionId: 'software-services', description: 'Developer-friendly themes & designs' },
@@ -134,7 +134,7 @@ export const Header: React.FC<HeaderProps> = ({
       case 'Graphic Design': return <Palette className="w-3.5 h-3.5 text-cyan-400" />;
       case 'Digital Marketing': return <ShopIcon className="w-3.5 h-3.5 text-cyan-400" />;
       
-      case 'SaaS Products': return <Database className="w-3.5 h-3.5 text-amber-400" />;
+      case 'Software Products': return <Database className="w-3.5 h-3.5 text-amber-400" />;
       case 'AI Tools': return <Sparkles className="w-3.5 h-3.5 text-amber-400" />;
       case 'Digital Downloads': return <Smartphone className="w-3.5 h-3.5 text-amber-400" />;
       case 'Templates': return <Code2 className="w-3.5 h-3.5 text-amber-400" />;
@@ -150,11 +150,20 @@ export const Header: React.FC<HeaderProps> = ({
       navigate('/services');
       return;
     }
+    if (id === 'products' || id === 'market') {
+      navigate('/market');
+      return;
+    }
+    if (id === 'software-services' || id === 'ai-subscriptions') {
+      navigate('/market');
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      return;
+    }
     
     let targetSection = id;
-    if (id === 'products') {
-      targetSection = 'software-services';
-    }
 
     if (location.pathname !== '/') {
       navigate('/');
@@ -320,12 +329,12 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={() => handleNavClick('products')}
                 className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none flex items-center gap-1 ${
-                  location.pathname === '/' && ['software-services', 'digital-services', 'ai-subscriptions'].includes(activeSection)
+                  location.pathname === '/market' || (location.pathname === '/' && ['software-services', 'digital-services', 'ai-subscriptions'].includes(activeSection))
                     ? 'text-white font-semibold'
                     : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
                 }`}
               >
-                {location.pathname === '/' && ['software-services', 'digital-services', 'ai-subscriptions'].includes(activeSection) && (
+                {((location.pathname === '/market') || (location.pathname === '/' && ['software-services', 'digital-services', 'ai-subscriptions'].includes(activeSection))) && (
                   <motion.div
                     layoutId="activeNavPill"
                     className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-slate-800 to-amber-500/20 rounded-full border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] -z-10"
@@ -372,11 +381,11 @@ export const Header: React.FC<HeaderProps> = ({
                       <button
                         onClick={() => {
                           setActiveDropdown(null);
-                          handleNavClick('software-services');
+                          handleNavClick('products');
                         }}
                         className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
                       >
-                        <span>View SaaS Marketplace</span>
+                        <span>View Products Marketplace</span>
                         <ArrowUpRight className="w-3 h-3" />
                       </button>
                     </div>
@@ -630,7 +639,7 @@ export const Header: React.FC<HeaderProps> = ({
                   <button
                     onClick={() => setMobileProductsOpen(!mobileProductsOpen)}
                     className={`w-full px-4 py-2.5 text-left text-xs sm:text-sm font-semibold rounded-xl flex items-center justify-between transition-colors cursor-pointer ${
-                      location.pathname === '/' && ['software-services', 'digital-services', 'ai-subscriptions'].includes(activeSection)
+                      location.pathname === '/market' || (location.pathname === '/' && ['software-services', 'digital-services', 'ai-subscriptions'].includes(activeSection))
                         ? 'bg-gradient-to-r from-cyan-500/15 via-cyan-500/10 to-transparent text-cyan-300 border border-cyan-500/30 font-bold'
                         : 'text-slate-300 hover:bg-slate-900'
                     }`}

@@ -307,7 +307,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
       },
       {
         question: 'When should I choose React SPA over Next.js?',
-        answer: 'React SPAs are ideal for internal dashboards, SaaS web apps behind login screens, or interactive browser tools where public SEO indexing is not required.'
+        answer: 'React SPAs are ideal for internal dashboards, portal web apps behind login screens, or interactive browser tools where public SEO indexing is not required.'
       }
     ],
     content: `
