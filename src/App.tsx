@@ -22,7 +22,7 @@ import { SupabaseSqlModal } from './components/SupabaseSqlModal';
 import { BinancePayModal } from './components/BinancePayModal';
 import { AdminPanelModal } from './components/AdminPanelModal';
 import { AndroidAppModal } from './components/AndroidAppModal';
-import { LegalPagesModal } from './components/LegalPagesModal';
+import { LegalPagesModal, LegalTabType } from './components/LegalPagesModal';
 import { SeoSchemas } from './components/SeoSchemas';
 import { SectionTransition } from './components/SectionTransition';
 import { ServiceItem } from './types';
@@ -58,7 +58,7 @@ export default function App() {
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [isAndroidAppModalOpen, setIsAndroidAppModalOpen] = useState(false);
   const [isLegalModalOpen, setIsLegalModalOpen] = useState(false);
-  const [legalActiveTab, setLegalActiveTab] = useState<'privacy' | 'terms' | 'disclaimer' | 'cookies'>('privacy');
+  const [legalActiveTab, setLegalActiveTab] = useState<LegalTabType>('privacy');
 
   // PWA Install Prompt State
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -222,7 +222,7 @@ export default function App() {
     }, 60);
   };
 
-  const openLegalModal = (tab: 'privacy' | 'terms' | 'disclaimer' | 'cookies' = 'privacy') => {
+  const openLegalModal = (tab: LegalTabType = 'privacy') => {
     setLegalActiveTab(tab);
     setIsLegalModalOpen(true);
   };
@@ -438,6 +438,13 @@ export default function App() {
         onClose={() => setIsAndroidAppModalOpen(false)}
         deferredPrompt={deferredPrompt}
         onInstallPWA={handleInstallPWA}
+      />
+
+      {/* Merchant Legal Policies & Compliance Modal */}
+      <LegalPagesModal
+        isOpen={isLegalModalOpen}
+        onClose={() => setIsLegalModalOpen(false)}
+        defaultTab={legalActiveTab}
       />
     </div>
   );

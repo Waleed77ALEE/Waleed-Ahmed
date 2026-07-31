@@ -342,15 +342,29 @@
     </script>
 
     <!-- Google Tag Manager / Analytics Placeholders (Replace GA_MEASUREMENT_ID when active) -->
-    <!--
-    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'GA_MEASUREMENT_ID');
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-analytics.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyB-tjCX38PGfbxP6-VHgQMaqwz_73sGz8I",
+        authDomain: "waleedkhanafridi.firebaseapp.com",
+        projectId: "waleedkhanafridi",
+        storageBucket: "waleedkhanafridi.firebasestorage.app",
+        messagingSenderId: "671321714715",
+        appId: "1:671321714715:web:44ffc16900b6378210c8be",
+        measurementId: "G-79Z4VE221J"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
     </script>
-    -->
   </head>
   <body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-cyan-500 selection:text-slate-950">
     <div id="root"></div>

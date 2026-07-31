@@ -50,14 +50,30 @@ export const SeoSchemas: React.FC = () => {
       '@context': 'https://schema.org',
       '@type': 'ProfessionalService',
       '@id': 'https://waleedkhanafridi.online/#service',
-      name: 'Waleed Khan Afridi - Web Development & Digital Marketplace',
+      name: 'Waleed Khan Afridi Digital Agency',
       url: 'https://waleedkhanafridi.online',
       logo: 'https://waleedkhanafridi.online/brand-logo.jpg',
       image: 'https://waleedkhanafridi.online/profile-avatar.jpg',
-      description: 'Enterprise web development, custom WordPress e-commerce, technical SEO, and verified digital services marketplace.',
+      description: 'International software engineering, custom web application development, UI/UX design, technical SEO, and verified digital marketplace.',
       email: 'waleedkhanafridi7@gmail.com',
+      telephone: '+923416860077',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Office 4B, Sector F-11 Markaz',
+        addressLocality: 'Islamabad',
+        postalCode: '44000',
+        addressCountry: 'PK'
+      },
       priceRange: '$$',
-      paymentAccepted: ['Payoneer', 'Binance Pay', 'USDT TRC20', 'USDT BEP20', 'Crypto'],
+      paymentAccepted: ['Credit Card', 'Stripe', 'Payoneer', 'Binance Pay', 'USDT TRC20', 'USDT BEP20', 'Crypto'],
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        applicableCountry: 'WW',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnMoneyBack',
+        merchantReturnDays: 30,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/FreeReturn'
+      },
       hasOfferCatalog: {
         '@type': 'OfferCatalog',
         name: 'Web Development & Digital Growth Services',
