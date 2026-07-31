@@ -14,14 +14,30 @@
           window.self !== window.top;
 
         if (!isDevOrPreview) {
+          // Load Monetag Smart Tag Script
           var s = document.createElement('script');
           s.src = 'https://quge5.com/88/tag.min.js';
           s.async = true;
           s.setAttribute('data-zone', '265589');
           s.setAttribute('data-cfasync', 'false');
           document.head.appendChild(s);
+
+          // Load Google AMP Auto Ads script
+          var s2 = document.createElement('script');
+          s2.src = 'https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js';
+          s2.async = true;
+          s2.setAttribute('custom-element', 'amp-auto-ads');
+          document.head.appendChild(s2);
+
+          // Inject <amp-auto-ads> element right at body start when DOM is ready
+          window.addEventListener('DOMContentLoaded', function() {
+            var ampAd = document.createElement('amp-auto-ads');
+            ampAd.setAttribute('type', 'adsense');
+            ampAd.setAttribute('data-ad-client', 'ca-pub-4721034449965472');
+            document.body.insertBefore(ampAd, document.body.firstChild);
+          });
         } else {
-          console.warn('Ad network script deferred in development/preview environment to prevent React 19 hook dispatcher conflicts.');
+          console.warn('Ad network scripts and elements deferred in development/preview environment to prevent React 19 hook/useRef conflicts.');
         }
       })();
     </script>
@@ -390,17 +406,8 @@
       const analytics = getAnalytics(app);
     </script>
 
-    <!-- Google AMP Auto Ads Library -->
-    <script async custom-element="amp-auto-ads"
-            src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
-    </script>
   </head>
   <body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-cyan-500 selection:text-slate-950">
-    <!-- Google AMP Auto Ads Placement -->
-    <amp-auto-ads type="adsense"
-            data-ad-client="ca-pub-4721034449965472">
-    </amp-auto-ads>
-
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Navigate, useParams } from 'react-router-dom';
+import { Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { ServiceDetailsModal } from './components/ServiceDetailsModal';
@@ -46,6 +47,7 @@ const DynamicServiceRoute: React.FC<{ onOpenContact: () => void }> = ({ onOpenCo
 };
 
 export default function App() {
+  const location = useLocation();
   const [activeSection, setActiveSection] = useState<string>('hero');
   const [selectedService, setSelectedService] = useState<ServiceItem | null>(null);
   const [selectedServiceForPayment, setSelectedServiceForPayment] = useState<ServiceItem | null>(null);
@@ -266,120 +268,131 @@ export default function App() {
 
       {/* Main Content Sections */}
       <main className="w-full max-w-full overflow-x-hidden relative pt-20">
-        <Routes>
-          {/* Home Page */}
-          <Route
-            path="/"
-            element={
-              <HomePage
-                activeSection={activeSection}
-                scrollToSection={scrollToSection}
-                user={user}
-                profile={profile}
-                onOpenAccount={() => setIsAccountModalOpen(true)}
-                onSelectService={(service) => setSelectedService(service)}
-                onAddToCart={handleAddToCart}
-                onBuyNow={handleBuyNow}
-                whatsappNumber={whatsappNumber}
-                onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="w-full"
+          >
+            <Routes location={location}>
+              {/* Home Page */}
+              <Route
+                path="/"
+                element={
+                  <HomePage
+                    activeSection={activeSection}
+                    scrollToSection={scrollToSection}
+                    user={user}
+                    profile={profile}
+                    onOpenAccount={() => setIsAccountModalOpen(true)}
+                    onSelectService={(service) => setSelectedService(service)}
+                    onAddToCart={handleAddToCart}
+                    onBuyNow={handleBuyNow}
+                    whatsappNumber={whatsappNumber}
+                    onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)}
+                  />
+                }
               />
-            }
-          />
 
-          {/* Marketplace Subpage */}
-          <Route
-            path="/market"
-            element={
-              <MarketplacePage
-                user={user}
-                profile={profile}
-                onOpenAccount={() => setIsAccountModalOpen(true)}
-                whatsappNumber={whatsappNumber}
+              {/* Marketplace Subpage */}
+              <Route
+                path="/market"
+                element={
+                  <MarketplacePage
+                    user={user}
+                    profile={profile}
+                    onOpenAccount={() => setIsAccountModalOpen(true)}
+                    whatsappNumber={whatsappNumber}
+                  />
+                }
               />
-            }
-          />
 
-          {/* Requirement 2: Services Overview Route */}
-          <Route
-            path="/services"
-            element={
-              <ServicesOverviewPage
-                onOpenContact={() => scrollToSection('contact')}
+              {/* Requirement 2: Services Overview Route */}
+              <Route
+                path="/services"
+                element={
+                  <ServicesOverviewPage
+                    onOpenContact={() => scrollToSection('contact')}
+                  />
+                }
               />
-            }
-          />
 
-          {/* Requirement 2 & 3: Individual Service Page Routes */}
-          <Route
-            path="/services/web-development"
-            element={
-              <WebDevelopmentPage
-                onOpenContact={() => scrollToSection('contact')}
+              {/* Requirement 2 & 3: Individual Service Page Routes */}
+              <Route
+                path="/services/web-development"
+                element={
+                  <WebDevelopmentPage
+                    onOpenContact={() => scrollToSection('contact')}
+                  />
+                }
               />
-            }
-          />
-          <Route
-            path="/services/mobile-app-development"
-            element={
-              <MobileAppDevelopmentPage
-                onOpenContact={() => scrollToSection('contact')}
+              <Route
+                path="/services/mobile-app-development"
+                element={
+                  <MobileAppDevelopmentPage
+                    onOpenContact={() => scrollToSection('contact')}
+                  />
+                }
               />
-            }
-          />
-          <Route
-            path="/services/ui-ux-design"
-            element={
-              <UiUxDesignPage
-                onOpenContact={() => scrollToSection('contact')}
+              <Route
+                path="/services/ui-ux-design"
+                element={
+                  <UiUxDesignPage
+                    onOpenContact={() => scrollToSection('contact')}
+                  />
+                }
               />
-            }
-          />
-          <Route
-            path="/services/seo"
-            element={
-              <SeoPage
-                onOpenContact={() => scrollToSection('contact')}
+              <Route
+                path="/services/seo"
+                element={
+                  <SeoPage
+                    onOpenContact={() => scrollToSection('contact')}
+                  />
+                }
               />
-            }
-          />
-          <Route
-            path="/services/ecommerce-development"
-            element={
-              <EcommerceDevelopmentPage
-                onOpenContact={() => scrollToSection('contact')}
+              <Route
+                path="/services/ecommerce-development"
+                element={
+                  <EcommerceDevelopmentPage
+                    onOpenContact={() => scrollToSection('contact')}
+                  />
+                }
               />
-            }
-          />
-          <Route
-            path="/services/ai-automation"
-            element={
-              <AiAutomationPage
-                onOpenContact={() => scrollToSection('contact')}
+              <Route
+                path="/services/ai-automation"
+                element={
+                  <AiAutomationPage
+                    onOpenContact={() => scrollToSection('contact')}
+                  />
+                }
               />
-            }
-          />
-          <Route
-            path="/services/website-maintenance"
-            element={
-              <WebsiteMaintenancePage
-                onOpenContact={() => scrollToSection('contact')}
+              <Route
+                path="/services/website-maintenance"
+                element={
+                  <WebsiteMaintenancePage
+                    onOpenContact={() => scrollToSection('contact')}
+                  />
+                }
               />
-            }
-          />
 
-          {/* Dynamic Fallback Service Slug */}
-          <Route
-            path="/services/:slug"
-            element={
-              <DynamicServiceRoute
-                onOpenContact={() => scrollToSection('contact')}
+              {/* Dynamic Fallback Service Slug */}
+              <Route
+                path="/services/:slug"
+                element={
+                  <DynamicServiceRoute
+                    onOpenContact={() => scrollToSection('contact')}
+                  />
+                }
               />
-            }
-          />
 
-          {/* Catch-all fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+              {/* Catch-all fallback */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Footer */}
