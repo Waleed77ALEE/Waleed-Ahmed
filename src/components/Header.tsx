@@ -49,6 +49,9 @@ export const Header: React.FC<HeaderProps> = ({
 
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+  const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<'services' | 'products' | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [initialSearchQuery, setInitialSearchQuery] = useState('');
   const [wallet, setWallet] = useState<UserWallet>(() =>
@@ -107,15 +110,39 @@ export const Header: React.FC<HeaderProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navItems = [
-    { id: 'hero', label: 'Home' },
-    { id: 'services', label: 'Services' },
-    { id: 'about', label: 'About' },
-    { id: 'projects', label: 'Case Studies' },
-    { id: 'blog', label: 'Blog' },
-    { id: 'testimonials', label: 'Reviews' },
-    { id: 'contact', label: 'Contact' }
+  const servicesDropdownItems = [
+    { label: 'Web Development', slug: 'web-development', path: '/services/web-development', description: 'Custom responsive apps, React, Next.js' },
+    { label: 'AI Solutions', slug: 'ai-automation', path: '/services/ai-automation', description: 'OpenAI, Gemini workflow automation' },
+    { label: 'SEO Services', slug: 'seo', path: '/services/seo', description: 'Technical SEO & content optimization' },
+    { label: 'Graphic Design', slug: 'ui-ux-design', path: '/services/ui-ux-design', description: 'Figma mockups & modern UI/UX design' },
+    { label: 'Digital Marketing', slug: 'ecommerce-development', path: '/services/ecommerce-development', description: 'E-commerce and marketing automation' }
   ];
+
+  const productsDropdownItems = [
+    { label: 'SaaS Products', sectionId: 'software-services', description: 'Full-stack software and tools' },
+    { label: 'AI Tools', sectionId: 'ai-subscriptions', description: 'AI subscriptions and services' },
+    { label: 'Digital Downloads', sectionId: 'software-services', description: 'Premium codebases & assets' },
+    { label: 'Templates', sectionId: 'software-services', description: 'Developer-friendly themes & designs' },
+    { label: 'Premium Resources', sectionId: 'software-services', description: 'E-books, assets and guides' }
+  ];
+
+  const getNavIcon = (name: string) => {
+    switch (name) {
+      case 'Web Development': return <Code2 className="w-3.5 h-3.5 text-cyan-400" />;
+      case 'AI Solutions': return <Cpu className="w-3.5 h-3.5 text-cyan-400" />;
+      case 'SEO Services': return <Search className="w-3.5 h-3.5 text-cyan-400" />;
+      case 'Graphic Design': return <Palette className="w-3.5 h-3.5 text-cyan-400" />;
+      case 'Digital Marketing': return <ShopIcon className="w-3.5 h-3.5 text-cyan-400" />;
+      
+      case 'SaaS Products': return <Database className="w-3.5 h-3.5 text-amber-400" />;
+      case 'AI Tools': return <Sparkles className="w-3.5 h-3.5 text-amber-400" />;
+      case 'Digital Downloads': return <Smartphone className="w-3.5 h-3.5 text-amber-400" />;
+      case 'Templates': return <Code2 className="w-3.5 h-3.5 text-amber-400" />;
+      case 'Premium Resources': return <Shield className="w-3.5 h-3.5 text-amber-400" />;
+      
+      default: return <Sparkles className="w-3.5 h-3.5 text-cyan-400" />;
+    }
+  };
 
   const handleNavClick = (id: string) => {
     setMobileMenuOpen(false);
@@ -123,15 +150,32 @@ export const Header: React.FC<HeaderProps> = ({
       navigate('/services');
       return;
     }
+    
+    let targetSection = id;
+    if (id === 'products') {
+      targetSection = 'software-services';
+    }
 
     if (location.pathname !== '/') {
       navigate('/');
       setTimeout(() => {
-        onNavigate(id);
-      }, 100);
+        onNavigate(targetSection);
+      }, 150);
     } else {
-      onNavigate(id);
+      onNavigate(targetSection);
     }
+  };
+
+  let dropdownTimeout: any = null;
+  const handleMouseEnter = (dropdown: 'services' | 'products') => {
+    if (dropdownTimeout) clearTimeout(dropdownTimeout);
+    setActiveDropdown(dropdown);
+  };
+
+  const handleMouseLeave = () => {
+    dropdownTimeout = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 150);
   };
 
   const waClean = (whatsappNumber || '+923416860077').replace(/[^0-9]/g, '');
@@ -175,33 +219,247 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-0.5 bg-slate-900/70 p-1 rounded-full border border-slate-800/80 backdrop-blur-2xl shadow-inner">
-            {navItems.map((item) => {
-              const isActive =
-                activeSection === item.id ||
-                (item.id === 'services' &&
-                  ['software-services', 'core-services', 'digital-services', 'ai-subscriptions'].includes(activeSection));
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none ${
-                    isActive
-                      ? 'text-white font-semibold'
-                      : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
-                  }`}
-                >
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeNavPill"
-                      className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-slate-800 to-amber-500/20 rounded-full border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] -z-10"
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    />
-                  )}
-                  <span className="relative z-10">{item.label}</span>
-                </button>
-              );
-            })}
+          <nav className="hidden md:flex items-center gap-1 bg-slate-900/70 p-1 rounded-full border border-slate-800/80 backdrop-blur-2xl shadow-inner">
+            {/* Home Link */}
+            <button
+              onClick={() => handleNavClick('hero')}
+              className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none ${
+                location.pathname === '/' && activeSection === 'hero'
+                  ? 'text-white font-semibold'
+                  : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
+              }`}
+            >
+              {location.pathname === '/' && activeSection === 'hero' && (
+                <motion.div
+                  layoutId="activeNavPill"
+                  className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-slate-800 to-amber-500/20 rounded-full border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] -z-10"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10">Home</span>
+            </button>
+
+            {/* Services Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => handleMouseEnter('services')}
+              onMouseLeave={handleMouseLeave}
+            >
+              <button
+                onClick={() => handleNavClick('services')}
+                className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none flex items-center gap-1 ${
+                  location.pathname.startsWith('/services')
+                    ? 'text-white font-semibold'
+                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
+                }`}
+              >
+                {location.pathname.startsWith('/services') && (
+                  <motion.div
+                    layoutId="activeNavPill"
+                    className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-slate-800 to-amber-500/20 rounded-full border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] -z-10"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10 flex items-center gap-1">
+                  Services <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'services' ? 'rotate-180 text-cyan-400' : 'text-slate-500'}`} />
+                </span>
+              </button>
+
+              <AnimatePresence>
+                {activeDropdown === 'services' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute left-1/2 -translate-x-1/2 mt-2 w-72 bg-slate-950/95 border border-slate-800/90 rounded-2xl p-2.5 shadow-2xl backdrop-blur-xl z-50 grid grid-cols-1 gap-1"
+                  >
+                    {servicesDropdownItems.map((subItem) => (
+                      <button
+                        key={subItem.slug}
+                        onClick={() => {
+                          setActiveDropdown(null);
+                          navigate(subItem.path);
+                        }}
+                        className="w-full text-left p-2 rounded-xl hover:bg-slate-950 border border-transparent hover:border-slate-800/60 transition-all flex items-start gap-3 group/sub cursor-pointer"
+                      >
+                        <div className="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20 shrink-0 group-hover/sub:bg-cyan-500/20 group-hover/sub:scale-105 transition-all">
+                          {getNavIcon(subItem.label)}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-[12.5px] font-bold text-slate-100 group-hover/sub:text-cyan-300 transition-colors">
+                            {subItem.label}
+                          </div>
+                          <div className="text-[10px] text-slate-400 group-hover/sub:text-slate-300 transition-colors mt-0.5 line-clamp-1 leading-snug">
+                            {subItem.description}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                    <div className="mt-1 pt-1.5 border-t border-slate-900 text-center">
+                      <Link
+                        to="/services"
+                        onClick={() => setActiveDropdown(null)}
+                        className="inline-flex items-center gap-1 text-[11px] font-bold text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer"
+                      >
+                        <span>Explore All Services</span>
+                        <ArrowUpRight className="w-3 h-3" />
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Products Dropdown */}
+            <div
+              className="relative"
+              onMouseEnter={() => handleMouseEnter('products')}
+              onMouseLeave={handleMouseLeave}
+            >
+              <button
+                onClick={() => handleNavClick('products')}
+                className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none flex items-center gap-1 ${
+                  location.pathname === '/' && ['software-services', 'digital-services', 'ai-subscriptions'].includes(activeSection)
+                    ? 'text-white font-semibold'
+                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
+                }`}
+              >
+                {location.pathname === '/' && ['software-services', 'digital-services', 'ai-subscriptions'].includes(activeSection) && (
+                  <motion.div
+                    layoutId="activeNavPill"
+                    className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-slate-800 to-amber-500/20 rounded-full border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] -z-10"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10 flex items-center gap-1">
+                  Products <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'products' ? 'rotate-180 text-amber-400' : 'text-slate-500'}`} />
+                </span>
+              </button>
+
+              <AnimatePresence>
+                {activeDropdown === 'products' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute left-1/2 -translate-x-1/2 mt-2 w-72 bg-slate-950/95 border border-slate-800/90 rounded-2xl p-2.5 shadow-2xl backdrop-blur-xl z-50 grid grid-cols-1 gap-1"
+                  >
+                    {productsDropdownItems.map((subItem) => (
+                      <button
+                        key={subItem.label}
+                        onClick={() => {
+                          setActiveDropdown(null);
+                          handleNavClick(subItem.sectionId);
+                        }}
+                        className="w-full text-left p-2 rounded-xl hover:bg-slate-950 border border-transparent hover:border-slate-800/60 transition-all flex items-start gap-3 group/sub cursor-pointer"
+                      >
+                        <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 shrink-0 group-hover/sub:bg-amber-500/20 group-hover/sub:scale-105 transition-all">
+                          {getNavIcon(subItem.label)}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="text-[12.5px] font-bold text-slate-100 group-hover/sub:text-amber-300 transition-colors">
+                            {subItem.label}
+                          </div>
+                          <div className="text-[10px] text-slate-400 group-hover/sub:text-slate-300 transition-colors mt-0.5 line-clamp-1 leading-snug">
+                            {subItem.description}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                    <div className="mt-1 pt-1.5 border-t border-slate-900 text-center">
+                      <button
+                        onClick={() => {
+                          setActiveDropdown(null);
+                          handleNavClick('software-services');
+                        }}
+                        className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
+                      >
+                        <span>View SaaS Marketplace</span>
+                        <ArrowUpRight className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Portfolio Link */}
+            <button
+              onClick={() => handleNavClick('projects')}
+              className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none ${
+                location.pathname === '/' && activeSection === 'projects'
+                  ? 'text-white font-semibold'
+                  : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
+              }`}
+            >
+              {location.pathname === '/' && activeSection === 'projects' && (
+                <motion.div
+                  layoutId="activeNavPill"
+                  className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-slate-800 to-amber-500/20 rounded-full border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] -z-10"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10">Portfolio</span>
+            </button>
+
+            {/* Blog Link */}
+            <button
+              onClick={() => handleNavClick('blog')}
+              className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none ${
+                location.pathname === '/' && activeSection === 'blog'
+                  ? 'text-white font-semibold'
+                  : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
+              }`}
+            >
+              {location.pathname === '/' && activeSection === 'blog' && (
+                <motion.div
+                  layoutId="activeNavPill"
+                  className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-slate-800 to-amber-500/20 rounded-full border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] -z-10"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10">Blog</span>
+            </button>
+
+            {/* Reviews Link */}
+            <button
+              onClick={() => handleNavClick('testimonials')}
+              className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none ${
+                location.pathname === '/' && activeSection === 'testimonials'
+                  ? 'text-white font-semibold'
+                  : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
+              }`}
+            >
+              {location.pathname === '/' && activeSection === 'testimonials' && (
+                <motion.div
+                  layoutId="activeNavPill"
+                  className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-slate-800 to-amber-500/20 rounded-full border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] -z-10"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10">Reviews</span>
+            </button>
+
+            {/* Contact Link */}
+            <button
+              onClick={() => handleNavClick('contact')}
+              className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none ${
+                location.pathname === '/' && activeSection === 'contact'
+                  ? 'text-white font-semibold'
+                  : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
+              }`}
+            >
+              {location.pathname === '/' && activeSection === 'contact' && (
+                <motion.div
+                  layoutId="activeNavPill"
+                  className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-slate-800 to-amber-500/20 rounded-full border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] -z-10"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10">Contact</span>
+            </button>
           </nav>
 
           {/* Right Action Buttons */}
@@ -315,25 +573,145 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
 
               <div className="py-1 space-y-1">
-                {navItems.map((item) => {
-                  const isActive =
-                    activeSection === item.id ||
-                    (item.id === 'services' &&
-                      ['software-services', 'core-services', 'digital-services', 'ai-subscriptions'].includes(activeSection));
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => handleNavClick(item.id)}
-                      className={`w-full px-4 py-2.5 text-left text-xs sm:text-sm font-semibold rounded-xl flex items-center justify-between transition-colors ${
-                        isActive
-                          ? 'bg-gradient-to-r from-cyan-500/15 via-cyan-500/10 to-transparent text-cyan-300 border border-cyan-500/30 font-bold'
-                          : 'text-slate-300 hover:bg-slate-900'
-                      }`}
-                    >
-                      <span>{item.label}</span>
-                    </button>
-                  );
-                })}
+                {/* Home */}
+                <button
+                  onClick={() => handleNavClick('hero')}
+                  className={`w-full px-4 py-2.5 text-left text-xs sm:text-sm font-semibold rounded-xl flex items-center justify-between transition-colors cursor-pointer ${
+                    location.pathname === '/' && activeSection === 'hero'
+                      ? 'bg-gradient-to-r from-cyan-500/15 via-cyan-500/10 to-transparent text-cyan-300 border border-cyan-500/30 font-bold'
+                      : 'text-slate-300 hover:bg-slate-900'
+                  }`}
+                >
+                  <span>Home</span>
+                </button>
+
+                {/* Services Accordion */}
+                <div className="space-y-0.5">
+                  <button
+                    onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
+                    className={`w-full px-4 py-2.5 text-left text-xs sm:text-sm font-semibold rounded-xl flex items-center justify-between transition-colors cursor-pointer ${
+                      location.pathname.startsWith('/services')
+                        ? 'bg-gradient-to-r from-cyan-500/15 via-cyan-500/10 to-transparent text-cyan-300 border border-cyan-500/30 font-bold'
+                        : 'text-slate-300 hover:bg-slate-900'
+                    }`}
+                  >
+                    <span>Services</span>
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileServicesOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {mobileServicesOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="pl-4 pr-2 py-1 space-y-1 overflow-hidden"
+                      >
+                        {servicesDropdownItems.map((subItem) => (
+                          <button
+                            key={subItem.slug}
+                            onClick={() => {
+                              setMobileMenuOpen(false);
+                              navigate(subItem.path);
+                            }}
+                            className="w-full px-4 py-2 text-left text-[11.5px] font-medium text-slate-400 hover:text-cyan-300 flex items-center gap-2 rounded-lg hover:bg-slate-900/50 cursor-pointer"
+                          >
+                            {getNavIcon(subItem.label)}
+                            <span>{subItem.label}</span>
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Products Accordion */}
+                <div className="space-y-0.5">
+                  <button
+                    onClick={() => setMobileProductsOpen(!mobileProductsOpen)}
+                    className={`w-full px-4 py-2.5 text-left text-xs sm:text-sm font-semibold rounded-xl flex items-center justify-between transition-colors cursor-pointer ${
+                      location.pathname === '/' && ['software-services', 'digital-services', 'ai-subscriptions'].includes(activeSection)
+                        ? 'bg-gradient-to-r from-cyan-500/15 via-cyan-500/10 to-transparent text-cyan-300 border border-cyan-500/30 font-bold'
+                        : 'text-slate-300 hover:bg-slate-900'
+                    }`}
+                  >
+                    <span>Products</span>
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileProductsOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {mobileProductsOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="pl-4 pr-2 py-1 space-y-1 overflow-hidden"
+                      >
+                        {productsDropdownItems.map((subItem) => (
+                          <button
+                            key={subItem.label}
+                            onClick={() => {
+                              setMobileMenuOpen(false);
+                              handleNavClick(subItem.sectionId);
+                            }}
+                            className="w-full px-4 py-2 text-left text-[11.5px] font-medium text-slate-400 hover:text-amber-300 flex items-center gap-2 rounded-lg hover:bg-slate-900/50 cursor-pointer"
+                          >
+                            {getNavIcon(subItem.label)}
+                            <span>{subItem.label}</span>
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Portfolio */}
+                <button
+                  onClick={() => handleNavClick('projects')}
+                  className={`w-full px-4 py-2.5 text-left text-xs sm:text-sm font-semibold rounded-xl flex items-center justify-between transition-colors cursor-pointer ${
+                    location.pathname === '/' && activeSection === 'projects'
+                      ? 'bg-gradient-to-r from-cyan-500/15 via-cyan-500/10 to-transparent text-cyan-300 border border-cyan-500/30 font-bold'
+                      : 'text-slate-300 hover:bg-slate-900'
+                  }`}
+                >
+                  <span>Portfolio</span>
+                </button>
+
+                {/* Blog */}
+                <button
+                  onClick={() => handleNavClick('blog')}
+                  className={`w-full px-4 py-2.5 text-left text-xs sm:text-sm font-semibold rounded-xl flex items-center justify-between transition-colors cursor-pointer ${
+                    location.pathname === '/' && activeSection === 'blog'
+                      ? 'bg-gradient-to-r from-cyan-500/15 via-cyan-500/10 to-transparent text-cyan-300 border border-cyan-500/30 font-bold'
+                      : 'text-slate-300 hover:bg-slate-900'
+                  }`}
+                >
+                  <span>Blog</span>
+                </button>
+
+                {/* Reviews */}
+                <button
+                  onClick={() => handleNavClick('testimonials')}
+                  className={`w-full px-4 py-2.5 text-left text-xs sm:text-sm font-semibold rounded-xl flex items-center justify-between transition-colors cursor-pointer ${
+                    location.pathname === '/' && activeSection === 'testimonials'
+                      ? 'bg-gradient-to-r from-cyan-500/15 via-cyan-500/10 to-transparent text-cyan-300 border border-cyan-500/30 font-bold'
+                      : 'text-slate-300 hover:bg-slate-900'
+                  }`}
+                >
+                  <span>Reviews</span>
+                </button>
+
+                {/* Contact */}
+                <button
+                  onClick={() => handleNavClick('contact')}
+                  className={`w-full px-4 py-2.5 text-left text-xs sm:text-sm font-semibold rounded-xl flex items-center justify-between transition-colors cursor-pointer ${
+                    location.pathname === '/' && activeSection === 'contact'
+                      ? 'bg-gradient-to-r from-cyan-500/15 via-cyan-500/10 to-transparent text-cyan-300 border border-cyan-500/30 font-bold'
+                      : 'text-slate-300 hover:bg-slate-900'
+                  }`}
+                >
+                  <span>Contact</span>
+                </button>
               </div>
 
               {onOpenAndroidApp && (

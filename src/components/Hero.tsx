@@ -65,16 +65,14 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
 
           {/* Headline */}
           <motion.h1 variants={itemVariants} className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] mb-6">
-            Full Stack Engineer
-            <br />
             <span className="bg-gradient-to-r from-amber-400 via-amber-300 to-cyan-400 bg-clip-text text-transparent">
-              Building Premium Websites, AI Solutions & Digital Products.
+              Building Premium Websites, AI Solutions &amp; Digital Products
             </span>
           </motion.h1>
 
           {/* Subheading (Max 2 lines) */}
-          <motion.p variants={itemVariants} className="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed mb-8">
-            I help businesses build modern websites, AI-powered systems, SEO strategies, and digital marketplaces that scale.
+          <motion.p variants={itemVariants} className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto font-normal leading-relaxed mb-8">
+            Helping businesses grow with modern web development, AI-powered automation, SEO, and premium digital products.
           </motion.p>
 
           {/* 4 Technology Pills */}
@@ -90,27 +88,40 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
             ))}
           </motion.div>
 
-          {/* Only 2 CTA Buttons */}
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+          {/* Three Premium CTA Buttons */}
+          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20 w-full max-w-2xl mx-auto">
+            {/* Hire Button */}
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => onNavigate('contact')}
-              className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-extrabold text-slate-950 bg-gradient-to-r from-amber-400 via-amber-300 to-cyan-400 hover:from-amber-300 hover:to-cyan-300 shadow-xl shadow-amber-500/20 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:flex-1 px-6 py-3.5 rounded-xl text-sm font-extrabold text-slate-950 bg-gradient-to-r from-amber-400 via-amber-300 to-cyan-400 hover:from-amber-300 hover:to-cyan-300 shadow-xl shadow-amber-500/20 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
             >
               <Mail className="w-4 h-4 text-slate-950" />
-              <span>Hire Me</span>
+              <span>Hire</span>
               <ArrowRight className="w-4 h-4 text-slate-950" />
             </motion.button>
 
+            {/* Products Button */}
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => onNavigate('software-services')}
+              className="w-full sm:flex-1 px-6 py-3.5 rounded-xl text-sm font-bold text-white bg-slate-900/90 hover:bg-slate-800/90 border border-slate-800 hover:border-slate-700 transition-all duration-200 flex items-center justify-center gap-2 backdrop-blur-md cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4 text-amber-400" />
+              <span>Products</span>
+            </motion.button>
+
+            {/* Portfolio Button */}
             <motion.button
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => onNavigate('projects')}
-              className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-bold text-white bg-slate-900/90 hover:bg-slate-800/90 border border-slate-800 hover:border-slate-700 transition-all duration-200 flex items-center justify-center gap-2 backdrop-blur-md cursor-pointer"
+              className="w-full sm:flex-1 px-6 py-3.5 rounded-xl text-sm font-bold text-white bg-slate-900/90 hover:bg-slate-800/90 border border-slate-800 hover:border-slate-700 transition-all duration-200 flex items-center justify-center gap-2 backdrop-blur-md cursor-pointer"
             >
               <FolderGit2 className="w-4 h-4 text-cyan-400" />
-              <span>View Portfolio</span>
+              <span>Portfolio</span>
             </motion.button>
           </motion.div>
 
