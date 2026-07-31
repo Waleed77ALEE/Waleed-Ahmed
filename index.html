@@ -29,6 +29,13 @@
           s2.setAttribute('custom-element', 'amp-auto-ads');
           document.head.appendChild(s2);
 
+          // Load Google AdSense Script
+          var s3 = document.createElement('script');
+          s3.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4721034449965472';
+          s3.async = true;
+          s3.crossOrigin = 'anonymous';
+          document.head.appendChild(s3);
+
           // Inject <amp-auto-ads> element right at body start when DOM is ready
           window.addEventListener('DOMContentLoaded', function() {
             var ampAd = document.createElement('amp-auto-ads');
@@ -117,9 +124,6 @@
     <!-- Webmaster Verification Placeholders -->
     <meta name="google-site-verification" content="GOOGLE_SEARCH_CONSOLE_VERIFICATION_ID_PLACEHOLDER" />
     <meta name="msvalidate.01" content="BING_WEBMASTER_VERIFICATION_ID_PLACEHOLDER" />
-
-    <!-- Google AdSense Script -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4721034449965472" crossorigin="anonymous"></script>
 
     <!-- Resource Hints & Fonts Preconnect for LCP Optimization -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Header } from './components/Header';
@@ -7,26 +7,31 @@ import { ServiceDetailsModal } from './components/ServiceDetailsModal';
 import { AuthModal } from './components/AuthModal';
 import { AccountModal } from './components/AccountModal';
 import { CartModal } from './components/CartModal';
-import { SupabaseSqlModal } from './components/SupabaseSqlModal';
-import { BinancePayModal } from './components/BinancePayModal';
-import { AdminPanelModal } from './components/AdminPanelModal';
-import { AndroidAppModal } from './components/AndroidAppModal';
-import { LegalPagesModal, LegalTabType } from './components/LegalPagesModal';
 import { SeoSchemas } from './components/SeoSchemas';
 import { ServiceItem } from './types';
 
-// Page Imports
+// Eager Main Entry Page
 import { HomePage } from './pages/HomePage';
-import { MarketplacePage } from './pages/MarketplacePage';
-import { ServicesOverviewPage } from './pages/services/ServicesOverviewPage';
-import { WebDevelopmentPage } from './pages/services/WebDevelopmentPage';
-import { MobileAppDevelopmentPage } from './pages/services/MobileAppDevelopmentPage';
-import { UiUxDesignPage } from './pages/services/UiUxDesignPage';
-import { SeoPage } from './pages/services/SeoPage';
-import { EcommerceDevelopmentPage } from './pages/services/EcommerceDevelopmentPage';
-import { AiAutomationPage } from './pages/services/AiAutomationPage';
-import { WebsiteMaintenancePage } from './pages/services/WebsiteMaintenancePage';
-import { SingleServicePage } from './pages/services/SingleServicePage';
+
+// Lazy Loaded Secondary Pages
+const MarketplacePage = lazy(() => import('./pages/MarketplacePage').then(m => ({ default: m.MarketplacePage })));
+const ServicesOverviewPage = lazy(() => import('./pages/services/ServicesOverviewPage').then(m => ({ default: m.ServicesOverviewPage })));
+const WebDevelopmentPage = lazy(() => import('./pages/services/WebDevelopmentPage').then(m => ({ default: m.WebDevelopmentPage })));
+const MobileAppDevelopmentPage = lazy(() => import('./pages/services/MobileAppDevelopmentPage').then(m => ({ default: m.MobileAppDevelopmentPage })));
+const UiUxDesignPage = lazy(() => import('./pages/services/UiUxDesignPage').then(m => ({ default: m.UiUxDesignPage })));
+const SeoPage = lazy(() => import('./pages/services/SeoPage').then(m => ({ default: m.SeoPage })));
+const EcommerceDevelopmentPage = lazy(() => import('./pages/services/EcommerceDevelopmentPage').then(m => ({ default: m.EcommerceDevelopmentPage })));
+const AiAutomationPage = lazy(() => import('./pages/services/AiAutomationPage').then(m => ({ default: m.AiAutomationPage })));
+const WebsiteMaintenancePage = lazy(() => import('./pages/services/WebsiteMaintenancePage').then(m => ({ default: m.WebsiteMaintenancePage })));
+const SingleServicePage = lazy(() => import('./pages/services/SingleServicePage').then(m => ({ default: m.SingleServicePage })));
+
+// Lazy Loaded Modals
+const SupabaseSqlModal = lazy(() => import('./components/SupabaseSqlModal').then(m => ({ default: m.SupabaseSqlModal })));
+const BinancePayModal = lazy(() => import('./components/BinancePayModal').then(m => ({ default: m.BinancePayModal })));
+const AdminPanelModal = lazy(() => import('./components/AdminPanelModal').then(m => ({ default: m.AdminPanelModal })));
+const AndroidAppModal = lazy(() => import('./components/AndroidAppModal').then(m => ({ default: m.AndroidAppModal })));
+const LegalPagesModal = lazy(() => import('./components/LegalPagesModal').then(m => ({ default: m.LegalPagesModal })));
+import type { LegalTabType } from './components/LegalPagesModal';
 
 import {
   supabase,
@@ -45,6 +50,13 @@ const DynamicServiceRoute: React.FC<{ onOpenContact: () => void }> = ({ onOpenCo
   const { slug } = useParams<{ slug: string }>();
   return <SingleServicePage slug={slug || ''} onOpenContact={onOpenContact} />;
 };
+
+const LoadingFallback = () => (
+  <div className="min-h-[50vh] flex flex-col items-center justify-center py-16 text-center">
+    <div className="w-10 h-10 border-3 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mb-3" />
+    <p className="text-xs text-slate-400 font-medium tracking-wide">Loading content...</p>
+  </div>
+);
 
 export default function App() {
   const location = useLocation();
@@ -277,7 +289,8 @@ export default function App() {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="w-full"
           >
-            <Routes location={location}>
+            <Suspense fallback={<LoadingFallback />}>
+              <Routes location={location}>
               {/* Home Page */}
               <Route
                 path="/"
@@ -391,7 +404,8 @@ export default function App() {
               {/* Catch-all fallback */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-          </motion.div>
+          </Suspense>
+        </motion.div>
         </AnimatePresence>
       </main>
 
@@ -411,13 +425,6 @@ export default function App() {
         whatsappNumber={whatsappNumber}
         onContactClick={() => scrollToSection('contact')}
         onBuyNow={handleBuyNow}
-      />
-
-      {/* Legal Pages Modal (Privacy, Terms, Disclaimer, Cookie Policy) */}
-      <LegalPagesModal
-        isOpen={isLegalModalOpen}
-        onClose={() => setIsLegalModalOpen(false)}
-        initialTab={legalActiveTab}
       />
 
       {/* Supabase Authentication Modal */}
@@ -458,41 +465,43 @@ export default function App() {
         }}
       />
 
-      {/* Supabase SQL Schema Viewer Modal */}
-      <SupabaseSqlModal
-        isOpen={isSqlModalOpen}
-        onClose={() => setIsSqlModalOpen(false)}
-      />
+      <Suspense fallback={null}>
+        {/* Supabase SQL Schema Viewer Modal */}
+        <SupabaseSqlModal
+          isOpen={isSqlModalOpen}
+          onClose={() => setIsSqlModalOpen(false)}
+        />
 
-      {/* Binance Pay & Payment Proof Modal */}
-      <BinancePayModal
-        isOpen={isBinanceModalOpen}
-        onClose={() => setIsBinanceModalOpen(false)}
-        whatsappNumber={whatsappNumber}
-        totalAmount={selectedServiceForPayment ? selectedServiceForPayment.price : 0}
-        serviceTitle={selectedServiceForPayment ? selectedServiceForPayment.title : ''}
-      />
+        {/* Binance Pay & Payment Proof Modal */}
+        <BinancePayModal
+          isOpen={isBinanceModalOpen}
+          onClose={() => setIsBinanceModalOpen(false)}
+          whatsappNumber={whatsappNumber}
+          totalAmount={selectedServiceForPayment ? selectedServiceForPayment.price : 0}
+          serviceTitle={selectedServiceForPayment ? selectedServiceForPayment.title : ''}
+        />
 
-      {/* Admin Product & Store Management Portal Modal */}
-      <AdminPanelModal
-        isOpen={isAdminModalOpen}
-        onClose={() => setIsAdminModalOpen(false)}
-      />
+        {/* Admin Product & Store Management Portal Modal */}
+        <AdminPanelModal
+          isOpen={isAdminModalOpen}
+          onClose={() => setIsAdminModalOpen(false)}
+        />
 
-      {/* Android APK & PWA App Download Portal Modal */}
-      <AndroidAppModal
-        isOpen={isAndroidAppModalOpen}
-        onClose={() => setIsAndroidAppModalOpen(false)}
-        deferredPrompt={deferredPrompt}
-        onInstallPWA={handleInstallPWA}
-      />
+        {/* Android APK & PWA App Download Portal Modal */}
+        <AndroidAppModal
+          isOpen={isAndroidAppModalOpen}
+          onClose={() => setIsAndroidAppModalOpen(false)}
+          deferredPrompt={deferredPrompt}
+          onInstallPWA={handleInstallPWA}
+        />
 
-      {/* Merchant Legal Policies & Compliance Modal */}
-      <LegalPagesModal
-        isOpen={isLegalModalOpen}
-        onClose={() => setIsLegalModalOpen(false)}
-        defaultTab={legalActiveTab}
-      />
+        {/* Merchant Legal Policies & Compliance Modal */}
+        <LegalPagesModal
+          isOpen={isLegalModalOpen}
+          onClose={() => setIsLegalModalOpen(false)}
+          defaultTab={legalActiveTab}
+        />
+      </Suspense>
     </div>
   );
 }

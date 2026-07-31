@@ -17,7 +17,13 @@ if ('serviceWorker' in navigator) {
     window.self !== window.top;
 
   if (isDevOrPreview) {
-    // Actively unregister service workers in dev/preview to prevent ad scripts from hijacking React 19 hooks context
+    // Actively unregister service workers and clear caches in dev/preview to prevent React 19 hook dispatcher conflicts
+    if ('caches' in window) {
+      caches.keys().then((names) => {
+        names.forEach((name) => caches.delete(name));
+      });
+    }
+
     navigator.serviceWorker.getRegistrations().then((registrations) => {
       let unregisteredAny = false;
       const promises = registrations.map((registration) => {

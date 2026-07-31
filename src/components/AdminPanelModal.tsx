@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { UserAnalyticsCharts } from './UserAnalyticsCharts';
 import {
   productStore,
   ExtendedProductItem,
@@ -660,6 +661,13 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                     </button>
                   </div>
 
+                  {/* Recharts Analytics Visualization Section */}
+                  <UserAnalyticsCharts
+                    users={registeredUsers}
+                    orders={orders}
+                    softwareOrders={softwareOrders}
+                  />
+
                   {/* Recent Products Preview */}
                   <div className="space-y-3">
                     <h4 className="text-xs font-bold text-slate-400 tracking-wider uppercase">
@@ -1103,6 +1111,13 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                       <span>{isSyncingUsers ? 'Syncing Cloud Users...' : 'Sync & Refresh Users'}</span>
                     </button>
                   </div>
+
+                  {/* Recharts Signup Trends & Conversion Visualizer */}
+                  <UserAnalyticsCharts
+                    users={registeredUsers}
+                    orders={orders}
+                    softwareOrders={softwareOrders}
+                  />
 
                   {/* Metric Cards */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
