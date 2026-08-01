@@ -45,7 +45,84 @@ export const SeoSchemas: React.FC = () => {
       ]
     };
 
-    // 2. ProfessionalService & Organization Schema
+    // 2. Individual Service Schemas Graph
+    const individualServicesSchema = {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'Service',
+          '@id': 'https://www.waleedkhanafridi.online/#service-fullstack',
+          name: 'Custom Full Stack Web Application Development',
+          description: 'Modern, scalable, and high-performance web applications built with React, Next.js, Node.js, and Supabase. Fully responsive, SEO-friendly, and production-ready solutions tailored to business needs.',
+          provider: {
+            '@type': 'Person',
+            '@id': 'https://www.waleedkhanafridi.online/#person',
+            name: 'Waleed Khan Afridi',
+            url: 'https://www.waleedkhanafridi.online/',
+            jobTitle: 'Senior Full Stack Developer & SEO Expert'
+          },
+          serviceType: 'Full Stack Web Development',
+          areaServed: {
+            '@type': 'Place',
+            name: 'Worldwide'
+          },
+          url: 'https://www.waleedkhanafridi.online/#services'
+        },
+        {
+          '@type': 'Service',
+          '@id': 'https://www.waleedkhanafridi.online/#service-wordpress',
+          name: 'WordPress & WooCommerce Custom Development',
+          description: 'High-converting e-commerce stores, custom WordPress themes, plugin development, performance optimization, and complete WooCommerce solutions built for speed and conversions.',
+          provider: {
+            '@type': 'Person',
+            '@id': 'https://www.waleedkhanafridi.online/#person',
+            name: 'Waleed Khan Afridi'
+          },
+          serviceType: 'WordPress & WooCommerce Development',
+          areaServed: {
+            '@type': 'Place',
+            name: 'Worldwide'
+          },
+          url: 'https://www.waleedkhanafridi.online/#services'
+        },
+        {
+          '@type': 'Service',
+          '@id': 'https://www.waleedkhanafridi.online/#service-seo',
+          name: 'Enterprise Technical SEO & Speed Optimization',
+          description: 'Complete technical SEO services including Schema markup, Core Web Vitals optimization, Google Search Console setup, crawlability improvements, and organic ranking strategies.',
+          provider: {
+            '@type': 'Person',
+            '@id': 'https://www.waleedkhanafridi.online/#person',
+            name: 'Waleed Khan Afridi'
+          },
+          serviceType: 'Technical SEO',
+          areaServed: {
+            '@type': 'Place',
+            name: 'Worldwide'
+          },
+          url: 'https://www.waleedkhanafridi.online/#services'
+        },
+        {
+          '@type': 'Service',
+          '@id': 'https://www.waleedkhanafridi.online/#service-ai-marketplace',
+          name: 'Verified AI Subscriptions & Digital Growth Marketplace',
+          description: 'Verified OpenAI API credits, HeyGen, Kling AI accounts, and organic social media growth services for Instagram and YouTube.',
+          provider: {
+            '@type': 'Person',
+            '@id': 'https://www.waleedkhanafridi.online/#person',
+            name: 'Waleed Khan Afridi'
+          },
+          serviceType: 'AI & Digital Growth Services',
+          areaServed: {
+            '@type': 'Place',
+            name: 'Worldwide'
+          },
+          url: 'https://www.waleedkhanafridi.online/#marketplace'
+        }
+      ]
+    };
+
+    // 3. ProfessionalService & Organization Schema
     const serviceSchema = {
       '@context': 'https://schema.org',
       '@type': 'ProfessionalService',
@@ -221,12 +298,13 @@ export const SeoSchemas: React.FC = () => {
     }
 
     injectScript('person-schema', personSchema);
+    injectScript('individual-services-schema', individualServicesSchema);
     injectScript('service-schema', serviceSchema);
     injectScript('faq-schema', faqSchema);
     injectScript('breadcrumb-schema', breadcrumbSchema);
 
     return () => {
-      ['person-schema', 'service-schema', 'faq-schema', 'breadcrumb-schema', 'product-catalog-schema'].forEach((id) => {
+      ['person-schema', 'individual-services-schema', 'service-schema', 'faq-schema', 'breadcrumb-schema', 'product-catalog-schema'].forEach((id) => {
         const elem = document.getElementById(id);
         if (elem) elem.remove();
       });
