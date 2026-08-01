@@ -26,6 +26,7 @@ import {
 import { AiSubscriptionPlan, SubscriptionDuration } from '../data/aiSubscriptionsData';
 import { aiSubscriptionStore } from '../services/aiSubscriptionStore';
 import { PlatformLogo } from './PlatformLogo';
+import { SecurityFeature } from './SecurityFeature';
 import { AiSubscriptionDetailsModal } from './AiSubscriptionDetailsModal';
 import { AiSubscriptionCheckoutModal } from './AiSubscriptionCheckoutModal';
 
@@ -413,6 +414,8 @@ export const AiSubscriptionMarketplace: React.FC<AiSubscriptionMarketplaceProps>
                         <MessageSquare className="w-3 h-3 text-emerald-400" />
                         <span>Contact Support via WhatsApp</span>
                       </a>
+
+                      <SecurityFeature variant="compact" />
                     </div>
                   </div>
                 </motion.div>

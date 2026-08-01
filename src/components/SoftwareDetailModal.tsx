@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SoftwareProduct } from '../data/softwareData';
+import { SoftwareBrandLogo } from './SoftwareBrandLogo';
 
 interface SoftwareDetailModalProps {
   isOpen: boolean;
@@ -52,9 +53,7 @@ export const SoftwareDetailModal: React.FC<SoftwareDetailModalProps> = ({
           {/* Header */}
           <div className="p-5 sm:p-6 border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-xl flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center">
-                <Sparkles className="w-5 h-5" />
-              </div>
+              <SoftwareBrandLogo slug={product.slug} category={product.category} size="md" />
               <div>
                 <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400">
                   Software Details &amp; Specifications

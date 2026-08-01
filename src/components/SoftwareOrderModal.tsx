@@ -457,18 +457,18 @@ export const SoftwareOrderModal: React.FC<SoftwareOrderModalProps> = ({
                   {paymentMethod === 'JazzCash' && (
                     <div className="space-y-2 text-xs">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-emerald-400">JazzCash / Local Bank Transfer</span>
+                        <span className="font-bold text-[#F15A24]">JazzCash Merchant Account</span>
                         <span className="text-[10px] text-slate-400">PKR Equivalent</span>
                       </div>
                       <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
                         <div>
-                          <code className="font-mono text-white font-bold block">03416860077</code>
-                          <span className="text-[10px] text-slate-400 block">Title: Waleed Khan Afridi</span>
+                          <code className="font-mono text-[#F15A24] font-black text-sm block tracking-wider">03141137917</code>
+                          <span className="text-[10px] text-slate-300 block">Business: <strong>Alee Customers</strong></span>
                         </div>
                         <button
                           type="button"
-                          onClick={() => handleCopy('03416860077', 'jazz')}
-                          className="px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-white text-[10px] font-bold flex items-center gap-1"
+                          onClick={() => handleCopy('03141137917', 'jazz')}
+                          className="px-2.5 py-1 rounded-lg bg-[#F15A24]/20 border border-[#F15A24]/30 text-[#F15A24] hover:bg-[#F15A24]/30 text-[10px] font-bold flex items-center gap-1 cursor-pointer"
                         >
                           {copiedText === 'jazz' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                           <span>{copiedText === 'jazz' ? 'Copied' : 'Copy Number'}</span>

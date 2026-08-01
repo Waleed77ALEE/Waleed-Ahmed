@@ -340,18 +340,18 @@ export const AiSubscriptionCheckoutModal: React.FC<AiSubscriptionCheckoutModalPr
                   {paymentMethod === 'JazzCash' && (
                     <div>
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-emerald-400">JazzCash Account:</span>
+                        <span className="font-bold text-[#F15A24]">JazzCash Merchant Account:</span>
                         <button
                           type="button"
-                          onClick={() => handleCopyPaymentInfo('03416860077')}
-                          className="text-[10px] text-emerald-400 hover:underline flex items-center gap-1"
+                          onClick={() => handleCopyPaymentInfo('03141137917')}
+                          className="text-[10px] text-[#F15A24] hover:underline flex items-center gap-1 font-bold"
                         >
-                          {copiedAccount ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                          Copy Number
+                          {copiedAccount ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                          Copy Merchant Number
                         </button>
                       </div>
-                      <p className="font-mono text-white text-sm font-bold mt-0.5">03416860077</p>
-                      <p className="text-[11px] text-slate-400">Title: <strong>Waleed Khan Afridi</strong> (Rate ~278 PKR/USD)</p>
+                      <p className="font-mono text-[#F15A24] text-base font-black mt-0.5 tracking-wider">03141137917</p>
+                      <p className="text-[11px] text-slate-300">Business Name: <strong className="text-white">Alee Customers</strong> (Rate ~278 PKR/USD)</p>
                     </div>
                   )}
 

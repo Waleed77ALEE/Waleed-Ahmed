@@ -627,10 +627,10 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                   )}
 
                   {topupMethod.includes('JazzCash') && (
-                    <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-xs space-y-1 text-slate-300 font-mono">
-                      <p className="font-bold text-emerald-300">JazzCash PKR Account:</p>
-                      <p>Account Number: <strong className="text-white">03416860077</strong></p>
-                      <p>Account Title: <strong className="text-white">Waleed Khan Afridi</strong></p>
+                    <div className="p-3.5 rounded-2xl bg-[#F15A24]/10 border border-[#F15A24]/30 text-xs space-y-1 text-slate-300 font-mono">
+                      <p className="font-bold text-[#F15A24]">JazzCash Merchant PKR Account:</p>
+                      <p>Merchant Number: <strong className="text-white text-sm">03141137917</strong></p>
+                      <p>Business Name: <strong className="text-white">Alee Customers</strong></p>
                       <p className="text-[10px] text-slate-400 mt-1">Rate conversion: 1 USD = ~278 PKR</p>
                     </div>
                   )}

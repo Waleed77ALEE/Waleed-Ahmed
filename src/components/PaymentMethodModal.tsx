@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X, Copy, Check, QrCode, Upload, ShieldCheck, CheckCircle2, Image as ImageIcon, Sparkles, Key, RefreshCw, MessageSquare, Wallet } from 'lucide-react';
+import { X, Copy, Check, QrCode, Upload, ShieldCheck, CheckCircle2, Image as ImageIcon, Sparkles, Key, RefreshCw, MessageSquare, Wallet, Smartphone } from 'lucide-react';
 import paymentData from '../data/paymentMethods.json';
 import { loadUserWallet, deductWalletBalance, subscribeWallet, UserWallet } from '../services/walletStore';
+import { JazzCashPaymentSection } from './JazzCashPaymentSection';
 
 export interface PaymentMethodModalProps {
   isOpen: boolean;
@@ -23,7 +24,7 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
   onPaymentSubmitted
 }) => {
   const { merchant, paymentMethods } = paymentData;
-  const [activeTab, setActiveTab] = useState<string>('wallet_pay');
+  const [activeTab, setActiveTab] = useState<string>('jazzcash');
   const [wallet, setWallet] = useState<UserWallet>(() => loadUserWallet());
   const [walletError, setWalletError] = useState('');
 
@@ -181,7 +182,9 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
                 onClick={() => setActiveTab(method.id)}
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
                   isActive
-                    ? method.id === 'payoneer'
+                    ? method.id === 'jazzcash'
+                      ? 'bg-[#F15A24] text-white font-black shadow-lg shadow-[#F15A24]/30'
+                      : method.id === 'payoneer'
                       ? 'bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 text-white font-black shadow-lg shadow-orange-500/20'
                       : method.id === 'whatsapp_direct'
                       ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
@@ -189,6 +192,7 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
                     : 'bg-slate-800/80 text-slate-400 hover:text-white'
                 }`}
               >
+                {method.id === 'jazzcash' && <Smartphone className="w-4 h-4 text-white" />}
                 {method.id === 'payoneer' && <Sparkles className="w-4 h-4 text-amber-300" />}
                 {method.id === 'binance_pay' && <ShieldCheck className="w-4 h-4" />}
                 {method.id === 'whatsapp_direct' && <MessageSquare className="w-4 h-4" />}
@@ -216,6 +220,19 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
               </div>
               <span className="text-2xl font-black font-mono text-cyan-400">${totalAmount.toFixed(2)} USD</span>
             </div>
+          )}
+
+          {/* JAZZCASH PAYMENT TAB CONTENT */}
+          {activeTab === 'jazzcash' && (
+            <JazzCashPaymentSection
+              orderId={orderNumber}
+              defaultAmountUsd={totalAmount}
+              onPaymentSubmitted={(details) => {
+                if (onPaymentSubmitted) {
+                  onPaymentSubmitted(details.txId, details.screenshot || '');
+                }
+              }}
+            />
           )}
 
           {/* WALLET BALANCE TAB CONTENT */}
@@ -417,12 +434,21 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
           {/* QR Code Tab */}
           {activeTab === 'qr_code' && (
             <div className="p-5 rounded-2xl bg-slate-950 border border-amber-500/30 text-center space-y-4">
-              <div className="inline-block p-4 bg-white rounded-2xl shadow-xl">
-                <QrCode className="w-44 h-44 text-slate-950 mx-auto" />
+              <div className="inline-block p-3 bg-amber-400/10 border-2 border-amber-400 rounded-2xl shadow-xl max-w-[260px] mx-auto">
+                <img
+                  src="/jazzcash_alee_qr.jpg"
+                  alt="Alee Customers Official JazzCash and Raast QR Code Barcode Standee"
+                  className="w-full h-auto rounded-xl shadow-md"
+                  referrerPolicy="no-referrer"
+                />
               </div>
-              <div>
-                <span className="text-xs font-mono text-amber-300 font-bold block">Binance Pay ID: {merchant.binancePayId}</span>
-                <span className="text-[11px] text-slate-400 mt-1 block">Scan with Binance App for Instant Transfer</span>
+              <div className="space-y-1.5">
+                <span className="text-xs font-mono text-amber-300 font-extrabold block">Official Merchant: Alee Customers</span>
+                <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-center space-y-1">
+                  <span className="text-[10px] text-amber-400 font-bold uppercase block">JazzCash / Raast TILL ID</span>
+                  <span className="font-mono font-black text-amber-300 text-lg tracking-widest block">981241835</span>
+                  <span className="text-[10px] text-slate-400 block">Dial <strong className="text-amber-300">*786*10#</strong> to pay via TILL ID</span>
+                </div>
               </div>
             </div>
           )}
