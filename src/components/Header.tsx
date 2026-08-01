@@ -469,6 +469,20 @@ export const Header: React.FC<HeaderProps> = ({
               )}
               <span className="relative z-10">Contact</span>
             </button>
+
+            {/* ReferralPro Partner Program Link */}
+            <Link
+              to="/referralpro"
+              className={`relative px-3.5 py-1.5 text-[12.5px] font-bold tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none flex items-center gap-1.5 ${
+                location.pathname === '/referralpro'
+                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm'
+                  : 'text-amber-400 hover:text-amber-300 hover:bg-amber-500/10'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+              <span>ReferralPro</span>
+              <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 font-black">25%</span>
+            </Link>
           </nav>
 
           {/* Right Action Buttons */}

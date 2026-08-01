@@ -23,23 +23,116 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
 
   const handleGoogleSignIn = async () => {
     setErrorMsg('');
-    setSuccessMsg('');
+    setSuccessMsg('Initializing Google OAuth login...');
     setLoading(true);
+
     try {
+      // 1. Verify Supabase Environment Credentials
+      const env = (import.meta as any).env || {};
+      const supabaseUrl = env.VITE_SUPABASE_URL || 'https://bspuihgnwkpcfkfvffum.supabase.co';
+      const supabaseAnonKey = env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_Y7tDSyXyvW0dNgtfq3AUoQ_z7i_odLs';
+
+      if (!supabaseUrl || !supabaseAnonKey) {
+        const missingErr = 'Supabase configuration is missing or incomplete (URL / Anon Key).';
+        console.error('Google Auth Error:', missingErr);
+        setErrorMsg(missingErr);
+        setLoading(false);
+        return;
+      }
+
+      // 2. Construct production-ready redirect URL preserving current path
+      const currentOrigin = window.location.origin;
+      const currentPath = window.location.pathname + window.location.search + window.location.hash;
+      const redirectUrl = `${currentOrigin}${window.location.pathname}`;
+
+      console.log('🚀 Initiating Google Sign-In via Supabase Auth...');
+      console.log('📌 Current Origin:', currentOrigin);
+      console.log('📌 Target Redirect URL:', redirectUrl);
+      console.log('📌 Pre-login return path saved:', currentPath);
+
+      try {
+        localStorage.setItem('auth_redirect_after_login', currentPath);
+      } catch (e) {
+        console.warn('Unable to write auth_redirect_after_login to localStorage:', e);
+      }
+
+      // 3. Initiate Google OAuth flow with skipBrowserRedirect: true first to obtain URL
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: window.location.origin
+          redirectTo: redirectUrl,
+          skipBrowserRedirect: true,
+          queryParams: {
+            prompt: 'select_account',
+            access_type: 'offline'
+          }
         }
       });
+
       if (error) {
-        setErrorMsg(error.message);
+        console.error('❌ Supabase Google OAuth Error:', error);
+        setErrorMsg(`Google OAuth Error: ${error.message || 'Authentication request failed'}`);
+        setLoading(false);
+        return;
+      }
+
+      if (data?.url) {
+        console.log('✅ Google OAuth Authorization URL generated successfully:', data.url);
+        setSuccessMsg('Redirecting to Google Account Login...');
+
+        const isIframe = window.self !== window.top;
+
+        if (isIframe) {
+          console.log('ℹ️ Running inside iframe context (AI Studio preview). Opening Google OAuth in popup / top window...');
+          const width = 600;
+          const height = 700;
+          const left = Math.max(0, (window.screen.width - width) / 2);
+          const top = Math.max(0, (window.screen.height - height) / 2);
+
+          const popup = window.open(
+            data.url,
+            'google_oauth_popup',
+            `width=${width},height=${height},top=${top},left=${left},status=yes,scrollbars=yes,resizable=yes`
+          );
+
+          if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+            console.warn('⚠️ Popup blocked by browser. Falling back to top-level navigation...');
+            if (window.top) {
+              window.top.location.href = data.url;
+            } else {
+              window.location.href = data.url;
+            }
+          } else {
+            popup.focus();
+            setSuccessMsg('Google Login window launched! Please complete authentication in the popup.');
+          }
+        } else {
+          // Direct browser tab (Desktop & Mobile browsers)
+          console.log('➡️ Direct browser tab detected. Navigating immediately to Google OAuth page...');
+          window.location.href = data.url;
+        }
       } else {
-        setSuccessMsg('Redirecting to Google Sign-In...');
+        // Fallback: standard redirect
+        console.log('ℹ️ Calling standard signInWithOAuth redirect fallback...');
+        const fallbackRes = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: redirectUrl,
+            queryParams: {
+              prompt: 'select_account'
+            }
+          }
+        });
+
+        if (fallbackRes.error) {
+          console.error('❌ Standard Google OAuth Fallback Error:', fallbackRes.error);
+          setErrorMsg(fallbackRes.error.message);
+          setLoading(false);
+        }
       }
     } catch (err: any) {
-      setErrorMsg(err.message || 'Failed to initiate Google sign-in.');
-    } finally {
+      console.error('💥 Google Sign-In Exception:', err);
+      setErrorMsg(err?.message || 'Failed to initiate Google Sign-In.');
       setLoading(false);
     }
   };

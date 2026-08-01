@@ -24,6 +24,7 @@ const EcommerceDevelopmentPage = lazy(() => import('./pages/services/EcommerceDe
 const AiAutomationPage = lazy(() => import('./pages/services/AiAutomationPage').then(m => ({ default: m.AiAutomationPage })));
 const WebsiteMaintenancePage = lazy(() => import('./pages/services/WebsiteMaintenancePage').then(m => ({ default: m.WebsiteMaintenancePage })));
 const SingleServicePage = lazy(() => import('./pages/services/SingleServicePage').then(m => ({ default: m.SingleServicePage })));
+const ReferralProPage = lazy(() => import('./pages/ReferralProPage').then(m => ({ default: m.ReferralProPage })));
 
 // Lazy Loaded Modals
 const SupabaseSqlModal = lazy(() => import('./components/SupabaseSqlModal').then(m => ({ default: m.SupabaseSqlModal })));
@@ -38,6 +39,7 @@ import {
   UserProfile,
   SupabaseCartItem,
   getProfile,
+  upsertProfile,
   fetchCart,
   addToCartDB,
   updateCartQtyDB,
@@ -86,6 +88,62 @@ export default function App() {
   // Direct WhatsApp contact number for Waleed Khan Afridi
   const whatsappNumber = '+923416860077';
 
+  const loadUserProfile = async (userId: string, authUserParam?: any) => {
+    try {
+      const prof = await getProfile(userId);
+      const targetUser = authUserParam || user;
+
+      if (prof) {
+        setProfile(prof);
+        recordUserSignup({
+          id: prof.id,
+          email: prof.email,
+          fullName: prof.full_name,
+          whatsapp: prof.whatsapp,
+          provider: targetUser?.app_metadata?.provider === 'google' ? 'Google' : 'Email',
+          createdAt: prof.created_at
+        });
+      } else if (targetUser) {
+        // Automatic profile creation on first login (e.g. Google OAuth)
+        const email = targetUser.email || '';
+        const fullName =
+          targetUser.user_metadata?.full_name ||
+          targetUser.user_metadata?.name ||
+          email.split('@')[0] ||
+          'Member';
+        const whatsapp = targetUser.user_metadata?.whatsapp || '';
+
+        const newProf: UserProfile = {
+          id: userId,
+          email,
+          full_name: fullName,
+          whatsapp,
+          created_at: new Date().toISOString()
+        };
+
+        console.log('👤 Creating automatic profile record for first-time Google sign-in user:', newProf);
+        await upsertProfile(newProf);
+        setProfile(newProf);
+
+        recordUserSignup({
+          id: userId,
+          email,
+          fullName,
+          whatsapp,
+          provider: targetUser.app_metadata?.provider === 'google' ? 'Google' : 'Email',
+          createdAt: targetUser.created_at || new Date().toISOString()
+        });
+      }
+    } catch (err) {
+      console.error('loadUserProfile error:', err);
+    }
+  };
+
+  const loadCart = async (userId: string | null) => {
+    const items = await fetchCart(userId || 'guest');
+    setCart(items);
+  };
+
   useEffect(() => {
     // PWA beforeinstallprompt event listener for 1-click Android installation
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -95,11 +153,15 @@ export default function App() {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
     // 1. Initial Supabase Auth Check
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error('❌ Supabase getSession error:', error.message);
+      }
       const currentUser = session?.user || null;
       setUser(currentUser);
       if (currentUser) {
-        loadUserProfile(currentUser.id);
+        console.log('✅ Active Supabase user session detected:', currentUser.email);
+        loadUserProfile(currentUser.id, currentUser);
         loadCart(currentUser.id);
       } else {
         loadCart(null);
@@ -107,12 +169,29 @@ export default function App() {
     });
 
     // 2. Auth State Listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log(`🔔 Supabase Auth Event [${event}]:`, session?.user?.email || 'No user session');
       const currentUser = session?.user || null;
       setUser(currentUser);
+
       if (currentUser) {
-        loadUserProfile(currentUser.id);
+        await loadUserProfile(currentUser.id, currentUser);
         loadCart(currentUser.id);
+
+        // Redirect user back to page they came from after successful Google or Email login
+        try {
+          const savedReturnPath = localStorage.getItem('auth_redirect_after_login');
+          if (savedReturnPath) {
+            localStorage.removeItem('auth_redirect_after_login');
+            const currentFullPath = window.location.pathname + window.location.search + window.location.hash;
+            if (savedReturnPath && savedReturnPath !== currentFullPath) {
+              console.log('↪️ Restoring pre-login return path:', savedReturnPath);
+              window.history.replaceState(null, '', savedReturnPath);
+            }
+          }
+        } catch (e) {
+          console.warn('Unable to restore auth_redirect_after_login:', e);
+        }
       } else {
         setProfile(null);
         loadCart(null);
@@ -160,37 +239,6 @@ export default function App() {
     } else {
       alert('To install on Android: Open in Google Chrome, tap the 3 dots menu (⋮) in the top right, and select "Install app" or "Add to Home screen".');
     }
-  };
-
-  const loadUserProfile = async (userId: string) => {
-    const prof = await getProfile(userId);
-    if (prof) {
-      setProfile(prof);
-      recordUserSignup({
-        id: prof.id,
-        email: prof.email,
-        fullName: prof.full_name,
-        whatsapp: prof.whatsapp,
-        createdAt: prof.created_at
-      });
-    } else if (user) {
-      // Fallback for user without explicit profile row yet
-      const email = user.email || '';
-      const fullName = user.user_metadata?.full_name || user.user_metadata?.name || email.split('@')[0] || 'Member';
-      recordUserSignup({
-        id: user.id,
-        email,
-        fullName,
-        whatsapp: user.user_metadata?.whatsapp || '',
-        provider: user.app_metadata?.provider === 'google' ? 'Google' : 'Email',
-        createdAt: user.created_at
-      });
-    }
-  };
-
-  const loadCart = async (userId: string | null) => {
-    const items = await fetchCart(userId || 'guest');
-    setCart(items);
   };
 
   const handleAddToCart = async (service: ServiceItem) => {
@@ -396,6 +444,20 @@ export default function App() {
                 path="/services/:slug"
                 element={
                   <DynamicServiceRoute
+                    onOpenContact={() => scrollToSection('contact')}
+                  />
+                }
+              />
+
+              {/* Requirement: ReferralPro Affiliate Portal Route */}
+              <Route
+                path="/referralpro"
+                element={
+                  <ReferralProPage
+                    user={user}
+                    profile={profile}
+                    onOpenAuth={() => setIsAuthModalOpen(true)}
+                    whatsappNumber={whatsappNumber}
                     onOpenContact={() => scrollToSection('contact')}
                   />
                 }

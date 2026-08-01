@@ -87,6 +87,12 @@ export const Footer: React.FC<FooterProps> = ({
                 </button>
               </li>
               <li>
+                <Link to="/referralpro" className="hover:text-amber-300 transition-colors text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
+                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                  <span>ReferralPro Partner Portal (Earn 25%)</span>
+                </Link>
+              </li>
+              <li>
                 <button onClick={() => onNavigate('projects')} className="hover:text-cyan-400 transition-colors cursor-pointer">
                   Portfolio Case Studies
                 </button>
