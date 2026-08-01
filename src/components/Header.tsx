@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck, Smartphone, Wallet, Search, ChevronDown, Code2, Palette, ShoppingBag as ShopIcon, Cpu, Shield } from 'lucide-react';
+import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck, Smartphone, Wallet, Search, ChevronDown, Code2, Palette, ShoppingBag as ShopIcon, Cpu, Shield, Bot, TrendingUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../lib/supabase';
 import brandLogoImg from '../assets/images/brand_logo_1785031049165.jpg';
 import { loadUserWallet, subscribeWallet, UserWallet } from '../services/walletStore';
 import { HeaderSearchModal } from './HeaderSearchModal';
+import { AiSeoManagerModal } from './AiSeoManagerModal';
 import { ServiceItem } from '../types';
 
 interface HeaderProps {
@@ -53,6 +54,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<'services' | 'products' | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSeoManagerOpen, setIsSeoManagerOpen] = useState(false);
   const [initialSearchQuery, setInitialSearchQuery] = useState('');
   const [wallet, setWallet] = useState<UserWallet>(() =>
     loadUserWallet(user?.id, user?.email, profile?.full_name)
@@ -487,6 +489,17 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Right Action Buttons */}
           <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* AI SEO Manager Button */}
+            <button
+              onClick={() => setIsSeoManagerOpen(true)}
+              className="px-2.5 py-1.5 rounded-full bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 hover:text-white text-xs font-bold transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] flex items-center gap-1.5 cursor-pointer shadow-sm shadow-cyan-500/10"
+              title="Launch Autonomous AI SEO Manager"
+            >
+              <Bot className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+              <span className="hidden xl:inline text-[11.5px]">AI SEO</span>
+              <span className="hidden xl:inline px-1 py-0.2 rounded bg-cyan-500 text-slate-950 text-[9px] font-black">PRO</span>
+            </button>
+
             {/* Global Search Trigger Button */}
             <button
               onClick={() => {
@@ -770,6 +783,19 @@ export const Header: React.FC<HeaderProps> = ({
               )}
 
               <button
+                onClick={() => { setIsSeoManagerOpen(true); setMobileMenuOpen(false); }}
+                className="w-full px-4 py-2.5 text-left text-xs font-bold rounded-xl text-cyan-300 bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-between"
+              >
+                <span className="flex items-center gap-2">
+                  <Bot className="w-4 h-4 text-cyan-400 animate-pulse" />
+                  <span>Autonomous AI SEO Manager</span>
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-cyan-500 text-slate-950 font-mono text-[9px]">
+                  PRO v3.6
+                </span>
+              </button>
+
+              <button
                 onClick={() => { onOpenSql(); setMobileMenuOpen(false); }}
                 className="w-full px-4 py-2.5 text-left text-xs font-semibold rounded-xl text-slate-400 bg-slate-900 flex items-center justify-between"
               >
@@ -818,6 +844,12 @@ export const Header: React.FC<HeaderProps> = ({
         onAddToCart={onAddToCart}
         onBuyNow={onBuyNow}
         initialQuery={initialSearchQuery}
+      />
+
+      {/* Autonomous AI SEO Manager Modal */}
+      <AiSeoManagerModal
+        isOpen={isSeoManagerOpen}
+        onClose={() => setIsSeoManagerOpen(false)}
       />
     </header>
   );

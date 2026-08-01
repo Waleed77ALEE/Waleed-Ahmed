@@ -8,6 +8,66 @@ export const SkeletonPulse: React.FC<{ className?: string }> = ({ className = ''
   </div>
 );
 
+// Skeleton for Product Grid in Marketplaces
+export const ProductGridSkeleton: React.FC<{ count?: number }> = ({ count = 6 }) => {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {Array.from({ length: count }).map((_, i) => (
+        <div
+          key={i}
+          className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800/80 space-y-4 flex flex-col justify-between h-[380px]"
+        >
+          <div className="space-y-4">
+            {/* Top row: Logo skeleton + Price skeleton */}
+            <div className="flex items-start justify-between gap-3">
+              <SkeletonPulse className="w-12 h-12 rounded-2xl shrink-0" />
+              <div className="space-y-1.5 flex flex-col items-end">
+                <SkeletonPulse className="h-6 w-20 rounded-md" />
+                <SkeletonPulse className="h-3 w-14 rounded" />
+              </div>
+            </div>
+
+            {/* Badges + Title */}
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <SkeletonPulse className="h-4 w-16 rounded-full" />
+                <SkeletonPulse className="h-4 w-20 rounded-full" />
+              </div>
+              <SkeletonPulse className="h-6 w-3/4 rounded-lg" />
+              <SkeletonPulse className="h-3.5 w-1/2 rounded" />
+            </div>
+
+            {/* Description lines */}
+            <div className="space-y-1.5 pt-1">
+              <SkeletonPulse className="h-3 w-full rounded" />
+              <SkeletonPulse className="h-3 w-5/6 rounded" />
+            </div>
+
+            {/* Feature items */}
+            <div className="space-y-2 pt-3 border-t border-slate-800/60">
+              <SkeletonPulse className="h-3 w-2/3 rounded" />
+              <SkeletonPulse className="h-3 w-1/2 rounded" />
+            </div>
+          </div>
+
+          {/* Action buttons + Footer skeleton */}
+          <div className="pt-4 border-t border-slate-800/80 space-y-3">
+            <div className="flex items-center gap-2">
+              <SkeletonPulse className="h-10 w-full rounded-xl" />
+              <SkeletonPulse className="h-10 w-full rounded-xl" />
+            </div>
+            <div className="flex justify-between items-center pt-2">
+              <SkeletonPulse className="h-3 w-20 rounded" />
+              <SkeletonPulse className="h-3 w-20 rounded" />
+              <SkeletonPulse className="h-3 w-20 rounded" />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 // Skeleton for the Marketplace Page
 export const MarketplaceSkeleton: React.FC = () => {
   return (

@@ -27,6 +27,7 @@ import { AiSubscriptionPlan, SubscriptionDuration } from '../data/aiSubscription
 import { aiSubscriptionStore } from '../services/aiSubscriptionStore';
 import { PlatformLogo } from './PlatformLogo';
 import { SecurityFeature } from './SecurityFeature';
+import { ProductGridSkeleton } from './SkeletonLoader';
 import { AiSubscriptionDetailsModal } from './AiSubscriptionDetailsModal';
 import { AiSubscriptionCheckoutModal } from './AiSubscriptionCheckoutModal';
 
@@ -41,6 +42,22 @@ export const AiSubscriptionMarketplace: React.FC<AiSubscriptionMarketplaceProps>
   const [selectedDurationFilter, setSelectedDurationFilter] = useState<string>('All');
   const [sortBy, setSortBy] = useState<'popularity' | 'price-asc' | 'price-desc' | 'rating'>('popularity');
   const [showWishlistOnly, setShowWishlistOnly] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // Initial load skeleton simulation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleCategoryChange = (cat: string) => {
+    if (cat === selectedCategory) return;
+    setIsLoading(true);
+    setSelectedCategory(cat);
+    setTimeout(() => setIsLoading(false), 200);
+  };
 
   // Per-card selected duration state
   const [cardDurations, setCardDurations] = useState<Record<string, SubscriptionDuration>>({});
@@ -274,7 +291,7 @@ export const AiSubscriptionMarketplace: React.FC<AiSubscriptionMarketplaceProps>
             {categories.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => handleCategoryChange(cat)}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                   selectedCategory === cat
                     ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
@@ -287,8 +304,10 @@ export const AiSubscriptionMarketplace: React.FC<AiSubscriptionMarketplaceProps>
           </div>
         </div>
 
-        {/* Marketplace Grid */}
-        {sortedPlans.length > 0 ? (
+        {/* Marketplace Grid or Skeleton */}
+        {isLoading ? (
+          <ProductGridSkeleton count={6} />
+        ) : sortedPlans.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sortedPlans.map((plan) => {
               const activeDur = getCardDuration(plan.id);

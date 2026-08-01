@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Search,
   Filter,
@@ -24,6 +24,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { SOFTWARE_PRODUCTS, SOFTWARE_CATEGORIES, SoftwareProduct } from '../data/softwareData';
 import { SoftwareBrandLogo } from './SoftwareBrandLogo';
 import { SecurityFeature } from './SecurityFeature';
+import { ProductGridSkeleton } from './SkeletonLoader';
 import { SoftwareOrderModal } from './SoftwareOrderModal';
 import { SoftwareDetailModal } from './SoftwareDetailModal';
 
@@ -42,6 +43,23 @@ export const SoftwareServices: React.FC<SoftwareServicesProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [orderingProduct, setOrderingProduct] = useState<SoftwareProduct | null>(null);
   const [detailProduct, setDetailProduct] = useState<SoftwareProduct | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // Initial load skeleton simulation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Category or search switch brief skeleton transition
+  const handleCategoryChange = (cat: string) => {
+    if (cat === selectedCategory) return;
+    setIsLoading(true);
+    setSelectedCategory(cat);
+    setTimeout(() => setIsLoading(false), 200);
+  };
 
   const filteredProducts = useMemo(() => {
     return SOFTWARE_PRODUCTS.filter((prod) => {
@@ -189,7 +207,7 @@ export const SoftwareServices: React.FC<SoftwareServicesProps> = ({
                 return (
                   <button
                     key={cat}
-                    onClick={() => setSelectedCategory(cat)}
+                    onClick={() => handleCategoryChange(cat)}
                     className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 whitespace-nowrap ${
                       isActive
                         ? 'bg-cyan-500 text-slate-950 font-black shadow-lg shadow-cyan-500/20'
@@ -215,8 +233,10 @@ export const SoftwareServices: React.FC<SoftwareServicesProps> = ({
             </div>
           </div>
 
-          {/* SOFTWARE PRODUCT CARDS GRID */}
-          {filteredProducts.length > 0 ? (
+          {/* SOFTWARE PRODUCT CARDS GRID OR SKELETON */}
+          {isLoading ? (
+            <ProductGridSkeleton count={6} />
+          ) : filteredProducts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProducts.map((prod) => (
                 <div
