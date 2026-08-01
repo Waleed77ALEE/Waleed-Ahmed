@@ -47,6 +47,7 @@ import {
   clearCartDB
 } from './lib/supabase';
 import { recordUserSignup } from './services/userStore';
+import { trackReferralFromUrl } from './services/referralStore';
 
 const DynamicServiceRoute: React.FC<{ onOpenContact: () => void }> = ({ onOpenContact }) => {
   const { slug } = useParams<{ slug: string }>();
@@ -226,6 +227,11 @@ export default function App() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
+
+  // Track deep link referral parameters on route or query change
+  useEffect(() => {
+    trackReferralFromUrl();
+  }, [location.pathname, location.search]);
 
   const handleInstallPWA = () => {
     if (deferredPrompt) {

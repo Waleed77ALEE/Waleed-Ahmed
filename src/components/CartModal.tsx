@@ -3,6 +3,7 @@ import { X, Trash2, ShoppingCart, ArrowRight, ShieldCheck, CheckCircle2, Message
 import { SupabaseCartItem, createOrderDB, clearCartDB } from '../lib/supabase';
 import { PlatformLogo } from './PlatformLogo';
 import { loadUserWallet, deductWalletBalance, subscribeWallet, UserWallet } from '../services/walletStore';
+import { recordOrderCommission } from '../services/referralStore';
 
 interface CartModalProps {
   isOpen: boolean;
@@ -139,6 +140,23 @@ export const CartModal: React.FC<CartModalProps> = ({
     if (result) {
       setCreatedOrderNumber(orderNum);
       setCheckoutStep('success');
+
+      // Record referral commission if an active referral code is set
+      try {
+        cart.forEach((i) => {
+          recordOrderCommission({
+            customerName: user?.user_metadata?.full_name || contactWhatsapp || 'Customer',
+            customerEmail: user?.email || 'customer@example.com',
+            productName: i.title,
+            category: (i.category as any) || 'General',
+            orderId: orderNum,
+            orderAmount: i.price * i.quantity
+          });
+        });
+      } catch (e) {
+        console.warn('Could not record referral commission:', e);
+      }
+
       await clearCartDB(user?.id || null);
       onClearCart();
       if (onOrderCompleted) onOrderCompleted();

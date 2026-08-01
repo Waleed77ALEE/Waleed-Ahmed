@@ -68,7 +68,9 @@ import {
   adminUpdateWithdrawalStatus,
   adminSaveSettings,
   getReferralStoreFull,
-  trackReferralFromUrl
+  trackReferralFromUrl,
+  getAffiliateDeepLinkAnalytics,
+  ReferralClickLog
 } from '../services/referralStore';
 import { ReferralLeaderboard } from '../components/ReferralLeaderboard';
 import { PerformanceTrends } from '../components/PerformanceTrends';
@@ -117,7 +119,14 @@ export const ReferralProPage: React.FC<ReferralProPageProps> = ({
 
   // Store State
   const [storeData, setStoreData] = useState(() => getReferralStoreFull());
-  const [selectedProductSlug, setSelectedProductSlug] = useState('web-development');
+  
+  // Deep Link Generator State
+  const [deepLinkCategory, setDeepLinkCategory] = useState<'service' | 'marketplace' | 'software' | 'custom'>('service');
+  const [deepLinkTarget, setDeepLinkTarget] = useState('/services/web-development');
+  const [customPathInput, setCustomPathInput] = useState('/services/web-development#pricing');
+  const [utmSource, setUtmSource] = useState('whatsapp');
+  const [campaignTag, setCampaignTag] = useState('');
+  const [activeQrUrl, setActiveQrUrl] = useState<string | null>(null);
 
   // Withdrawal Form State
   const [withdrawAmount, setWithdrawAmount] = useState<number>(10);
@@ -145,10 +154,37 @@ export const ReferralProPage: React.FC<ReferralProPageProps> = ({
     setStoreData(getReferralStoreFull());
   };
 
-  // Base Links
-  const baseUrl = 'https://waleedkhanafridi.online';
+  // Base & Deep Links Calculation
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://waleedkhanafridi.online';
   const referralLink = `${baseUrl}/?ref=${affiliate.username}`;
-  const customDeepLink = `${baseUrl}/services/${selectedProductSlug}?ref=${affiliate.username}`;
+
+  const computedDeepLink = useMemo(() => {
+    let path = deepLinkTarget;
+    if (deepLinkCategory === 'custom') {
+      path = customPathInput.trim();
+      if (!path.startsWith('/') && !path.startsWith('http')) {
+        path = `/${path}`;
+      }
+    }
+
+    try {
+      const url = new URL(path, baseUrl);
+      url.searchParams.set('ref', affiliate.username);
+      if (utmSource && utmSource !== 'direct') {
+        url.searchParams.set('utm_source', utmSource);
+      }
+      if (campaignTag.trim()) {
+        url.searchParams.set('campaign', campaignTag.trim());
+      }
+      return url.toString();
+    } catch (e) {
+      return `${baseUrl}${path}?ref=${affiliate.username}`;
+    }
+  }, [deepLinkCategory, deepLinkTarget, customPathInput, utmSource, campaignTag, affiliate.username, baseUrl]);
+
+  const deepLinkAnalytics = useMemo(() => {
+    return getAffiliateDeepLinkAnalytics(affiliate.username);
+  }, [affiliate.username, storeData]);
 
   // Handle Copy
   const handleCopyLink = (text: string, type: 'main' | 'coupon' | 'deep') => {
@@ -840,50 +876,339 @@ export const ReferralProPage: React.FC<ReferralProPageProps> = ({
                   </div>
                 </div>
 
-                {/* Deep Link Generator */}
-                <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3 mt-4">
-                  <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-cyan-400" />
-                    <span>Product Deep Link Generator</span>
-                  </h4>
-                  <p className="text-xs text-slate-400">
-                    Direct your clients straight to a specific service package with your referral cookie embedded.
-                  </p>
+                {/* Advanced Deep Link & Campaign Generator Suite */}
+                <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-4 mt-4 shadow-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-cyan-400" />
+                        <span>Advanced Deep Link &amp; Campaign Generator</span>
+                      </h4>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        Direct clients directly to specific services, AI subscriptions, or software packages with embedded tracking &amp; custom UTM parameters.
+                      </p>
+                    </div>
+                    <span className="self-start sm:self-auto px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-mono text-[10px] font-bold">
+                      30-Day Cookie Auto-Attribution
+                    </span>
+                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div className="md:col-span-1">
-                      <label className="text-[11px] text-slate-400 block mb-1">Select Target Service Page</label>
-                      <select
-                        value={selectedProductSlug}
-                        onChange={(e) => setSelectedProductSlug(e.target.value)}
-                        className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 font-medium focus:outline-none focus:border-cyan-500"
+                  {/* Step 1: Category & Target Selection */}
+                  <div className="space-y-3">
+                    <label className="text-xs font-semibold text-slate-300 block">1. Select Target Category &amp; Destination Page</label>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDeepLinkCategory('service');
+                          setDeepLinkTarget('/services/web-development');
+                        }}
+                        className={`p-2.5 rounded-xl border text-xs font-bold transition-all text-left flex items-center gap-2 ${
+                          deepLinkCategory === 'service'
+                            ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300 shadow-md'
+                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+                        }`}
                       >
-                        <option value="web-development">Web Development</option>
-                        <option value="mobile-app-development">Mobile App Development</option>
-                        <option value="ui-ux-design">UI/UX Design</option>
-                        <option value="seo">SEO &amp; Backlinks</option>
-                        <option value="ecommerce-development">E-Commerce Development</option>
-                        <option value="ai-automation">AI &amp; Workflow Automation</option>
-                        <option value="website-maintenance">Website Maintenance</option>
+                        <Building className="w-4 h-4 text-cyan-400 shrink-0" />
+                        <span>Digital Services</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDeepLinkCategory('marketplace');
+                          setDeepLinkTarget('/marketplace?item=chatgpt-plus');
+                        }}
+                        className={`p-2.5 rounded-xl border text-xs font-bold transition-all text-left flex items-center gap-2 ${
+                          deepLinkCategory === 'marketplace'
+                            ? 'bg-purple-500/20 border-purple-500/50 text-purple-300 shadow-md'
+                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        <Sparkles className="w-4 h-4 text-purple-400 shrink-0" />
+                        <span>AI Subscriptions</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDeepLinkCategory('software');
+                          setDeepLinkTarget('/#software');
+                        }}
+                        className={`p-2.5 rounded-xl border text-xs font-bold transition-all text-left flex items-center gap-2 ${
+                          deepLinkCategory === 'software'
+                            ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300 shadow-md'
+                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        <Smartphone className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span>Software Licenses</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDeepLinkCategory('custom');
+                        }}
+                        className={`p-2.5 rounded-xl border text-xs font-bold transition-all text-left flex items-center gap-2 ${
+                          deepLinkCategory === 'custom'
+                            ? 'bg-amber-500/20 border-amber-500/50 text-amber-300 shadow-md'
+                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+                        }`}
+                      >
+                        <Globe className="w-4 h-4 text-amber-400 shrink-0" />
+                        <span>Custom Path</span>
+                      </button>
+                    </div>
+
+                    {/* Target Selector Dropdown / Custom Input */}
+                    {deepLinkCategory === 'service' && (
+                      <select
+                        value={deepLinkTarget}
+                        onChange={(e) => setDeepLinkTarget(e.target.value)}
+                        className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 font-medium focus:outline-none focus:border-cyan-500"
+                      >
+                        <option value="/services/web-development">🌐 Web Development Services (/services/web-development)</option>
+                        <option value="/services/mobile-app-development">📱 Mobile App Development (/services/mobile-app-development)</option>
+                        <option value="/services/ui-ux-design">🎨 UI/UX Product Design (/services/ui-ux-design)</option>
+                        <option value="/services/seo">🚀 Technical SEO &amp; Backlinks (/services/seo)</option>
+                        <option value="/services/ecommerce-development">🛒 E-Commerce Solutions (/services/ecommerce-development)</option>
+                        <option value="/services/ai-automation">⚡ AI &amp; Workflow Automation (/services/ai-automation)</option>
+                        <option value="/services/website-maintenance">🛠️ Website Maintenance (/services/website-maintenance)</option>
+                        <option value="/services">📋 All Services Overview (/services)</option>
+                      </select>
+                    )}
+
+                    {deepLinkCategory === 'marketplace' && (
+                      <select
+                        value={deepLinkTarget}
+                        onChange={(e) => setDeepLinkTarget(e.target.value)}
+                        className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 font-medium focus:outline-none focus:border-purple-500"
+                      >
+                        <option value="/marketplace?item=chatgpt-plus">🤖 ChatGPT Plus Subscription (/marketplace?item=chatgpt-plus)</option>
+                        <option value="/marketplace?item=midjourney">🎨 Midjourney Pro Subscription (/marketplace?item=midjourney)</option>
+                        <option value="/marketplace?item=claude-pro">🧠 Claude 3.5 Pro Subscription (/marketplace?item=claude-pro)</option>
+                        <option value="/marketplace?item=canva-pro">✨ Canva Pro Subscription (/marketplace?item=canva-pro)</option>
+                        <option value="/marketplace?item=gemini-advanced">🌟 Gemini Advanced Subscription (/marketplace?item=gemini-advanced)</option>
+                        <option value="/marketplace?item=github-copilot">💻 GitHub Copilot Subscription (/marketplace?item=github-copilot)</option>
+                        <option value="/marketplace">🛍️ AI Marketplace Catalog (/marketplace)</option>
+                      </select>
+                    )}
+
+                    {deepLinkCategory === 'software' && (
+                      <select
+                        value={deepLinkTarget}
+                        onChange={(e) => setDeepLinkTarget(e.target.value)}
+                        className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 font-medium focus:outline-none focus:border-emerald-500"
+                      >
+                        <option value="/#software">💻 Windows &amp; Office Genuine Keys (/#software)</option>
+                        <option value="/#software?item=win11">🪟 Windows 11 Pro Lifetime Key</option>
+                        <option value="/#software?item=office2024">📊 Microsoft Office 2024 Pro</option>
+                        <option value="/#software?item=adobe">🎨 Adobe Creative Cloud 1-Year</option>
+                      </select>
+                    )}
+
+                    {deepLinkCategory === 'custom' && (
+                      <div>
+                        <input
+                          type="text"
+                          value={customPathInput}
+                          onChange={(e) => setCustomPathInput(e.target.value)}
+                          placeholder="/services/web-development#pricing"
+                          className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl font-mono text-xs text-amber-300 focus:outline-none focus:border-amber-500"
+                        />
+                        <span className="text-[11px] text-slate-500 mt-1 block">Enter relative route or page anchor (e.g., /services/web-development#pricing or /contact)</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Step 2: Campaign & UTM Parameters */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <div>
+                      <label className="text-[11px] text-slate-400 block mb-1 font-semibold">Traffic Source (utm_source)</label>
+                      <select
+                        value={utmSource}
+                        onChange={(e) => setUtmSource(e.target.value)}
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none"
+                      >
+                        <option value="whatsapp">WhatsApp Outreach</option>
+                        <option value="facebook">Facebook Group / Page</option>
+                        <option value="telegram">Telegram Channel</option>
+                        <option value="linkedin">LinkedIn Network</option>
+                        <option value="twitter">X / Twitter</option>
+                        <option value="youtube">YouTube Channel</option>
+                        <option value="email">Email Campaign</option>
+                        <option value="instagram">Instagram Bio / Story</option>
+                        <option value="direct">Direct Link (No UTM)</option>
                       </select>
                     </div>
 
-                    <div className="md:col-span-2 space-y-1">
-                      <label className="text-[11px] text-slate-400 block">Generated Deep Tracking Link</label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="text"
-                          readOnly
-                          value={customDeepLink}
-                          className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl font-mono text-xs text-cyan-300 focus:outline-none"
-                        />
+                    <div>
+                      <label className="text-[11px] text-slate-400 block mb-1 font-semibold">Campaign Tag (Optional)</label>
+                      <input
+                        type="text"
+                        value={campaignTag}
+                        onChange={(e) => setCampaignTag(e.target.value)}
+                        placeholder="e.g. summer_promo or client_pitch"
+                        className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl font-mono text-xs text-slate-200 focus:outline-none focus:border-cyan-500"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Step 3: Generated Deep Link Output Bar */}
+                  <div className="space-y-2 pt-2">
+                    <label className="text-xs font-semibold text-cyan-300 flex items-center justify-between">
+                      <span>Generated Deep Link Result:</span>
+                      <span className="text-[10px] text-slate-400 font-normal">Ready to share</span>
+                    </label>
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                      <input
+                        type="text"
+                        readOnly
+                        value={computedDeepLink}
+                        className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-800 rounded-xl font-mono text-xs text-cyan-300 focus:outline-none"
+                      />
+                      <div className="flex items-center gap-2 shrink-0">
                         <button
-                          onClick={() => handleCopyLink(customDeepLink, 'deep')}
-                          className="px-4 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-xl shrink-0 cursor-pointer"
+                          type="button"
+                          onClick={() => handleCopyLink(computedDeepLink, 'deep')}
+                          className="px-4 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
                         >
-                          {copiedDeepLink ? 'Copied!' : 'Copy'}
+                          {copiedDeepLink ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                          <span>{copiedDeepLink ? 'Copied!' : 'Copy'}</span>
+                        </button>
+
+                        <a
+                          href={computedDeepLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                          title="Test / Preview Deep Link"
+                        >
+                          <ExternalLink className="w-4 h-4 text-cyan-400" />
+                        </a>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setActiveQrUrl(computedDeepLink);
+                            setShowQrModal(true);
+                          }}
+                          className="p-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                          title="Generate QR Code"
+                        >
+                          <QrCode className="w-4 h-4 text-amber-400" />
                         </button>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Share Deep Link Across Social Platforms */}
+                  <div className="pt-2 border-t border-slate-800/80">
+                    <span className="text-[11px] text-slate-400 block mb-2 font-semibold">Share this deep link directly:</span>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      <a
+                        href={`https://api.whatsapp.com/send?text=${encodeURIComponent(`Check out this service / tool: ${computedDeepLink}`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-xl bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 font-bold text-xs flex items-center justify-center gap-1.5 transition-all"
+                      >
+                        <Send className="w-3.5 h-3.5" />
+                        <span>WhatsApp</span>
+                      </a>
+                      <a
+                        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(computedDeepLink)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-xl bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/30 text-blue-400 font-bold text-xs flex items-center justify-center gap-1.5 transition-all"
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                        <span>Facebook</span>
+                      </a>
+                      <a
+                        href={`https://t.me/share/url?url=${encodeURIComponent(computedDeepLink)}&text=${encodeURIComponent('Explore custom digital services & AI subscriptions')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-xl bg-cyan-600/10 hover:bg-cyan-600/20 border border-cyan-500/30 text-cyan-400 font-bold text-xs flex items-center justify-center gap-1.5 transition-all"
+                      >
+                        <Send className="w-3.5 h-3.5" />
+                        <span>Telegram</span>
+                      </a>
+                      <a
+                        href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(computedDeepLink)}&text=${encodeURIComponent('High performance digital services & AI tool access:')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-all"
+                      >
+                        <Share2 className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>Share on X</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Deep Link Performance & Traffic Analytics Breakdown */}
+                <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-4 shadow-xl">
+                  <div className="flex items-center justify-between border-b border-slate-800/80 pb-3">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                        <BarChart3 className="w-4 h-4 text-emerald-400" />
+                        <span>Deep Link Traffic &amp; Page Click Breakdown</span>
+                      </h4>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        Real-time analytics of incoming referral visits categorized by target service page and traffic source.
+                      </p>
+                    </div>
+                    <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-mono text-xs font-bold">
+                      {deepLinkAnalytics.totalClicks} Total Clicks Tracked
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Top Visited Target Pages */}
+                    <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+                      <span className="text-xs font-bold text-slate-200 uppercase tracking-wider block border-b border-slate-800 pb-2">
+                        Top Destination Service Pages
+                      </span>
+                      {deepLinkAnalytics.topPaths.length === 0 ? (
+                        <p className="text-xs text-slate-500 italic py-3 text-center">No deep link page clicks recorded yet. Share your deep links to start tracking!</p>
+                      ) : (
+                        <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                          {deepLinkAnalytics.topPaths.map((item, idx) => (
+                            <div key={idx} className="flex items-center justify-between text-xs p-2 rounded-lg bg-slate-950 border border-slate-800/60">
+                              <span className="font-mono text-cyan-300 truncate max-w-[200px]" title={item.path}>
+                                {item.path}
+                              </span>
+                              <span className="font-bold text-emerald-400 px-2 py-0.5 rounded bg-emerald-500/10">
+                                {item.count} click{item.count > 1 ? 's' : ''}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Top Traffic Sources */}
+                    <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3">
+                      <span className="text-xs font-bold text-slate-200 uppercase tracking-wider block border-b border-slate-800 pb-2">
+                        Top Referral Traffic Sources
+                      </span>
+                      {deepLinkAnalytics.topSources.length === 0 ? (
+                        <p className="text-xs text-slate-500 italic py-3 text-center">No UTM traffic sources recorded yet.</p>
+                      ) : (
+                        <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                          {deepLinkAnalytics.topSources.map((item, idx) => (
+                            <div key={idx} className="flex items-center justify-between text-xs p-2 rounded-lg bg-slate-950 border border-slate-800/60">
+                              <span className="font-semibold text-amber-300 capitalize">
+                                {item.source}
+                              </span>
+                              <span className="font-bold text-cyan-400 px-2 py-0.5 rounded bg-cyan-500/10">
+                                {item.count} visitor{item.count > 1 ? 's' : ''}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1385,31 +1710,36 @@ export const ReferralProPage: React.FC<ReferralProPageProps> = ({
               className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full space-y-4 text-center shadow-2xl relative"
             >
               <button
-                onClick={() => setShowQrModal(false)}
+                onClick={() => {
+                  setShowQrModal(false);
+                  setActiveQrUrl(null);
+                }}
                 className="absolute top-4 right-4 text-slate-400 hover:text-white"
               >
                 ✕
               </button>
 
-              <h3 className="text-base font-bold text-white">Your Referral QR Code</h3>
+              <h3 className="text-base font-bold text-white">
+                {activeQrUrl ? 'Deep Link QR Code' : 'Your Referral QR Code'}
+              </h3>
               <p className="text-xs text-slate-400">Scan to visit with your referral cookie pre-embedded</p>
 
-              <div className="p-4 bg-white rounded-2xl inline-block shadow-inner">
-                {/* SVG QR Code Placeholder Graphic */}
+              <div className="p-4 bg-white rounded-2xl inline-block shadow-inner relative">
+                {/* SVG QR Code Graphic */}
                 <svg className="w-44 h-44 text-slate-950" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M2,2H10V10H2V2M4,4V8H8V4H4M11,2H13V4H11V2M14,2H22V10H14V2M16,4V8H20V4H16M2,14H10V22H2V14M4,16V20H8V16H4M19,19V22H22V19H19M11,14H13V16H11V14M14,14H16V16H14V14M16,16H18V18H16V16M18,14H20V16H18V14M20,16H22V18H20V16M11,18H13V22H11V18M14,19H17V21H14V19Z" />
                 </svg>
               </div>
 
-              <div className="text-[11px] font-mono text-cyan-300 break-all p-2 bg-slate-950 rounded-xl border border-slate-800">
-                {referralLink}
+              <div className="text-[11px] font-mono text-cyan-300 break-all p-2 bg-slate-950 rounded-xl border border-slate-800 max-h-24 overflow-y-auto">
+                {activeQrUrl || referralLink}
               </div>
 
               <button
-                onClick={() => handleCopyLink(referralLink, 'main')}
+                onClick={() => handleCopyLink(activeQrUrl || referralLink, 'main')}
                 className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl cursor-pointer"
               >
-                {copiedLink ? 'Copied Link!' : 'Copy Referral Link'}
+                {copiedLink ? 'Copied Link!' : 'Copy Link'}
               </button>
             </motion.div>
           </div>

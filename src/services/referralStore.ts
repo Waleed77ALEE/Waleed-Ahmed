@@ -30,6 +30,15 @@ export interface WithdrawalRequest {
   transactionRef?: string;
 }
 
+export interface ReferralClickLog {
+  id: string;
+  referrerUsername: string;
+  targetUrl: string;
+  pathName: string;
+  utmSource?: string;
+  timestamp: string;
+}
+
 export interface AffiliatePartnerProfile {
   id: string;
   username: string;
@@ -553,10 +562,82 @@ export function recordReferralClick(refCode: string, targetUrl: string) {
   const store = getStoredData();
   const aff = store.affiliates.find((a: AffiliatePartnerProfile) => a.referralCode.toUpperCase() === refCode.toUpperCase() || a.username.toUpperCase() === refCode.toUpperCase());
 
+  if (!store.clickLogs) {
+    store.clickLogs = [];
+  }
+
+  let pathName = '/';
+  let utmSource = 'Direct / Organic';
+
+  try {
+    const parsed = new URL(targetUrl);
+    pathName = parsed.pathname + (parsed.hash || '');
+    const params = new URLSearchParams(parsed.search);
+    if (params.get('utm_source')) {
+      utmSource = params.get('utm_source')!;
+    } else if (params.get('source')) {
+      utmSource = params.get('source')!;
+    }
+  } catch (e) {
+    pathName = targetUrl;
+  }
+
+  const newLog: ReferralClickLog = {
+    id: `click_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+    referrerUsername: aff ? aff.username : refCode,
+    targetUrl,
+    pathName,
+    utmSource,
+    timestamp: new Date().toISOString()
+  };
+
+  store.clickLogs.unshift(newLog);
+  if (store.clickLogs.length > 500) {
+    store.clickLogs = store.clickLogs.slice(0, 500);
+  }
+
   if (aff) {
     aff.totalReferralClicks = (aff.totalReferralClicks || 0) + 1;
-    saveStoredData(store);
+    if (aff.totalSalesCount > 0 && aff.totalReferralClicks > 0) {
+      aff.conversionRate = Number(((aff.totalSalesCount / aff.totalReferralClicks) * 100).toFixed(1));
+    }
   }
+
+  saveStoredData(store);
+}
+
+export function getAffiliateDeepLinkAnalytics(username: string) {
+  const store = getStoredData();
+  const userUpper = (username || '').toUpperCase();
+  const logs: ReferralClickLog[] = (store.clickLogs || []).filter(
+    (l: ReferralClickLog) => l.referrerUsername.toUpperCase() === userUpper
+  );
+
+  const pathCounts: Record<string, number> = {};
+  const sourceCounts: Record<string, number> = {};
+
+  logs.forEach((log) => {
+    const path = log.pathName || '/';
+    pathCounts[path] = (pathCounts[path] || 0) + 1;
+
+    const src = log.utmSource || 'Direct';
+    sourceCounts[src] = (sourceCounts[src] || 0) + 1;
+  });
+
+  const topPaths = Object.entries(pathCounts)
+    .map(([path, count]) => ({ path, count }))
+    .sort((a, b) => b.count - a.count);
+
+  const topSources = Object.entries(sourceCounts)
+    .map(([source, count]) => ({ source, count }))
+    .sort((a, b) => b.count - a.count);
+
+  return {
+    totalClicks: logs.length,
+    recentLogs: logs.slice(0, 20),
+    topPaths,
+    topSources
+  };
 }
 
 // Get or Register Affiliate Partner
