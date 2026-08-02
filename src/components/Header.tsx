@@ -113,6 +113,7 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   const servicesDropdownItems = [
+    { label: 'AI SEO Agent Platform', slug: 'seo-agent', path: '/seo-agent', description: '24/7 autonomous crawler, schema optimizer & rank tracker' },
     { label: 'Web Development', slug: 'web-development', path: '/services/web-development', description: 'Custom responsive apps, React, Next.js' },
     { label: 'AI Solutions', slug: 'ai-automation', path: '/services/ai-automation', description: 'OpenAI, Gemini workflow automation' },
     { label: 'SEO Services', slug: 'seo', path: '/services/seo', description: 'Technical SEO & content optimization' },
@@ -130,6 +131,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   const getNavIcon = (name: string) => {
     switch (name) {
+      case 'AI SEO Agent Platform': return <Bot className="w-3.5 h-3.5 text-cyan-400" />;
       case 'Web Development': return <Code2 className="w-3.5 h-3.5 text-cyan-400" />;
       case 'AI Solutions': return <Cpu className="w-3.5 h-3.5 text-cyan-400" />;
       case 'SEO Services': return <Search className="w-3.5 h-3.5 text-cyan-400" />;

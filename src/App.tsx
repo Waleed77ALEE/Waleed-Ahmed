@@ -26,6 +26,7 @@ const WebsiteMaintenancePage = lazy(() => import('./pages/services/WebsiteMainte
 const SingleServicePage = lazy(() => import('./pages/services/SingleServicePage').then(m => ({ default: m.SingleServicePage })));
 const ReferralProPage = lazy(() => import('./pages/ReferralProPage').then(m => ({ default: m.ReferralProPage })));
 const JazzCashPaymentPage = lazy(() => import('./pages/JazzCashPaymentPage').then(m => ({ default: m.JazzCashPaymentPage })));
+const AiSeoManagerPage = lazy(() => import('./pages/AiSeoManagerPage').then(m => ({ default: m.AiSeoManagerPage })));
 
 // Lazy Loaded Modals
 const SupabaseSqlModal = lazy(() => import('./components/SupabaseSqlModal').then(m => ({ default: m.SupabaseSqlModal })));
@@ -473,6 +474,10 @@ export default function App() {
               {/* Dedicated JazzCash Payment Route */}
               <Route path="/jazzcash" element={<JazzCashPaymentPage />} />
               <Route path="/pay-jazzcash" element={<JazzCashPaymentPage />} />
+
+              {/* Dedicated Autonomous AI SEO Agent Platform Route */}
+              <Route path="/seo-agent" element={<AiSeoManagerPage />} />
+              <Route path="/ai-seo-manager" element={<AiSeoManagerPage />} />
 
               {/* Catch-all fallback */}
               <Route path="*" element={<Navigate to="/" replace />} />
