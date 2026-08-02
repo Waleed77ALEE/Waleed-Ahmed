@@ -143,11 +143,67 @@ export function detectPlatform(
     };
   }
 
-  if (combined.includes('openai') || combined.includes('chatgpt') || combined.includes('gpt-4') || combined.includes('dall-e') || combined.includes('whisper')) {
+  if (combined.includes('canva')) {
+    return {
+      key: 'canva',
+      info: {
+        name: 'Canva',
+        brandColor: '#00C4CC',
+        bgGradient: 'from-cyan-950/60 via-slate-950 to-blue-950/40',
+        badgeBg: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
+        textColor: 'text-cyan-400',
+        borderStyle: 'border-cyan-500/30'
+      }
+    };
+  }
+
+  if (combined.includes('capcut')) {
+    return {
+      key: 'capcut',
+      info: {
+        name: 'CapCut',
+        brandColor: '#00F2FE',
+        bgGradient: 'from-cyan-950/60 via-slate-950 to-rose-950/40',
+        badgeBg: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
+        textColor: 'text-cyan-400',
+        borderStyle: 'border-cyan-500/30'
+      }
+    };
+  }
+
+  if (combined.includes('netflix')) {
+    return {
+      key: 'netflix',
+      info: {
+        name: 'Netflix',
+        brandColor: '#E50914',
+        bgGradient: 'from-red-950/70 via-slate-950 to-rose-950/50',
+        badgeBg: 'bg-red-500/20 text-red-300 border-red-500/40',
+        textColor: 'text-red-400',
+        borderStyle: 'border-red-500/30'
+      }
+    };
+  }
+
+  if (combined.includes('adobe')) {
+    return {
+      key: 'adobe',
+      info: {
+        name: 'Adobe',
+        brandColor: '#FF0000',
+        bgGradient: 'from-red-950/60 via-slate-950 to-rose-950/40',
+        badgeBg: 'bg-red-500/20 text-red-300 border-red-500/40',
+        textColor: 'text-red-400',
+        borderStyle: 'border-red-500/30'
+      }
+    };
+  }
+
+  if (combined.includes('openai') || combined.includes('chatgpt') || combined.includes('gpt-4') || combined.includes('gpt-3') || combined.includes('dall-e') || combined.includes('whisper')) {
     return {
       key: 'openai',
       info: {
-        name: 'OpenAI',
+        name: 'ChatGPT / OpenAI',
         brandColor: '#10A37F',
         bgGradient: 'from-emerald-950/60 via-slate-950 to-teal-950/40',
         badgeBg: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
@@ -401,6 +457,46 @@ export const PlatformLogo: React.FC<PlatformLogoProps> = ({
 
   const renderSvg = () => {
     switch (key) {
+      case 'canva':
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="6" fill="url(#canva_grad)" />
+            <path d="M12 5C7.58172 5 4 8.58172 4 13C4 17.4183 7.58172 21 12 21C14.5 21 17 19.5 18 17.5" stroke="white" strokeWidth="2.2" strokeLinecap="round" />
+            <circle cx="12" cy="12" r="3" fill="white" />
+            <defs>
+              <linearGradient id="canva_grad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#00C4CC" />
+                <stop offset="1" stopColor="#7D2AE8" />
+              </linearGradient>
+            </defs>
+          </svg>
+        );
+
+      case 'capcut':
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="6" fill="#0A0A0A" stroke="#333" strokeWidth="1" />
+            <path d="M6 7L12 12L6 17" stroke="#00F2FE" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M18 7L12 12L18 17" stroke="#FF004F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        );
+
+      case 'netflix':
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="6" fill="#000000" />
+            <path d="M7 4V20L12 12V20H17V4L12 12V4H7Z" fill="#E50914" />
+          </svg>
+        );
+
+      case 'adobe':
+        return (
+          <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="6" fill="#FF0000" />
+            <path d="M14.5 4H19.5V20L14.5 4ZM4.5 4H9.5L14.5 20H10.5L9 15.5H6.5L4.5 20H4.5V4ZM8 12.5L7 9.5L6 12.5H8Z" fill="white" />
+          </svg>
+        );
+
       case 'synthesia':
         return (
           <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

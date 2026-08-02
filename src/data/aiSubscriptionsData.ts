@@ -12,7 +12,7 @@ export interface AiSubscriptionPlan {
   platformName: string;
   platformKey: string;
   planName: string;
-  category: 'AI Video' | 'AI Avatar' | 'AI Voice & Generation' | 'AI Creation';
+  category: string;
   shortDescription: string;
   detailedDescription: string;
   prices: DurationPriceMap;
@@ -860,6 +860,470 @@ export const INITIAL_AI_SUBSCRIPTIONS: AiSubscriptionPlan[] = [
         date: 'Yesterday',
         comment: 'Running 3 faceless YouTube channels on InVideo Max. Delivery was instant and smooth.',
         plan: 'Max Plan (Yearly)'
+      }
+    ]
+  },
+
+  // 10. ChatGPT / OpenAI
+  {
+    id: 'chatgpt-plus',
+    platformName: 'ChatGPT / OpenAI',
+    platformKey: 'openai',
+    planName: 'ChatGPT Plus',
+    category: 'AI Assistant',
+    shortDescription: 'GPT-4o, OpenAI o1 reasoning model, DALL-E 3 image generation, and Voice Mode access.',
+    detailedDescription: 'ChatGPT Plus unlocks unlimited standard access to GPT-4o, OpenAI o1 mini & preview reasoning models, custom GPTs builder, DALL-E 3 high-resolution art, and real-time voice mode.',
+    prices: {
+      Monthly: 20.00,
+      '3 Months': 60.00,
+      '6 Months': 120.00,
+      Yearly: 240.00
+    },
+    features: [
+      'Access to GPT-4o & GPT-4o mini',
+      'OpenAI o1 Reasoning Models',
+      'DALL-E 3 High-Res Image Generator',
+      'Advanced Data Analysis & Python Code Execution',
+      'Real-Time Advanced Voice Mode',
+      'Custom GPT Store & Builder Access'
+    ],
+    supportedDevices: ['Web Browser', 'iOS', 'Android', 'macOS', 'Windows'],
+    badge: 'Best Seller',
+    rating: 4.98,
+    reviewsCount: 380,
+    ordersCount: 920,
+    featured: true,
+    status: 'Active',
+    faqs: [
+      {
+        question: 'Is this an official private ChatGPT Plus subscription?',
+        answer: 'Yes, full private email access or direct subscription handover with 100% warranty.'
+      }
+    ],
+    reviews: [
+      {
+        name: 'Tariq Mehmood',
+        rating: 5,
+        date: '1 day ago',
+        comment: 'GPT-4o and o1 reasoning model works flawlessly! Handover in less than 5 minutes.',
+        plan: 'ChatGPT Plus (Monthly)'
+      }
+    ]
+  },
+  {
+    id: 'chatgpt-pro',
+    platformName: 'ChatGPT / OpenAI',
+    platformKey: 'openai',
+    planName: 'ChatGPT Pro',
+    category: 'AI Assistant',
+    shortDescription: 'Unlimited OpenAI o1 reasoning model, GPT-4o unlimited messages, and priority compute nodes.',
+    detailedDescription: 'ChatGPT Pro provides power researchers, scientists, and software developers with unlimited o1 reasoning, ultra-fast priority compute, and full multi-modal capabilities.',
+    prices: {
+      Monthly: 200.00,
+      '3 Months': 600.00,
+      '6 Months': 1200.00,
+      Yearly: 2400.00
+    },
+    features: [
+      'Unlimited OpenAI o1 Reasoning Access',
+      'Unlimited GPT-4o Message Allocation',
+      'Highest Server Compute Priority',
+      'Advanced Voice & Vision Multi-modal Suite',
+      'Instant Code Interpreter & Deep Research',
+      '24/7 Priority Support Guarantee'
+    ],
+    supportedDevices: ['Web Browser', 'macOS', 'Windows', 'iOS', 'Android'],
+    badge: 'Enterprise',
+    rating: 5.0,
+    reviewsCount: 110,
+    ordersCount: 290,
+    featured: true,
+    status: 'Active',
+    faqs: [
+      {
+        question: 'Who needs ChatGPT Pro?',
+        answer: 'Ideal for AI researchers, quantitative analysts, senior software architects, and enterprise engineers.'
+      }
+    ],
+    reviews: [
+      {
+        name: 'Dr. Sarah Jenkins',
+        rating: 5,
+        date: '2 days ago',
+        comment: 'Unlimited o1 reasoning is essential for complex biomedical research. Fast delivery!',
+        plan: 'ChatGPT Pro (3 Months)'
+      }
+    ]
+  },
+
+  // 11. Canva
+  {
+    id: 'canva-pro',
+    platformName: 'Canva',
+    platformKey: 'canva',
+    planName: 'Canva Pro',
+    category: 'Design & Media',
+    shortDescription: '100M+ premium stock media, Magic Studio AI image editor, background remover, and brand kits.',
+    detailedDescription: 'Canva Pro empowers creators and designers with 100+ million premium photos, videos, audio tracks, Magic Studio AI tools, instant background remover, and 1TB cloud storage.',
+    prices: {
+      Monthly: 12.00,
+      '3 Months': 36.00,
+      '6 Months': 72.00,
+      Yearly: 119.00
+    },
+    features: [
+      '100M+ Premium Stock Photos, Videos & Graphics',
+      'Magic Studio AI Image & Video Generator',
+      'One-Click AI Background Remover',
+      'Magic Resize for Social Media',
+      '1TB Cloud Asset Storage',
+      'Brand Kit & Custom Fonts Upload'
+    ],
+    supportedDevices: ['Web Browser', 'iOS', 'Android', 'macOS', 'Windows'],
+    badge: 'Popular',
+    rating: 4.95,
+    reviewsCount: 420,
+    ordersCount: 1150,
+    featured: true,
+    status: 'Active',
+    faqs: [
+      {
+        question: 'Will this upgrade my existing Canva account?',
+        answer: 'Yes! We upgrade your personal email directly to Canva Pro with full warranty.'
+      }
+    ],
+    reviews: [
+      {
+        name: 'Fatima Zohra',
+        rating: 5,
+        date: '3 days ago',
+        comment: 'Upgraded my own email to Canva Pro in 2 minutes! Magic Eraser and premium elements work great.',
+        plan: 'Canva Pro (Yearly)'
+      }
+    ]
+  },
+  {
+    id: 'canva-teams',
+    platformName: 'Canva',
+    platformKey: 'canva',
+    planName: 'Canva Teams',
+    category: 'Design & Media',
+    shortDescription: 'Multi-seat collaboration workspace for agencies with brand controls and shared designs.',
+    detailedDescription: 'Canva Teams provides workspace controls, multi-user asset sharing, team approvals, unlimited brand kits, and shared cloud folders.',
+    prices: {
+      Monthly: 15.00,
+      '3 Months': 45.00,
+      '6 Months': 90.00,
+      Yearly: 150.00
+    },
+    features: [
+      'Includes Up to 5 Team Seats',
+      'Team Workflow & Approval Controls',
+      'Shared Brand Kits & Color Schemes',
+      '1TB Shared Cloud Storage per member',
+      'Centralized Template Library',
+      'Full Commercial Distribution Rights'
+    ],
+    supportedDevices: ['Web Browser', 'macOS', 'Windows', 'iOS', 'Android'],
+    badge: 'Trending',
+    rating: 4.9,
+    reviewsCount: 195,
+    ordersCount: 480,
+    featured: true,
+    status: 'Active',
+    faqs: [
+      {
+        question: 'Can I add team members later?',
+        answer: 'Yes, you can invite team members via email anytime from your Canva team admin panel.'
+      }
+    ],
+    reviews: [
+      {
+        name: 'Bilal Ahmed',
+        rating: 5,
+        date: 'Yesterday',
+        comment: 'Perfect solution for my design team. All 5 seats activated smoothly.',
+        plan: 'Canva Teams (Yearly)'
+      }
+    ]
+  },
+
+  // 12. CapCut
+  {
+    id: 'capcut-pro',
+    platformName: 'CapCut',
+    platformKey: 'capcut',
+    planName: 'CapCut Pro',
+    category: 'Video Editing',
+    shortDescription: 'AI auto-captions, 4K 60fps export, motion tracking, noise reduction, and VIP video FX.',
+    detailedDescription: 'CapCut Pro gives TikTok, Instagram Reels, and Shorts video editors access to premium AI auto-subtitles, background removal, 4K 60fps high bitrate export, auto velocity curve, and VIP effects.',
+    prices: {
+      Monthly: 9.99,
+      '3 Months': 29.97,
+      '6 Months': 59.94,
+      Yearly: 89.99
+    },
+    features: [
+      'AI Auto-Captions & Subtitle Translator',
+      '4K 60FPS High Bitrate Video Export',
+      'Smart Background Cutout & Chroma Key',
+      'Auto Velocity & Smooth Slow-Mo',
+      '100GB Cloud Space Storage',
+      'VIP Transitions, Effects & Filters'
+    ],
+    supportedDevices: ['Web Browser', 'iOS', 'Android', 'macOS', 'Windows'],
+    badge: 'Best Seller',
+    rating: 4.92,
+    reviewsCount: 310,
+    ordersCount: 880,
+    featured: true,
+    status: 'Active',
+    faqs: [
+      {
+        question: 'Does CapCut Pro work on both phone and PC?',
+        answer: 'Yes, log in with the provided Pro account on your phone (iOS/Android) and PC/Mac simultaneously.'
+      }
+    ],
+    reviews: [
+      {
+        name: 'Usman Ali',
+        rating: 5,
+        date: '2 days ago',
+        comment: 'CapCut Pro auto captions and 4K export make video editing so fast for TikTok!',
+        plan: 'CapCut Pro (Yearly)'
+      }
+    ]
+  },
+
+  // 13. Spotify
+  {
+    id: 'spotify-individual',
+    platformName: 'Spotify',
+    platformKey: 'spotify',
+    planName: 'Premium Individual',
+    category: 'Entertainment & Music',
+    shortDescription: 'Ad-free music streaming, offline music downloads, high-fidelity audio, and unlimited skips.',
+    detailedDescription: 'Spotify Premium Individual grants full ad-free access to 100+ million songs, high-fidelity 320kbps audio quality, offline music downloads, and unlimited track skips.',
+    prices: {
+      Monthly: 10.99,
+      '3 Months': 32.97,
+      '6 Months': 65.94,
+      Yearly: 99.99
+    },
+    features: [
+      'Ad-Free Music Streaming',
+      'Offline Music & Podcast Downloads',
+      '320kbps High Fidelity Audio',
+      'Unlimited Track Skips',
+      'Works on Mobile, Desktop & Smart TV',
+      '100% Private Account Activation'
+    ],
+    supportedDevices: ['iOS', 'Android', 'macOS', 'Windows', 'Web', 'Smart TV'],
+    badge: 'Popular',
+    rating: 4.9,
+    reviewsCount: 520,
+    ordersCount: 1400,
+    featured: true,
+    status: 'Active',
+    faqs: [
+      {
+        question: 'Can I keep my existing playlists?',
+        answer: 'Yes! We can upgrade your existing personal Spotify account directly so all your playlists remain intact.'
+      }
+    ],
+    reviews: [
+      {
+        name: 'Zainab Malik',
+        rating: 5,
+        date: 'Yesterday',
+        comment: 'Upgraded my own account to Spotify Premium. All my saved songs stayed untouched!',
+        plan: 'Premium Individual (Yearly)'
+      }
+    ]
+  },
+  {
+    id: 'spotify-family',
+    platformName: 'Spotify',
+    platformKey: 'spotify',
+    planName: 'Premium Family',
+    category: 'Entertainment & Music',
+    shortDescription: '6 independent Premium accounts for family members under one address with Spotify Kids.',
+    detailedDescription: 'Spotify Premium Family includes 6 separate individual Premium accounts, explicit music block settings, and shared family mix playlist.',
+    prices: {
+      Monthly: 16.99,
+      '3 Months': 50.97,
+      '6 Months': 101.94,
+      Yearly: 149.99
+    },
+    features: [
+      'Up to 6 Separate Premium Accounts',
+      'Spotify Kids App Access',
+      'Ad-Free & Unlimited Downloads',
+      'Explicit Music Filter Controls',
+      'Works Across All Devices',
+      '100% Warranty Guaranteed'
+    ],
+    supportedDevices: ['iOS', 'Android', 'macOS', 'Windows', 'Smart TV'],
+    badge: 'Trending',
+    rating: 4.95,
+    reviewsCount: 280,
+    ordersCount: 620,
+    featured: true,
+    status: 'Active',
+    faqs: [
+      {
+        question: 'How do family members join?',
+        answer: 'You will receive invite links to send to your 5 family members to activate their individual accounts.'
+      }
+    ],
+    reviews: [
+      {
+        name: 'Imran Shah',
+        rating: 5,
+        date: '4 days ago',
+        comment: 'Great value for the whole family. Delivered instantly by Waleed.',
+        plan: 'Premium Family (Yearly)'
+      }
+    ]
+  },
+
+  // 14. Netflix
+  {
+    id: 'netflix-premium-4k',
+    platformName: 'Netflix',
+    platformKey: 'netflix',
+    planName: 'Premium 4K Ultra HD',
+    category: 'Entertainment & Music',
+    shortDescription: '4K Ultra HD + HDR streaming, 4 screens simultaneously, Spatial Audio, and downloads on 6 devices.',
+    detailedDescription: 'Netflix Premium 4K UHD gives you crystal-clear 4K resolution, Dolby Vision & Atmos support, 4 concurrent streams, Spatial Audio enhancement, and downloads on up to 6 devices.',
+    prices: {
+      Monthly: 19.99,
+      '3 Months': 59.97,
+      '6 Months': 119.94,
+      Yearly: 199.99
+    },
+    features: [
+      '4K Ultra HD + HDR10 / Dolby Vision',
+      'Watch on 4 Supported Devices at Once',
+      'Netflix Spatial Audio Enhancement',
+      'Download Content on 6 Devices',
+      'No Ads - 100% Unlimited Movies & TV',
+      'Private PIN Protected Profile Available'
+    ],
+    supportedDevices: ['Smart TV', 'iOS', 'Android', 'macOS', 'Windows', 'PlayStation', 'Xbox'],
+    badge: 'Best Seller',
+    rating: 4.96,
+    reviewsCount: 610,
+    ordersCount: 1850,
+    featured: true,
+    status: 'Active',
+    faqs: [
+      {
+        question: 'Is this account guaranteed against household restrictions?',
+        answer: 'Yes! All our Netflix Premium accounts are fully verified and backed with instant 24/7 replacement warranty.'
+      }
+    ],
+    reviews: [
+      {
+        name: 'Kamran Khan',
+        rating: 5,
+        date: '1 day ago',
+        comment: '4K UHD quality on OLED TV is breathtaking. Zero buffering or household issues.',
+        plan: 'Premium 4K Ultra HD (6 Months)'
+      }
+    ]
+  },
+
+  // 15. Adobe
+  {
+    id: 'adobe-cc-sub',
+    platformName: 'Adobe',
+    platformKey: 'adobe',
+    planName: 'Creative Cloud All Apps',
+    category: 'Design & Media',
+    shortDescription: 'Photoshop, Illustrator, Premiere Pro, After Effects, Acrobat Pro + 100GB Cloud Storage.',
+    detailedDescription: 'Upgrade your personal Adobe email directly to official Adobe Creative Cloud All Apps. Get access to 20+ desktop & mobile apps including Firefly AI generative fill, Adobe Fonts, and cloud sync.',
+    prices: {
+      Monthly: 54.99,
+      '3 Months': 164.97,
+      '6 Months': 329.94,
+      Yearly: 499.00
+    },
+    features: [
+      '20+ Apps (Photoshop, Illustrator, Premiere, etc.)',
+      'Firefly AI Generative Fill & Expand',
+      '100GB Official Adobe Cloud Storage',
+      'Adobe Fonts & Stock Asset Access',
+      'Direct Upgrade to Personal Adobe Email',
+      'Full Commercial Distribution License'
+    ],
+    supportedDevices: ['macOS', 'Windows', 'iOS', 'Android'],
+    badge: 'Enterprise',
+    rating: 4.98,
+    reviewsCount: 340,
+    ordersCount: 790,
+    featured: true,
+    status: 'Active',
+    faqs: [
+      {
+        question: 'How is Adobe Creative Cloud delivered?',
+        answer: 'We invite your personal Adobe email directly to our official business enterprise organization.'
+      }
+    ],
+    reviews: [
+      {
+        name: 'Omer Farooq',
+        rating: 5,
+        date: '2 days ago',
+        comment: 'Official Adobe account upgrade on my own email! Firefly AI works perfectly in Photoshop 2026.',
+        plan: 'Creative Cloud All Apps (Yearly)'
+      }
+    ]
+  },
+
+  // 16. Microsoft
+  {
+    id: 'ms-365-sub',
+    platformName: 'Microsoft',
+    platformKey: 'microsoft',
+    planName: 'Microsoft 365 + Copilot AI',
+    category: 'Productivity',
+    shortDescription: 'Word, Excel, PowerPoint, Outlook, 1TB OneDrive cloud storage & Copilot AI integration.',
+    detailedDescription: 'Microsoft 365 subscription provides full desktop and mobile installation of Word, Excel, PowerPoint, Outlook, OneNote, 1TB OneDrive cloud storage, and built-in Copilot AI assistant.',
+    prices: {
+      Monthly: 9.99,
+      '3 Months': 29.97,
+      '6 Months': 59.94,
+      Yearly: 69.99
+    },
+    features: [
+      '1TB OneDrive Secure Cloud Storage',
+      'Word, Excel, PowerPoint, Outlook Desktop Suite',
+      'Copilot AI Writing & Formula Assistant',
+      'Install on Up to 5 PCs / Macs + Phones',
+      '100% Genuine Official Subscription',
+      '24/7 Replacement Warranty'
+    ],
+    supportedDevices: ['Windows', 'macOS', 'iOS', 'Android', 'Web'],
+    badge: 'Popular',
+    rating: 4.9,
+    reviewsCount: 390,
+    ordersCount: 950,
+    featured: true,
+    status: 'Active',
+    faqs: [
+      {
+        question: 'How do I download Microsoft 365?',
+        answer: 'Log in to office.com using your assigned subscription email to download the official desktop installer.'
+      }
+    ],
+    reviews: [
+      {
+        name: 'Saad Mahmood',
+        rating: 5,
+        date: '3 days ago',
+        comment: '1TB OneDrive storage and Office apps activated right away. Excellent service!',
+        plan: 'Microsoft 365 + Copilot AI (Yearly)'
       }
     ]
   }
