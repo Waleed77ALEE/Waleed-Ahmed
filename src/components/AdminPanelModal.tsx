@@ -19,7 +19,10 @@ import { sendOrderEmailNotification } from '../services/emailNotificationService
 import {
   fetchAllRegisteredUsers,
   RegisteredUserRecord,
-  subscribeUserStore
+  subscribeUserStore,
+  updateUserStatus,
+  updateUserPlan,
+  deleteUserRecord
 } from '../services/userStore';
 import { softwareStore } from '../services/softwareStore';
 import { SoftwareOrder } from '../data/softwareData';
@@ -93,8 +96,10 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
   // Registered Users Directory State
   const [registeredUsers, setRegisteredUsers] = useState<RegisteredUserRecord[]>([]);
   const [userSearchQuery, setUserSearchQuery] = useState<string>('');
-  const [userFilter, setUserFilter] = useState<'all' | 'google' | 'email' | 'orders'>('all');
+  const [userFilter, setUserFilter] = useState<'all' | 'google' | 'email' | 'orders' | 'pro' | 'admin'>('all');
   const [isSyncingUsers, setIsSyncingUsers] = useState<boolean>(false);
+  const [userSyncError, setUserSyncError] = useState<string | null>(null);
+  const [userSyncLog, setUserSyncLog] = useState<string>('Initialization complete.');
 
   // User Wallets State
   const [userWallets, setUserWallets] = useState<UserWallet[]>([]);
@@ -152,14 +157,52 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
 
   const refreshUsersList = async () => {
     setIsSyncingUsers(true);
+    setUserSyncError(null);
+    setUserSyncLog('Querying Supabase database profiles, local user store, and order ledgers...');
     try {
       const usersList = await fetchAllRegisteredUsers();
       setRegisteredUsers(usersList);
-    } catch (e) {
+      setUserSyncLog(`Successfully fetched ${usersList.length} user records across cloud & local stores.`);
+    } catch (e: any) {
       console.error('Error refreshing users list:', e);
+      setUserSyncError(e?.message || 'Failed to fetch user accounts directory.');
+      setUserSyncLog(`Error during user sync: ${e?.message || 'Unknown error'}`);
     } finally {
       setIsSyncingUsers(false);
     }
+  };
+
+  const handleExportUsersCSV = () => {
+    if (registeredUsers.length === 0) {
+      alert('No user accounts available to export.');
+      return;
+    }
+
+    const headers = ['User ID', 'Full Name', 'Email Address', 'WhatsApp', 'Signup Method', 'Registration Date', 'Subscription / Plan', 'Account Status', 'Role', 'Orders Count', 'Total Spent ($)', 'Wallet Balance ($)'];
+    const rows = registeredUsers.map((u) => [
+      `"${u.id}"`,
+      `"${u.fullName || ''}"`,
+      `"${u.email}"`,
+      `"${u.whatsapp || ''}"`,
+      `"${u.provider}"`,
+      `"${new Date(u.createdAt).toLocaleDateString()}"`,
+      `"${u.plan || 'Free Account'}"`,
+      `"${u.status || 'Active'}"`,
+      `"${u.role || 'Member'}"`,
+      u.ordersCount,
+      u.totalSpent.toFixed(2),
+      (u.walletBalance || 0).toFixed(2)
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `WKA_Registered_Users_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   useEffect(() => {
@@ -1098,19 +1141,41 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                         <span>Registered User Accounts Directory</span>
                       </h3>
                       <p className="text-xs text-slate-400 mt-1">
-                        Every single user registered via Google OAuth, Email/Password, or Supabase Auth is indexed here.
+                        Live user management database synced across Supabase authentication, local state, wallet ledgers, and order databases.
                       </p>
                     </div>
 
-                    <button
-                      onClick={refreshUsersList}
-                      disabled={isSyncingUsers}
-                      className="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 shadow-lg shadow-cyan-950/50"
-                    >
-                      <RefreshCw className={`w-4 h-4 ${isSyncingUsers ? 'animate-spin' : ''}`} />
-                      <span>{isSyncingUsers ? 'Syncing Cloud Users...' : 'Sync & Refresh Users'}</span>
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={handleExportUsersCSV}
+                        className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 font-bold text-xs transition-all flex items-center gap-2 cursor-pointer"
+                      >
+                        <Download className="w-4 h-4 text-cyan-400" />
+                        <span>Export CSV Report</span>
+                      </button>
+
+                      <button
+                        onClick={refreshUsersList}
+                        disabled={isSyncingUsers}
+                        className="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 shadow-lg shadow-cyan-950/50"
+                      >
+                        <RefreshCw className={`w-4 h-4 ${isSyncingUsers ? 'animate-spin' : ''}`} />
+                        <span>{isSyncingUsers ? 'Syncing Users...' : 'Sync & Refresh Users'}</span>
+                      </button>
+                    </div>
                   </div>
+
+                  {/* Diagnostic Log & Error Alert Banner */}
+                  {userSyncError && (
+                    <div className="p-4 rounded-xl bg-red-950/60 border border-red-500/50 text-red-200 text-xs flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+                      <div className="space-y-1">
+                        <p className="font-bold text-red-300">User Sync Notice:</p>
+                        <p>{userSyncError}</p>
+                        <p className="text-[11px] text-red-400 font-mono">{userSyncLog}</p>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Recharts Signup Trends & Conversion Visualizer */}
                   <UserAnalyticsCharts
@@ -1119,70 +1184,92 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                     softwareOrders={softwareOrders}
                   />
 
-                  {/* Metric Cards */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {/* Metric Summary Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                     <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
                       <div>
-                        <p className="text-xs text-slate-400 font-bold">Total Registered</p>
+                        <p className="text-xs text-slate-400 font-bold">Total Accounts</p>
                         <h3 className="text-2xl font-black text-white mt-1">{registeredUsers.length} Users</h3>
-                        <p className="text-[11px] text-cyan-400 mt-1">100% User Coverage</p>
+                        <p className="text-[11px] text-cyan-400 mt-1">100% Database Coverage</p>
                       </div>
                       <div className="p-3 rounded-xl bg-cyan-500/10 text-cyan-400">
-                        <Users className="w-6 h-6" />
+                        <Users className="w-5 h-5" />
                       </div>
                     </div>
 
                     <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
                       <div>
-                        <p className="text-xs text-slate-400 font-bold">Google OAuth Signups</p>
-                        <h3 className="text-2xl font-black text-white mt-1">
+                        <p className="text-xs text-slate-400 font-bold">Google OAuth</p>
+                        <h3 className="text-2xl font-black text-emerald-400 mt-1">
                           {registeredUsers.filter((u) => u.provider === 'Google').length}
                         </h3>
-                        <p className="text-[11px] text-emerald-400 mt-1">Google Single Sign-On</p>
+                        <p className="text-[11px] text-emerald-400 mt-1">Single Sign-On</p>
                       </div>
                       <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
-                        <ShieldCheck className="w-6 h-6" />
+                        <ShieldCheck className="w-5 h-5" />
                       </div>
                     </div>
 
                     <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
                       <div>
-                        <p className="text-xs text-slate-400 font-bold">Email/Password Users</p>
-                        <h3 className="text-2xl font-black text-white mt-1">
+                        <p className="text-xs text-slate-400 font-bold">Email Signups</p>
+                        <h3 className="text-2xl font-black text-indigo-400 mt-1">
                           {registeredUsers.filter((u) => u.provider === 'Email' || u.provider === 'Supabase').length}
                         </h3>
-                        <p className="text-[11px] text-indigo-400 mt-1">Direct Auth Accounts</p>
+                        <p className="text-[11px] text-indigo-400 mt-1">Direct Credentials</p>
                       </div>
                       <div className="p-3 rounded-xl bg-indigo-500/10 text-indigo-400">
-                        <Mail className="w-6 h-6" />
+                        <Mail className="w-5 h-5" />
                       </div>
                     </div>
 
                     <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
                       <div>
-                        <p className="text-xs text-slate-400 font-bold">Active Buyer Accounts</p>
+                        <p className="text-xs text-slate-400 font-bold">Active Buyers</p>
                         <h3 className="text-2xl font-black text-amber-400 mt-1">
                           {registeredUsers.filter((u) => u.ordersCount > 0).length}
                         </h3>
-                        <p className="text-[11px] text-amber-400 mt-1">Placed 1+ Store Orders</p>
+                        <p className="text-[11px] text-amber-400 mt-1">Placed 1+ Orders</p>
                       </div>
                       <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
-                        <ShoppingBag className="w-6 h-6" />
+                        <ShoppingBag className="w-5 h-5" />
+                      </div>
+                    </div>
+
+                    <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-slate-400 font-bold">Paid / Pro Plans</p>
+                        <h3 className="text-2xl font-black text-purple-400 mt-1">
+                          {registeredUsers.filter((u) => u.plan && u.plan !== 'Free Account').length}
+                        </h3>
+                        <p className="text-[11px] text-purple-400 mt-1">Active Subscriptions</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-purple-500/10 text-purple-400">
+                        <Sparkles className="w-5 h-5" />
                       </div>
                     </div>
                   </div>
 
                   {/* Search & Filter Controls */}
                   <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <div className="relative w-full md:w-80">
-                      <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <div className="relative w-full md:w-96">
+                      <Search className="w-4 h-4 text-cyan-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                       <input
                         type="text"
-                        placeholder="Search by name, email, phone, or ID..."
+                        placeholder="Search users by name, email address, phone, ID..."
                         value={userSearchQuery}
                         onChange={(e) => setUserSearchQuery(e.target.value)}
-                        className="w-full pl-9 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs focus:outline-none focus:border-cyan-500"
+                        className="w-full pl-10 pr-9 py-2.5 rounded-xl bg-slate-900 border border-slate-700/70 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 transition-all"
                       />
+                      {userSearchQuery && (
+                        <button
+                          onClick={() => setUserSearchQuery('')}
+                          title="Clear search filter"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
@@ -1190,8 +1277,8 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                         onClick={() => setUserFilter('all')}
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                           userFilter === 'all'
-                            ? 'bg-cyan-500 text-slate-950 font-black'
-                            : 'bg-slate-900 text-slate-400 hover:text-white'
+                            ? 'bg-cyan-500 text-slate-950 font-black shadow-md shadow-cyan-950/50'
+                            : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
                         }`}
                       >
                         All Users ({registeredUsers.length})
@@ -1200,8 +1287,8 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                         onClick={() => setUserFilter('google')}
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                           userFilter === 'google'
-                            ? 'bg-emerald-500 text-slate-950 font-black'
-                            : 'bg-slate-900 text-slate-400 hover:text-white'
+                            ? 'bg-emerald-500 text-slate-950 font-black shadow-md shadow-emerald-950/50'
+                            : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
                         }`}
                       >
                         Google OAuth ({registeredUsers.filter((u) => u.provider === 'Google').length})
@@ -1210,26 +1297,46 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                         onClick={() => setUserFilter('email')}
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                           userFilter === 'email'
-                            ? 'bg-indigo-500 text-white font-black'
-                            : 'bg-slate-900 text-slate-400 hover:text-white'
+                            ? 'bg-indigo-500 text-white font-black shadow-md shadow-indigo-950/50'
+                            : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
                         }`}
                       >
-                        Email Users ({registeredUsers.filter((u) => u.provider === 'Email' || u.provider === 'Supabase').length})
+                        Email ({registeredUsers.filter((u) => u.provider === 'Email' || u.provider === 'Supabase').length})
                       </button>
                       <button
                         onClick={() => setUserFilter('orders')}
                         className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                           userFilter === 'orders'
-                            ? 'bg-amber-500 text-slate-950 font-black'
-                            : 'bg-slate-900 text-slate-400 hover:text-white'
+                            ? 'bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-950/50'
+                            : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
                         }`}
                       >
-                        Active Buyers ({registeredUsers.filter((u) => u.ordersCount > 0).length})
+                        Buyers ({registeredUsers.filter((u) => u.ordersCount > 0).length})
+                      </button>
+                      <button
+                        onClick={() => setUserFilter('pro')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          userFilter === 'pro'
+                            ? 'bg-purple-500 text-white font-black shadow-md shadow-purple-950/50'
+                            : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                        }`}
+                      >
+                        Pro Plans ({registeredUsers.filter((u) => u.plan && u.plan !== 'Free Account').length})
+                      </button>
+                      <button
+                        onClick={() => setUserFilter('admin')}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          userFilter === 'admin'
+                            ? 'bg-rose-500 text-white font-black shadow-md shadow-rose-950/50'
+                            : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                        }`}
+                      >
+                        Admins ({registeredUsers.filter((u) => u.role === 'Admin').length})
                       </button>
                     </div>
                   </div>
 
-                  {/* Users List Table */}
+                  {/* Comprehensive Users Directory Table with 7 Required Fields */}
                   {(() => {
                     const filteredUsersList = registeredUsers.filter((u) => {
                       const q = userSearchQuery.toLowerCase().trim();
@@ -1238,13 +1345,16 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                         u.fullName.toLowerCase().includes(q) ||
                         u.email.toLowerCase().includes(q) ||
                         (u.whatsapp && u.whatsapp.toLowerCase().includes(q)) ||
-                        u.id.toLowerCase().includes(q);
+                        u.id.toLowerCase().includes(q) ||
+                        (u.plan && u.plan.toLowerCase().includes(q));
 
                       if (!matchesSearch) return false;
 
                       if (userFilter === 'google') return u.provider === 'Google';
                       if (userFilter === 'email') return u.provider === 'Email' || u.provider === 'Supabase';
                       if (userFilter === 'orders') return u.ordersCount > 0;
+                      if (userFilter === 'pro') return u.plan && u.plan !== 'Free Account';
+                      if (userFilter === 'admin') return u.role === 'Admin';
                       return true;
                     });
 
@@ -1252,8 +1362,8 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                       return (
                         <div className="p-8 text-center rounded-2xl bg-slate-950 border border-slate-800 text-slate-500 space-y-2">
                           <Users className="w-8 h-8 text-slate-600 mx-auto" />
-                          <p className="font-bold text-white">No registered users matched your search criteria.</p>
-                          <p className="text-xs text-slate-500">Try clearing your search terms or clicking Sync &amp; Refresh Users.</p>
+                          <p className="font-bold text-white">No user accounts matched your search/filter criteria.</p>
+                          <p className="text-xs text-slate-500">Try clearing search terms or clicking Sync &amp; Refresh Users.</p>
                         </div>
                       );
                     }
@@ -1263,13 +1373,13 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                         <table className="w-full text-left text-xs text-slate-300">
                           <thead className="bg-slate-900 border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px]">
                             <tr>
-                              <th className="p-3">User Profile</th>
-                              <th className="p-3">Email Address</th>
-                              <th className="p-3">WhatsApp / Phone</th>
-                              <th className="p-3">Signup Method</th>
-                              <th className="p-3">Registered On</th>
-                              <th className="p-3">Orders / Spent</th>
-                              <th className="p-3">Wallet Balance</th>
+                              <th className="p-3">1. User Name &amp; ID</th>
+                              <th className="p-3">2. Email Address</th>
+                              <th className="p-3">3. Registration Date</th>
+                              <th className="p-3">4. Subscription / Plan</th>
+                              <th className="p-3">5. Account Status</th>
+                              <th className="p-3">6. Orders / Spent</th>
+                              <th className="p-3">7. Wallet Balance</th>
                               <th className="p-3 text-right">Actions</th>
                             </tr>
                           </thead>
@@ -1284,18 +1394,37 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
 
                               return (
                                 <tr key={u.id} className="hover:bg-slate-900/50 transition-colors">
+                                  {/* 1. User Name & User ID */}
                                   <td className="p-3">
                                     <div className="flex items-center gap-3">
                                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-indigo-600 flex items-center justify-center text-white font-extrabold text-xs shrink-0 shadow-md">
                                         {u.fullName ? u.fullName.charAt(0).toUpperCase() : u.email.charAt(0).toUpperCase()}
                                       </div>
                                       <div>
-                                        <span className="font-bold text-white block text-xs">{u.fullName || 'User'}</span>
-                                        <span className="text-[10px] font-mono text-slate-500">{u.id.slice(0, 16)}...</span>
+                                        <div className="flex items-center gap-1.5">
+                                          <span className="font-bold text-white block text-xs">{u.fullName || 'User'}</span>
+                                          {u.role === 'Admin' && (
+                                            <span className="px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold text-[9px]">ADMIN</span>
+                                          )}
+                                        </div>
+                                        <div className="flex items-center gap-1 mt-0.5">
+                                          <span className="text-[10px] font-mono text-slate-500">{u.id}</span>
+                                          <button
+                                            onClick={() => {
+                                              navigator.clipboard.writeText(u.id);
+                                              alert(`Copied User ID: ${u.id}`);
+                                            }}
+                                            title="Copy User ID"
+                                            className="text-slate-500 hover:text-cyan-400 p-0.5 cursor-pointer"
+                                          >
+                                            <Copy className="w-2.5 h-2.5" />
+                                          </button>
+                                        </div>
                                       </div>
                                     </div>
                                   </td>
 
+                                  {/* 2. Email Address */}
                                   <td className="p-3">
                                     <div className="flex items-center gap-2">
                                       <span className="font-mono text-slate-200">{u.email}</span>
@@ -1310,41 +1439,100 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                                         <Copy className="w-3.5 h-3.5" />
                                       </button>
                                     </div>
-                                  </td>
-
-                                  <td className="p-3">
-                                    {u.whatsapp ? (
+                                    {u.whatsapp && (
                                       <a
                                         href={`https://wa.me/${cleanWhatsapp}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 hover:bg-emerald-500/20 text-[11px] font-bold transition-all"
+                                        className="text-[10px] text-emerald-400 hover:underline flex items-center gap-1 mt-0.5"
                                       >
-                                        <span>{u.whatsapp}</span>
+                                        <span>WA: {u.whatsapp}</span>
                                       </a>
-                                    ) : (
-                                      <span className="text-slate-600 text-[11px]">Not provided</span>
                                     )}
                                   </td>
 
+                                  {/* 3. Registration Date & Provider */}
                                   <td className="p-3">
-                                    {u.provider === 'Google' ? (
-                                      <span className="px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-bold text-[10px] inline-flex items-center gap-1">
-                                        <ShieldCheck className="w-3 h-3 text-cyan-400" />
-                                        <span>Google OAuth</span>
-                                      </span>
-                                    ) : (
-                                      <span className="px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 font-bold text-[10px] inline-flex items-center gap-1">
-                                        <Mail className="w-3 h-3 text-indigo-400" />
-                                        <span>Email Signup</span>
-                                      </span>
-                                    )}
+                                    <span className="font-mono text-slate-300 text-xs block">{formattedDate}</span>
+                                    <span className="text-[10px] text-slate-500 inline-flex items-center gap-1 mt-0.5">
+                                      {u.provider === 'Google' ? (
+                                        <span className="text-cyan-400 font-bold">Google OAuth</span>
+                                      ) : (
+                                        <span className="text-indigo-400 font-bold">Email Auth</span>
+                                      )}
+                                    </span>
                                   </td>
 
-                                  <td className="p-3 font-mono text-slate-400 text-[11px]">
-                                    {formattedDate}
+                                  {/* 4. Subscription / Plan */}
+                                  <td className="p-3">
+                                    <div className="space-y-1">
+                                      <span className={`px-2.5 py-1 rounded-lg text-[11px] font-bold inline-block border ${
+                                        u.plan && u.plan.toLowerCase().includes('supergrok')
+                                          ? 'bg-purple-500/20 text-purple-300 border-purple-500/40'
+                                          : u.plan && u.plan.toLowerCase().includes('heygen')
+                                          ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
+                                          : u.plan && u.plan.toLowerCase().includes('chatgpt')
+                                          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                                          : u.plan && u.plan !== 'Free Account'
+                                          ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40'
+                                          : 'bg-slate-900 text-slate-400 border-slate-800'
+                                      }`}>
+                                        {u.plan || 'Free Account'}
+                                      </span>
+
+                                      {/* Quick Edit Plan Dropdown */}
+                                      <div>
+                                        <select
+                                          value={u.plan || 'Free Account'}
+                                          onChange={(e) => {
+                                            updateUserPlan(u.id, e.target.value);
+                                            refreshUsersList();
+                                          }}
+                                          className="text-[10px] bg-slate-900 text-slate-400 border border-slate-800 rounded px-1.5 py-0.5 cursor-pointer focus:outline-none focus:border-cyan-500"
+                                        >
+                                          <option value="Free Account">Free Account</option>
+                                          <option value="SuperGrok Heavy (6 Month)">SuperGrok Heavy (6-Mo)</option>
+                                          <option value="HeyGen Team Plan">HeyGen Team Plan</option>
+                                          <option value="ChatGPT Pro">ChatGPT Pro</option>
+                                          <option value="Canva Pro Yearly">Canva Pro Yearly</option>
+                                          <option value="VIP Enterprise / Admin">VIP Enterprise / Admin</option>
+                                        </select>
+                                      </div>
+                                    </div>
                                   </td>
 
+                                  {/* 5. Account Status */}
+                                  <td className="p-3">
+                                    <div className="space-y-1">
+                                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold inline-flex items-center gap-1 border ${
+                                        u.status === 'Active'
+                                          ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                                          : u.status === 'Verified'
+                                          ? 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30'
+                                          : 'bg-red-500/10 text-red-300 border-red-500/30'
+                                      }`}>
+                                        <CheckCircle2 className="w-3 h-3" />
+                                        <span>{u.status || 'Active'}</span>
+                                      </span>
+
+                                      <div>
+                                        <select
+                                          value={u.status || 'Active'}
+                                          onChange={(e) => {
+                                            updateUserStatus(u.id, e.target.value as any);
+                                            refreshUsersList();
+                                          }}
+                                          className="text-[10px] bg-slate-900 text-slate-400 border border-slate-800 rounded px-1 py-0.5 cursor-pointer focus:outline-none focus:border-cyan-500"
+                                        >
+                                          <option value="Active">Active</option>
+                                          <option value="Verified">Verified</option>
+                                          <option value="Suspended">Suspended</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                  </td>
+
+                                  {/* 6. Orders Count & Total Spent */}
                                   <td className="p-3">
                                     <div>
                                       <span className="font-bold text-white block">{u.ordersCount} Orders</span>
@@ -1352,14 +1540,16 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                                     </div>
                                   </td>
 
+                                  {/* 7. Wallet Balance */}
                                   <td className="p-3">
                                     <span className="font-mono font-black text-emerald-400 text-sm">
                                       ${(u.walletBalance || 0).toFixed(2)} USD
                                     </span>
                                   </td>
 
+                                  {/* Actions */}
                                   <td className="p-3 text-right">
-                                    <div className="flex items-center justify-end gap-2">
+                                    <div className="flex items-center justify-end gap-1.5">
                                       <button
                                         onClick={() => {
                                           setSelectedUserIdForCredit(u.id);
@@ -1391,6 +1581,19 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                                       >
                                         <Mail className="w-3.5 h-3.5" />
                                       </a>
+
+                                      <button
+                                        onClick={() => {
+                                          if (confirm(`Are you sure you want to delete user account ${u.email}?`)) {
+                                            deleteUserRecord(u.id);
+                                            refreshUsersList();
+                                          }
+                                        }}
+                                        className="p-1.5 rounded-lg bg-slate-800 hover:bg-red-950/60 text-slate-400 hover:text-red-400 transition-colors cursor-pointer"
+                                        title="Delete user record"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
                                     </div>
                                   </td>
                                 </tr>
