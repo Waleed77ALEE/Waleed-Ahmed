@@ -148,16 +148,16 @@ export const Footer: React.FC<FooterProps> = ({
                 </Link>
               </li>
               <li>
-                <button onClick={() => onOpenLegal && onOpenLegal('shipping')} className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer text-slate-400">
+                <Link to="/shipping-policy" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer text-slate-400">
                   <Truck className="w-3.5 h-3.5 text-sky-400" />
                   <span>Shipping &amp; Delivery Policy</span>
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => onOpenLegal && onOpenLegal('contact')} className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer text-slate-400">
+                <Link to="/contact-info" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer text-slate-400">
                   <Building2 className="w-3.5 h-3.5 text-teal-400" />
                   <span>Contact &amp; Merchant Info</span>
-                </button>
+                </Link>
               </li>
             </ul>
 

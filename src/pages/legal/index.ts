@@ -4,3 +4,5 @@ export { PrivacyPage } from './PrivacyPage';
 export { RefundPage } from './RefundPage';
 export { CookiePage } from './CookiePage';
 export { ReferralTermsPage } from './ReferralTermsPage';
+export { ShippingPage } from './ShippingPage';
+export { ContactPage } from './ContactPage';

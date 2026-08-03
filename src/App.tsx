@@ -34,6 +34,8 @@ const PrivacyPage = lazy(() => import('./pages/legal/PrivacyPage').then(m => ({ 
 const RefundPage = lazy(() => import('./pages/legal/RefundPage').then(m => ({ default: m.RefundPage })));
 const CookiePage = lazy(() => import('./pages/legal/CookiePage').then(m => ({ default: m.CookiePage })));
 const ReferralTermsPage = lazy(() => import('./pages/legal/ReferralTermsPage').then(m => ({ default: m.ReferralTermsPage })));
+const ShippingPage = lazy(() => import('./pages/legal/ShippingPage').then(m => ({ default: m.ShippingPage })));
+const ContactPage = lazy(() => import('./pages/legal/ContactPage').then(m => ({ default: m.ContactPage })));
 
 // Lazy Loaded Modals
 const SupabaseSqlModal = lazy(() => import('./components/SupabaseSqlModal').then(m => ({ default: m.SupabaseSqlModal })));
@@ -498,6 +500,10 @@ export default function App() {
               <Route path="/referral-terms" element={<ReferralTermsPage />} />
               <Route path="/referrals" element={<ReferralTermsPage />} />
               <Route path="/referral-policy" element={<ReferralTermsPage />} />
+              <Route path="/shipping-policy" element={<ShippingPage />} />
+              <Route path="/shipping" element={<ShippingPage />} />
+              <Route path="/contact-info" element={<ContactPage />} />
+              <Route path="/contact" element={<ContactPage />} />
 
               {/* Catch-all fallback */}
               <Route path="*" element={<Navigate to="/" replace />} />
