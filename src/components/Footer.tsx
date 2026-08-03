@@ -118,45 +118,45 @@ export const Footer: React.FC<FooterProps> = ({
             <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">Merchant Compliance &amp; Policies</h4>
             <ul className="space-y-2 mb-4">
               <li>
-                <button onClick={() => onOpenLegal && onOpenLegal('privacy')} className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer">
+                <Link to="/privacy-policy" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer">
                   <Shield className="w-3.5 h-3.5 text-cyan-400" />
                   <span>Privacy Policy</span>
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => onOpenLegal && onOpenLegal('terms')} className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer">
+                <Link to="/terms-and-conditions" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer">
                   <FileText className="w-3.5 h-3.5 text-amber-400" />
                   <span>Terms &amp; Conditions</span>
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => onOpenLegal && onOpenLegal('refund')} className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer">
+                <Link to="/refund-policy" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer">
                   <RefreshCw className="w-3.5 h-3.5 text-emerald-400" />
                   <span className="text-emerald-300 font-semibold">Refund &amp; Return Policy</span>
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => onOpenLegal && onOpenLegal('shipping')} className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer">
+                <Link to="/cookie-policy" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer">
+                  <FileText className="w-3.5 h-3.5 text-purple-400" />
+                  <span>Cookie Policy</span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/referral-terms" className="hover:text-rose-300 transition-colors text-rose-400 font-semibold flex items-center gap-1.5 cursor-pointer">
+                  <ShieldCheck className="w-3.5 h-3.5 text-rose-400" />
+                  <span>Referral Program Terms</span>
+                </Link>
+              </li>
+              <li>
+                <button onClick={() => onOpenLegal && onOpenLegal('shipping')} className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer text-slate-400">
                   <Truck className="w-3.5 h-3.5 text-sky-400" />
                   <span>Shipping &amp; Delivery Policy</span>
                 </button>
               </li>
               <li>
-                <button onClick={() => onOpenLegal && onOpenLegal('contact')} className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer">
+                <button onClick={() => onOpenLegal && onOpenLegal('contact')} className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer text-slate-400">
                   <Building2 className="w-3.5 h-3.5 text-teal-400" />
                   <span>Contact &amp; Merchant Info</span>
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onOpenLegal && onOpenLegal('disclaimer')} className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer">
-                  <FileText className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>Disclaimer</span>
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onOpenLegal && onOpenLegal('cookies')} className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer">
-                  <FileText className="w-3.5 h-3.5 text-purple-400" />
-                  <span>Cookie Policy</span>
                 </button>
               </li>
             </ul>

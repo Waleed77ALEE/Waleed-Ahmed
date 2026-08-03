@@ -28,6 +28,13 @@ const ReferralProPage = lazy(() => import('./pages/ReferralProPage').then(m => (
 const JazzCashPaymentPage = lazy(() => import('./pages/JazzCashPaymentPage').then(m => ({ default: m.JazzCashPaymentPage })));
 const AiSeoManagerPage = lazy(() => import('./pages/AiSeoManagerPage').then(m => ({ default: m.AiSeoManagerPage })));
 
+// Lazy Loaded Legal Pages
+const TermsPage = lazy(() => import('./pages/legal/TermsPage').then(m => ({ default: m.TermsPage })));
+const PrivacyPage = lazy(() => import('./pages/legal/PrivacyPage').then(m => ({ default: m.PrivacyPage })));
+const RefundPage = lazy(() => import('./pages/legal/RefundPage').then(m => ({ default: m.RefundPage })));
+const CookiePage = lazy(() => import('./pages/legal/CookiePage').then(m => ({ default: m.CookiePage })));
+const ReferralTermsPage = lazy(() => import('./pages/legal/ReferralTermsPage').then(m => ({ default: m.ReferralTermsPage })));
+
 // Lazy Loaded Modals
 const SupabaseSqlModal = lazy(() => import('./components/SupabaseSqlModal').then(m => ({ default: m.SupabaseSqlModal })));
 const BinancePayModal = lazy(() => import('./components/BinancePayModal').then(m => ({ default: m.BinancePayModal })));
@@ -478,6 +485,19 @@ export default function App() {
               {/* Dedicated Autonomous AI SEO Agent Platform Route */}
               <Route path="/seo-agent" element={<AiSeoManagerPage />} />
               <Route path="/ai-seo-manager" element={<AiSeoManagerPage />} />
+
+              {/* Requirement: Production Legal Pages & SEO Compliant Routes */}
+              <Route path="/terms-and-conditions" element={<TermsPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/privacy-policy" element={<PrivacyPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/refund-policy" element={<RefundPage />} />
+              <Route path="/refunds" element={<RefundPage />} />
+              <Route path="/cookie-policy" element={<CookiePage />} />
+              <Route path="/cookies" element={<CookiePage />} />
+              <Route path="/referral-terms" element={<ReferralTermsPage />} />
+              <Route path="/referrals" element={<ReferralTermsPage />} />
+              <Route path="/referral-policy" element={<ReferralTermsPage />} />
 
               {/* Catch-all fallback */}
               <Route path="*" element={<Navigate to="/" replace />} />
