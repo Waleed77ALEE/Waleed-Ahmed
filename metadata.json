@@ -1,6 +1,8 @@
 {
-  "name": "Waleed Khan Afridi - Portfolio & Digital Services",
-  "description": "Full Stack Developer, UI/UX Designer & SEO Specialist Portfolio with Social Media & Digital Services Marketplace.",
+  "name": "Remix Waleed Khan Afridi - Portfolio \u0026 Digital Services",
+  "description": "Full Stack Developer, UI/UX Designer \u0026 SEO Specialist Portfolio with Social Media \u0026 Digital Services Marketplace.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

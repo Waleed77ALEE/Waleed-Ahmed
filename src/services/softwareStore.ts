@@ -3,6 +3,7 @@ import { productStore, AdminOrder } from './productStore';
 import { sendOrderEmailNotification } from './emailNotificationService';
 
 const SOFTWARE_ORDERS_STORAGE_KEY = 'wka_software_orders_v1';
+const SOFTWARE_PRODUCTS_STORAGE_KEY = 'wka_software_products_v1';
 
 type Listener = () => void;
 
@@ -11,6 +12,14 @@ class SoftwareStore {
 
   constructor() {
     this.initSampleOrders();
+    this.initProducts();
+  }
+
+  private initProducts() {
+    if (typeof window === 'undefined') return;
+    if (!localStorage.getItem(SOFTWARE_PRODUCTS_STORAGE_KEY)) {
+      localStorage.setItem(SOFTWARE_PRODUCTS_STORAGE_KEY, JSON.stringify(SOFTWARE_PRODUCTS));
+    }
   }
 
   private initSampleOrders() {
@@ -65,11 +74,49 @@ class SoftwareStore {
   }
 
   public getSoftwareProducts(): SoftwareProduct[] {
-    return SOFTWARE_PRODUCTS;
+    if (typeof window === 'undefined') return SOFTWARE_PRODUCTS;
+    try {
+      const raw = localStorage.getItem(SOFTWARE_PRODUCTS_STORAGE_KEY);
+      return raw ? JSON.parse(raw) : SOFTWARE_PRODUCTS;
+    } catch {
+      return SOFTWARE_PRODUCTS;
+    }
   }
 
   public getProductById(id: string): SoftwareProduct | undefined {
-    return SOFTWARE_PRODUCTS.find((p) => p.id === id);
+    return this.getSoftwareProducts().find((p) => p.id === id);
+  }
+
+  public addSoftwareProduct(product: Partial<SoftwareProduct>): SoftwareProduct {
+    const products = this.getSoftwareProducts();
+    const newProduct = {
+      ...product,
+      id: product.id || `sw-${Date.now()}`,
+      slug: product.slug || (product.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    } as SoftwareProduct;
+    
+    products.push(newProduct);
+    localStorage.setItem(SOFTWARE_PRODUCTS_STORAGE_KEY, JSON.stringify(products));
+    this.notify();
+    return newProduct;
+  }
+
+  public updateSoftwareProduct(id: string, updates: Partial<SoftwareProduct>): boolean {
+    const products = this.getSoftwareProducts();
+    const index = products.findIndex((p) => p.id === id);
+    if (index === -1) return false;
+
+    products[index] = { ...products[index], ...updates };
+    localStorage.setItem(SOFTWARE_PRODUCTS_STORAGE_KEY, JSON.stringify(products));
+    this.notify();
+    return true;
+  }
+
+  public deleteSoftwareProduct(id: string): boolean {
+    const products = this.getSoftwareProducts().filter((p) => p.id !== id);
+    localStorage.setItem(SOFTWARE_PRODUCTS_STORAGE_KEY, JSON.stringify(products));
+    this.notify();
+    return true;
   }
 
   public getOrders(): SoftwareOrder[] {

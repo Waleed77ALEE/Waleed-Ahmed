@@ -65,24 +65,24 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
 
           {/* Headline */}
           <motion.h1 variants={itemVariants} className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.1] mb-6">
-            <span className="bg-gradient-to-r from-amber-400 via-amber-300 to-cyan-400 bg-clip-text text-transparent">
-              Building Premium Websites, AI Solutions &amp; Digital Products
+            <span className="bg-gradient-to-r from-amber-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+              The Premium Digital Gaming & Asset Marketplace
             </span>
           </motion.h1>
 
           {/* Subheading (Max 2 lines) */}
           <motion.p variants={itemVariants} className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto font-normal leading-relaxed mb-8">
-            Helping businesses grow with modern web development, AI-powered automation, SEO, and premium digital products.
+            Buy, sell, and trade virtual goods, in-game currency, premium accounts, and boosting services with 100% secure escrow protection.
           </motion.p>
 
           {/* 4 Technology Pills */}
           <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center gap-3 mb-10">
-            {techPills.map((tech, idx) => (
+            {['Secure Escrow', 'Instant Delivery', 'Verified Sellers', '24/7 Support'].map((tech, idx) => (
               <span
                 key={idx}
                 className="px-4 py-2 text-xs font-bold rounded-xl bg-slate-900/80 border border-slate-800 text-slate-300 backdrop-blur-xl shadow-md flex items-center gap-1.5"
               >
-                <span className="text-cyan-400 font-black">•</span>
+                <span className="text-emerald-400 font-black">✓</span>
                 <span>{tech}</span>
               </span>
             ))}
@@ -90,17 +90,15 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
 
           {/* Three Premium CTA Buttons */}
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20 w-full max-w-2xl mx-auto">
-            {/* Hire Button */}
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => onNavigate('contact')}
-              className="w-full sm:flex-1 px-6 py-3.5 rounded-xl text-sm font-extrabold text-slate-950 bg-gradient-to-r from-amber-400 via-amber-300 to-cyan-400 hover:from-amber-300 hover:to-cyan-300 shadow-xl shadow-amber-500/20 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+            {/* Market Button */}
+            <a
+              href="/gaming-market"
+              className="w-full sm:flex-1 px-6 py-3.5 rounded-xl text-sm font-extrabold text-slate-950 bg-gradient-to-r from-cyan-500 to-indigo-500 hover:from-cyan-400 hover:to-indigo-400 shadow-xl shadow-cyan-500/20 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Mail className="w-4 h-4 text-slate-950" />
-              <span>Hire</span>
+              <Sparkles className="w-4 h-4 text-slate-950" />
+              <span>Enter Marketplace</span>
               <ArrowRight className="w-4 h-4 text-slate-950" />
-            </motion.button>
+            </a>
 
             {/* Products Button */}
             <motion.button
@@ -109,19 +107,8 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate }) => {
               onClick={() => onNavigate('software-services')}
               className="w-full sm:flex-1 px-6 py-3.5 rounded-xl text-sm font-bold text-white bg-slate-900/90 hover:bg-slate-800/90 border border-slate-800 hover:border-slate-700 transition-all duration-200 flex items-center justify-center gap-2 backdrop-blur-md cursor-pointer"
             >
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <span>Products</span>
-            </motion.button>
-
-            {/* Portfolio Button */}
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => onNavigate('projects')}
-              className="w-full sm:flex-1 px-6 py-3.5 rounded-xl text-sm font-bold text-white bg-slate-900/90 hover:bg-slate-800/90 border border-slate-800 hover:border-slate-700 transition-all duration-200 flex items-center justify-center gap-2 backdrop-blur-md cursor-pointer"
-            >
-              <FolderGit2 className="w-4 h-4 text-cyan-400" />
-              <span>Portfolio</span>
+              <Code className="w-4 h-4 text-amber-400" />
+              <span>Software & Tools</span>
             </motion.button>
           </motion.div>
 

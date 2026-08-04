@@ -27,6 +27,10 @@ const SingleServicePage = lazy(() => import('./pages/services/SingleServicePage'
 const ReferralProPage = lazy(() => import('./pages/ReferralProPage').then(m => ({ default: m.ReferralProPage })));
 const JazzCashPaymentPage = lazy(() => import('./pages/JazzCashPaymentPage').then(m => ({ default: m.JazzCashPaymentPage })));
 const AiSeoManagerPage = lazy(() => import('./pages/AiSeoManagerPage').then(m => ({ default: m.AiSeoManagerPage })));
+const SingleProductPage = lazy(() => import('./pages/products/SingleProductPage').then(m => ({ default: m.SingleProductPage })));
+const GamingMarketplacePage = lazy(() => import('./pages/GamingMarketplacePage').then(m => ({ default: m.GamingMarketplacePage })));
+const SoftwareServicesPage = lazy(() => import('./pages/SoftwareServicesPage').then(m => ({ default: m.SoftwareServicesPage })));
+const AiSubscriptionMarketplacePage = lazy(() => import('./pages/AiSubscriptionMarketplacePage').then(m => ({ default: m.AiSubscriptionMarketplacePage })));
 
 // Lazy Loaded Legal Pages
 const TermsPage = lazy(() => import('./pages/legal/TermsPage').then(m => ({ default: m.TermsPage })));
@@ -34,8 +38,6 @@ const PrivacyPage = lazy(() => import('./pages/legal/PrivacyPage').then(m => ({ 
 const RefundPage = lazy(() => import('./pages/legal/RefundPage').then(m => ({ default: m.RefundPage })));
 const CookiePage = lazy(() => import('./pages/legal/CookiePage').then(m => ({ default: m.CookiePage })));
 const ReferralTermsPage = lazy(() => import('./pages/legal/ReferralTermsPage').then(m => ({ default: m.ReferralTermsPage })));
-const ShippingPage = lazy(() => import('./pages/legal/ShippingPage').then(m => ({ default: m.ShippingPage })));
-const ContactPage = lazy(() => import('./pages/legal/ContactPage').then(m => ({ default: m.ContactPage })));
 
 // Lazy Loaded Modals
 const SupabaseSqlModal = lazy(() => import('./components/SupabaseSqlModal').then(m => ({ default: m.SupabaseSqlModal })));
@@ -466,6 +468,43 @@ export default function App() {
                 }
               />
 
+              {/* Requirement: Every single product must have a dedicated sub-page and unique sub-link */}
+              <Route
+                path="/products/:category/:slug"
+                element={
+                  <SingleProductPage 
+                    user={user}
+                    profile={profile}
+                    onOpenAccount={() => setIsAccountModalOpen(true)}
+                  />
+                }
+              />
+
+              <Route
+                path="/gaming-market"
+                element={
+                  <GamingMarketplacePage />
+                }
+              />
+              
+              <Route
+                path="/software-services"
+                element={
+                  <SoftwareServicesPage 
+                    user={user}
+                    profile={profile}
+                    onOpenAccount={() => setIsAccountModalOpen(true)}
+                  />
+                }
+              />
+
+              <Route
+                path="/ai-accounts"
+                element={
+                  <AiSubscriptionMarketplacePage whatsappNumber={whatsappNumber} />
+                }
+              />
+
               {/* Requirement: ReferralPro Affiliate Portal Route */}
               <Route
                 path="/referralpro"
@@ -500,10 +539,6 @@ export default function App() {
               <Route path="/referral-terms" element={<ReferralTermsPage />} />
               <Route path="/referrals" element={<ReferralTermsPage />} />
               <Route path="/referral-policy" element={<ReferralTermsPage />} />
-              <Route path="/shipping-policy" element={<ShippingPage />} />
-              <Route path="/shipping" element={<ShippingPage />} />
-              <Route path="/contact-info" element={<ContactPage />} />
-              <Route path="/contact" element={<ContactPage />} />
 
               {/* Catch-all fallback */}
               <Route path="*" element={<Navigate to="/" replace />} />

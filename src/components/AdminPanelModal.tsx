@@ -92,6 +92,12 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
   const [softwareOrders, setSoftwareOrders] = useState<SoftwareOrder[]>(() =>
     softwareStore.getOrders()
   );
+  const [softwareProducts, setSoftwareProducts] = useState<any[]>(() => 
+    softwareStore.getSoftwareProducts()
+  );
+
+  // Inventory Tab Sub-State
+  const [inventorySubTab, setInventorySubTab] = useState<'digital' | 'software'>('digital');
 
   // Registered Users Directory State
   const [registeredUsers, setRegisteredUsers] = useState<RegisteredUserRecord[]>([]);
@@ -222,6 +228,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
     const unsubscribeProduct = productStore.subscribe(syncState);
     const unsubscribeSoftware = softwareStore.subscribe(() => {
       setSoftwareOrders(softwareStore.getOrders());
+      setSoftwareProducts(softwareStore.getSoftwareProducts());
     });
     const unsubscribeWallet = subscribeWallet(() => {
       setUserWallets(getAllUserWallets());
@@ -502,7 +509,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
               >
                 <span className="flex items-center gap-2.5">
                   <Package className="w-4 h-4" />
-                  <span>Products</span>
+                  <span>Inventory</span>
                 </span>
                 <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-800 text-slate-300 font-mono">
                   {totalProductsCount}
@@ -746,150 +753,255 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
                 </div>
               )}
 
-              {/* TAB 2: PRODUCTS MANAGER */}
+              {/* TAB 2: INVENTORY MANAGER */}
               {activeTab === 'products' && (
                 <div className="space-y-4">
-                  {/* Top Toolbar */}
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                      <div className="relative flex-1 sm:w-60">
-                        <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
-                        <input
-                          type="text"
-                          placeholder="Search products..."
-                          value={productSearch}
-                          onChange={(e) => setProductSearch(e.target.value)}
-                          className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:border-cyan-500"
-                        />
-                      </div>
-
-                      <select
-                        value={categoryFilter}
-                        onChange={(e) => setCategoryFilter(e.target.value)}
-                        className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 focus:outline-none"
-                      >
-                        <option value="All">All Categories</option>
-                        {categories.map((cat) => (
-                          <option key={cat} value={cat}>
-                            {cat}
-                          </option>
-                        ))}
-                      </select>
-
-                      <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 focus:outline-none"
-                      >
-                        <option value="All">All Statuses</option>
-                        <option value="Active">Active Only</option>
-                        <option value="Hidden">Hidden Only</option>
-                      </select>
-                    </div>
-
+                  
+                  {/* Inventory Sub-Tabs */}
+                  <div className="flex items-center gap-2 mb-4 p-1 rounded-xl bg-slate-950/50 border border-slate-800 w-fit">
                     <button
-                      onClick={handleOpenAddProduct}
-                      className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md"
+                      onClick={() => setInventorySubTab('digital')}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                        inventorySubTab === 'digital'
+                          ? 'bg-cyan-500 text-slate-950 shadow-sm'
+                          : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                      }`}
                     >
-                      <Plus className="w-4 h-4" />
-                      <span>+ Create Product</span>
+                      Digital Services
+                    </button>
+                    <button
+                      onClick={() => setInventorySubTab('software')}
+                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                        inventorySubTab === 'software'
+                          ? 'bg-cyan-500 text-slate-950 shadow-sm'
+                          : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                      }`}
+                    >
+                      Software Licenses
                     </button>
                   </div>
 
-                  {/* Products Table */}
-                  <div className="border border-slate-800 rounded-xl overflow-x-auto bg-slate-950/40">
-                    <table className="w-full text-left text-xs text-slate-300">
-                      <thead className="bg-slate-950 border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px] tracking-wider">
-                        <tr>
-                          <th className="p-3">Product Title</th>
-                          <th className="p-3">Category</th>
-                          <th className="p-3">Price</th>
-                          <th className="p-3">Delivery</th>
-                          <th className="p-3">Stock</th>
-                          <th className="p-3">Status</th>
-                          <th className="p-3 text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-800/60">
-                        {filteredProducts.length === 0 ? (
-                          <tr>
-                            <td colSpan={7} className="p-6 text-center text-slate-500">
-                              No products found matching filters.
-                            </td>
-                          </tr>
-                        ) : (
-                          filteredProducts.map((prod) => (
-                            <tr key={prod.id} className="hover:bg-slate-900/60 transition-colors">
-                              <td className="p-3 font-semibold text-white">
-                                <div className="flex items-center gap-2.5">
-                                  <PlatformLogo title={prod.title} category={prod.category} subCategory={prod.subCategory} id={prod.id} className="w-5 h-5 shrink-0" />
-                                  <span>{prod.title}</span>
-                                  {prod.featured && (
-                                    <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[9px] font-bold">
-                                      Featured
-                                    </span>
-                                  )}
-                                </div>
-                              </td>
-                              <td className="p-3 text-slate-400">{prod.category}</td>
-                              <td className="p-3 font-mono text-cyan-400 font-bold">
-                                ${prod.price}
-                                {prod.discountPrice && (
-                                  <span className="text-[10px] text-slate-500 line-through ml-1">
-                                    ${prod.discountPrice}
-                                  </span>
-                                )}
-                              </td>
-                              <td className="p-3 text-slate-400 max-w-[120px] truncate">{prod.delivery}</td>
-                              <td className="p-3">
-                                <span className="px-2 py-0.5 rounded-full text-[10px] bg-slate-800 text-slate-300">
-                                  {prod.stockStatus || 'In Stock'}
-                                </span>
-                              </td>
-                              <td className="p-3">
-                                <button
-                                  onClick={() => handleToggleStatus(prod.id)}
-                                  className={`px-2 py-0.5 text-[10px] font-bold rounded-full flex items-center gap-1 ${
-                                    prod.status === 'Hidden'
-                                      ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-                                      : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                  }`}
-                                >
-                                  {prod.status === 'Hidden' ? (
-                                    <>
-                                      <EyeOff className="w-3 h-3" /> Hidden
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Eye className="w-3 h-3" /> Active
-                                    </>
-                                  )}
-                                </button>
-                              </td>
-                              <td className="p-3 text-right">
-                                <div className="flex items-center justify-end gap-1">
-                                  <button
-                                    onClick={() => handleOpenEditProduct(prod)}
-                                    className="p-1.5 rounded-lg bg-slate-800 text-cyan-400 hover:bg-slate-700"
-                                    title="Edit Product"
-                                  >
-                                    <Edit3 className="w-3.5 h-3.5" />
-                                  </button>
-                                  <button
-                                    onClick={() => handleDeleteProduct(prod.id, prod.title)}
-                                    className="p-1.5 rounded-lg bg-slate-800 text-rose-400 hover:bg-rose-950"
-                                    title="Delete Product"
-                                  >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                  </button>
-                                </div>
-                              </td>
+                  {inventorySubTab === 'digital' ? (
+                    <>
+                      {/* Top Toolbar */}
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                          <div className="relative flex-1 sm:w-60">
+                            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
+                            <input
+                              type="text"
+                              placeholder="Search digital services..."
+                              value={productSearch}
+                              onChange={(e) => setProductSearch(e.target.value)}
+                              className="w-full pl-9 pr-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white focus:outline-none focus:border-cyan-500"
+                            />
+                          </div>
+
+                          <select
+                            value={categoryFilter}
+                            onChange={(e) => setCategoryFilter(e.target.value)}
+                            className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 focus:outline-none"
+                          >
+                            <option value="All">All Categories</option>
+                            {categories.map((cat) => (
+                              <option key={cat} value={cat}>
+                                {cat}
+                              </option>
+                            ))}
+                          </select>
+
+                          <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="px-3 py-1.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 focus:outline-none"
+                          >
+                            <option value="All">All Statuses</option>
+                            <option value="Active">Active Only</option>
+                            <option value="Hidden">Hidden Only</option>
+                          </select>
+                        </div>
+
+                        <button
+                          onClick={handleOpenAddProduct}
+                          className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md"
+                        >
+                          <Plus className="w-4 h-4" />
+                          <span>+ Create Product</span>
+                        </button>
+                      </div>
+
+                      {/* Products Table */}
+                      <div className="border border-slate-800 rounded-xl overflow-x-auto bg-slate-950/40">
+                        <table className="w-full text-left text-xs text-slate-300">
+                          <thead className="bg-slate-950 border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px] tracking-wider">
+                            <tr>
+                              <th className="p-3">Product Title</th>
+                              <th className="p-3">Category</th>
+                              <th className="p-3">Price</th>
+                              <th className="p-3">Delivery</th>
+                              <th className="p-3">Stock</th>
+                              <th className="p-3">Status</th>
+                              <th className="p-3 text-right">Actions</th>
                             </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
+                          </thead>
+                          <tbody className="divide-y divide-slate-800/60">
+                            {filteredProducts.length === 0 ? (
+                              <tr>
+                                <td colSpan={7} className="p-6 text-center text-slate-500">
+                                  No products found matching filters.
+                                </td>
+                              </tr>
+                            ) : (
+                              filteredProducts.map((prod) => (
+                                <tr key={prod.id} className="hover:bg-slate-900/60 transition-colors">
+                                  <td className="p-3 font-semibold text-white">
+                                    <div className="flex items-center gap-2.5">
+                                      <PlatformLogo title={prod.title} category={prod.category} subCategory={prod.subCategory} id={prod.id} className="w-5 h-5 shrink-0" />
+                                      <span>{prod.title}</span>
+                                      {prod.featured && (
+                                        <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[9px] font-bold">
+                                          Featured
+                                        </span>
+                                      )}
+                                    </div>
+                                  </td>
+                                  <td className="p-3 text-slate-400">{prod.category}</td>
+                                  <td className="p-3 font-mono text-cyan-400 font-bold">
+                                    ${prod.price}
+                                    {prod.discountPrice && (
+                                      <span className="text-[10px] text-slate-500 line-through ml-1">
+                                        ${prod.discountPrice}
+                                      </span>
+                                    )}
+                                  </td>
+                                  <td className="p-3 text-slate-400 max-w-[120px] truncate">{prod.delivery}</td>
+                                  <td className="p-3">
+                                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-slate-800 text-slate-300">
+                                      {prod.stockStatus || 'In Stock'}
+                                    </span>
+                                  </td>
+                                  <td className="p-3">
+                                    <button
+                                      onClick={() => handleToggleStatus(prod.id)}
+                                      className={`px-2 py-0.5 text-[10px] font-bold rounded-full flex items-center gap-1 ${
+                                        prod.status === 'Hidden'
+                                          ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                                          : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                      }`}
+                                    >
+                                      {prod.status === 'Hidden' ? (
+                                        <>
+                                          <EyeOff className="w-3 h-3" /> Hidden
+                                        </>
+                                      ) : (
+                                        <>
+                                          <Eye className="w-3 h-3" /> Active
+                                        </>
+                                      )}
+                                    </button>
+                                  </td>
+                                  <td className="p-3 text-right">
+                                    <div className="flex items-center justify-end gap-1">
+                                      <button
+                                        onClick={() => handleOpenEditProduct(prod)}
+                                        className="p-1.5 rounded-lg bg-slate-800 text-cyan-400 hover:bg-slate-700"
+                                        title="Edit Product"
+                                      >
+                                        <Edit3 className="w-3.5 h-3.5" />
+                                      </button>
+                                      <button
+                                        onClick={() => handleDeleteProduct(prod.id, prod.title)}
+                                        className="p-1.5 rounded-lg bg-slate-800 text-rose-400 hover:bg-rose-950"
+                                        title="Delete Product"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              ))
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Software Inventory */}
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div className="flex-1">
+                          <h3 className="text-sm font-bold text-white">Software &amp; Tools Licenses</h3>
+                          <p className="text-xs text-slate-400">Manage downloadable software listings and licenses.</p>
+                        </div>
+                        <button
+                          onClick={() => alert('Editing software directly is handled similarly. Please use the codebase.')}
+                          className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:bg-slate-700 transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                          <span>+ Add Software License</span>
+                        </button>
+                      </div>
+
+                      <div className="border border-slate-800 rounded-xl overflow-x-auto bg-slate-950/40 mt-4">
+                        <table className="w-full text-left text-xs text-slate-300">
+                          <thead className="bg-slate-950 border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px] tracking-wider">
+                            <tr>
+                              <th className="p-3">Software Name</th>
+                              <th className="p-3">Category</th>
+                              <th className="p-3">Price</th>
+                              <th className="p-3">Platform</th>
+                              <th className="p-3 text-right">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-800/60">
+                            {softwareProducts.map((prod) => (
+                              <tr key={prod.id} className="hover:bg-slate-900/60 transition-colors">
+                                <td className="p-3 font-semibold text-white">
+                                  <div className="flex items-center gap-2.5">
+                                    <div className="w-5 h-5 bg-cyan-500/10 text-cyan-400 rounded flex items-center justify-center shrink-0">
+                                      <Package className="w-3 h-3" />
+                                    </div>
+                                    <span>{prod.name}</span>
+                                    <span className="text-[10px] text-slate-500 ml-2">{prod.version}</span>
+                                  </div>
+                                </td>
+                                <td className="p-3 text-slate-400">{prod.category}</td>
+                                <td className="p-3 font-mono text-emerald-400 font-bold">${prod.price}</td>
+                                <td className="p-3 text-slate-400">{prod.platform}</td>
+                                <td className="p-3 text-right">
+                                  <div className="flex items-center justify-end gap-1">
+                                    <button
+                                      onClick={() => {
+                                          const newPrice = prompt(`Enter new price for ${prod.name}:`, prod.price.toString());
+                                          if (newPrice !== null) {
+                                              softwareStore.updateSoftwareProduct(prod.id, { price: parseFloat(newPrice) });
+                                          }
+                                      }}
+                                      className="p-1.5 rounded-lg bg-slate-800 text-cyan-400 hover:bg-slate-700"
+                                      title="Quick Edit Price"
+                                    >
+                                      <Edit3 className="w-3.5 h-3.5" />
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        if (confirm(`Delete software ${prod.name}?`)) {
+                                          softwareStore.deleteSoftwareProduct(prod.id);
+                                        }
+                                      }}
+                                      className="p-1.5 rounded-lg bg-slate-800 text-rose-400 hover:bg-rose-950"
+                                      title="Delete Product"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 

@@ -37,7 +37,7 @@ interface LegalLayoutProps {
   subtitle: string;
   lastUpdated: string;
   effectiveDate: string;
-  documentType: 'terms' | 'privacy' | 'refund' | 'cookie' | 'referral' | 'shipping' | 'contact';
+  documentType: 'terms' | 'privacy' | 'refund' | 'cookie' | 'referral';
   toc: LegalTocItem[];
   canonicalUrl: string;
   schemaJson: object;
@@ -158,18 +158,6 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
       label: 'Referral Program Terms',
       icon: <Award className="w-4 h-4 text-rose-400" />,
       type: 'referral'
-    },
-    {
-      path: '/shipping-policy',
-      label: 'Shipping & Delivery Policy',
-      icon: <Globe className="w-4 h-4 text-sky-400" />,
-      type: 'shipping'
-    },
-    {
-      path: '/contact-info',
-      label: 'Contact & Merchant Info',
-      icon: <Building2 className="w-4 h-4 text-teal-400" />,
-      type: 'contact'
     }
   ];
 

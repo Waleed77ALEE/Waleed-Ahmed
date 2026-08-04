@@ -113,20 +113,21 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   const servicesDropdownItems = [
-    { label: 'AI SEO Agent Platform', slug: 'seo-agent', path: '/seo-agent', description: '24/7 autonomous crawler, schema optimizer & rank tracker' },
-    { label: 'Web Development', slug: 'web-development', path: '/services/web-development', description: 'Custom responsive apps, React, Next.js' },
-    { label: 'AI Solutions', slug: 'ai-automation', path: '/services/ai-automation', description: 'OpenAI, Gemini workflow automation' },
-    { label: 'SEO Services', slug: 'seo', path: '/services/seo', description: 'Technical SEO & content optimization' },
-    { label: 'Graphic Design', slug: 'ui-ux-design', path: '/services/ui-ux-design', description: 'Figma mockups & modern UI/UX design' },
-    { label: 'Digital Marketing', slug: 'ecommerce-development', path: '/services/ecommerce-development', description: 'E-commerce and marketing automation' }
+    { label: 'World of Warcraft', path: '/gaming-market?game=wow', description: 'Gold, Accounts, Boosting' },
+    { label: 'League of Legends', path: '/gaming-market?game=lol', description: 'Smurf Accounts, Elo Boost' },
+    { label: 'Valorant', path: '/gaming-market?game=valorant', description: 'Ranked Ready, Skins' },
+    { label: 'OSRS', path: '/gaming-market?game=osrs', description: 'OSRS Gold & Powerleveling' },
+    { label: 'Apex Legends', path: '/gaming-market?game=apex', description: 'Badges, Ranked Boost' },
+    { label: 'Diablo IV', path: '/gaming-market?game=diablo', description: 'Items, Gold, Leveling' }
   ];
 
   const productsDropdownItems = [
-    { label: 'Software Products', sectionId: 'software-services', description: 'Full-stack software and tools' },
-    { label: 'AI Tools', sectionId: 'ai-subscriptions', description: 'AI subscriptions and services' },
-    { label: 'Digital Downloads', sectionId: 'software-services', description: 'Premium codebases & assets' },
-    { label: 'Templates', sectionId: 'software-services', description: 'Developer-friendly themes & designs' },
-    { label: 'Premium Resources', sectionId: 'software-services', description: 'E-books, assets and guides' }
+    { label: 'In-Game Currency', path: '/gaming-market?type=currency', description: 'Cheap WoW Gold, OSRS GP' },
+    { label: 'Premium Accounts', path: '/gaming-market?type=accounts', description: 'High Elo & Rare Skins' },
+    { label: 'Boosting Services', path: '/gaming-market?type=boosting', description: 'Rank up fast & secure' },
+    { label: 'Game Keys', path: '/gaming-market?type=keys', description: 'Global Steam & Epic Keys' },
+    { label: 'Software & Tools', path: '/software-services', description: 'Premium developer tools' },
+    { label: 'AI Accounts & Subscriptions', path: '/ai-accounts', description: 'Premium AI tools & licenses' }
   ];
 
   const getNavIcon = (name: string) => {
@@ -138,6 +139,7 @@ export const Header: React.FC<HeaderProps> = ({
       case 'Graphic Design': return <Palette className="w-3.5 h-3.5 text-cyan-400" />;
       case 'Digital Marketing': return <ShopIcon className="w-3.5 h-3.5 text-cyan-400" />;
       
+      case 'Gaming Marketplace': return <Sparkles className="w-3.5 h-3.5 text-amber-400" />;
       case 'Software Products': return <Database className="w-3.5 h-3.5 text-amber-400" />;
       case 'AI Tools': return <Sparkles className="w-3.5 h-3.5 text-amber-400" />;
       case 'Digital Downloads': return <Smartphone className="w-3.5 h-3.5 text-amber-400" />;
@@ -274,7 +276,7 @@ export const Header: React.FC<HeaderProps> = ({
                   />
                 )}
                 <span className="relative z-10 flex items-center gap-1">
-                  Services <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'services' ? 'rotate-180 text-cyan-400' : 'text-slate-500'}`} />
+                  Games <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'services' ? 'rotate-180 text-cyan-400' : 'text-slate-500'}`} />
                 </span>
               </button>
 
@@ -289,7 +291,7 @@ export const Header: React.FC<HeaderProps> = ({
                   >
                     {servicesDropdownItems.map((subItem) => (
                       <button
-                        key={subItem.slug}
+                        key={subItem.path}
                         onClick={() => {
                           setActiveDropdown(null);
                           navigate(subItem.path);
@@ -346,7 +348,7 @@ export const Header: React.FC<HeaderProps> = ({
                   />
                 )}
                 <span className="relative z-10 flex items-center gap-1">
-                  Products <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'products' ? 'rotate-180 text-amber-400' : 'text-slate-500'}`} />
+                  Categories <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === 'products' ? 'rotate-180 text-amber-400' : 'text-slate-500'}`} />
                 </span>
               </button>
 
@@ -364,7 +366,9 @@ export const Header: React.FC<HeaderProps> = ({
                         key={subItem.label}
                         onClick={() => {
                           setActiveDropdown(null);
-                          handleNavClick(subItem.sectionId);
+                          if (subItem.path) {
+                            navigate(subItem.path);
+                          }
                         }}
                         className="w-full text-left p-2 rounded-xl hover:bg-slate-950 border border-transparent hover:border-slate-800/60 transition-all flex items-start gap-3 group/sub cursor-pointer"
                       >
@@ -385,11 +389,11 @@ export const Header: React.FC<HeaderProps> = ({
                       <button
                         onClick={() => {
                           setActiveDropdown(null);
-                          handleNavClick('products');
+                          handleNavClick('market');
                         }}
                         className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 hover:text-amber-300 transition-colors cursor-pointer"
                       >
-                        <span>View Products Marketplace</span>
+                        <span>View Entire Market</span>
                         <ArrowUpRight className="w-3 h-3" />
                       </button>
                     </div>
@@ -398,95 +402,21 @@ export const Header: React.FC<HeaderProps> = ({
               </AnimatePresence>
             </div>
 
-            {/* Portfolio Link */}
+            {/* Sell Link */}
             <button
-              onClick={() => handleNavClick('projects')}
-              className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none ${
-                location.pathname === '/' && activeSection === 'projects'
-                  ? 'text-white font-semibold'
-                  : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
-              }`}
+              onClick={() => handleNavClick('sell')}
+              className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none text-slate-400 hover:text-slate-100 hover:bg-slate-800/40`}
             >
-              {location.pathname === '/' && activeSection === 'projects' && (
-                <motion.div
-                  layoutId="activeNavPill"
-                  className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-slate-800 to-amber-500/20 rounded-full border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] -z-10"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-              <span className="relative z-10">Portfolio</span>
+              <span className="relative z-10">Sell</span>
             </button>
 
-            {/* Blog Link */}
+            {/* Support Link */}
             <button
-              onClick={() => handleNavClick('blog')}
-              className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none ${
-                location.pathname === '/' && activeSection === 'blog'
-                  ? 'text-white font-semibold'
-                  : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
-              }`}
+              onClick={() => handleNavClick('support')}
+              className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none text-slate-400 hover:text-slate-100 hover:bg-slate-800/40`}
             >
-              {location.pathname === '/' && activeSection === 'blog' && (
-                <motion.div
-                  layoutId="activeNavPill"
-                  className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-slate-800 to-amber-500/20 rounded-full border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] -z-10"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-              <span className="relative z-10">Blog</span>
+              <span className="relative z-10">Support</span>
             </button>
-
-            {/* Reviews Link */}
-            <button
-              onClick={() => handleNavClick('testimonials')}
-              className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none ${
-                location.pathname === '/' && activeSection === 'testimonials'
-                  ? 'text-white font-semibold'
-                  : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
-              }`}
-            >
-              {location.pathname === '/' && activeSection === 'testimonials' && (
-                <motion.div
-                  layoutId="activeNavPill"
-                  className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-slate-800 to-amber-500/20 rounded-full border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] -z-10"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-              <span className="relative z-10">Reviews</span>
-            </button>
-
-            {/* Contact Link */}
-            <button
-              onClick={() => handleNavClick('contact')}
-              className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none ${
-                location.pathname === '/' && activeSection === 'contact'
-                  ? 'text-white font-semibold'
-                  : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
-              }`}
-            >
-              {location.pathname === '/' && activeSection === 'contact' && (
-                <motion.div
-                  layoutId="activeNavPill"
-                  className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-slate-800 to-amber-500/20 rounded-full border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] -z-10"
-                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                />
-              )}
-              <span className="relative z-10">Contact</span>
-            </button>
-
-            {/* ReferralPro Partner Program Link */}
-            <Link
-              to="/referralpro"
-              className={`relative px-3.5 py-1.5 text-[12.5px] font-bold tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none flex items-center gap-1.5 ${
-                location.pathname === '/referralpro'
-                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-sm'
-                  : 'text-amber-400 hover:text-amber-300 hover:bg-amber-500/10'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-              <span>ReferralPro</span>
-              <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 font-black">25%</span>
-            </Link>
           </nav>
 
           {/* Right Action Buttons */}
@@ -633,7 +563,7 @@ export const Header: React.FC<HeaderProps> = ({
                         : 'text-slate-300 hover:bg-slate-900'
                     }`}
                   >
-                    <span>Services</span>
+                    <span>Games</span>
                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileServicesOpen ? 'rotate-180' : ''}`} />
                   </button>
 
@@ -647,7 +577,7 @@ export const Header: React.FC<HeaderProps> = ({
                       >
                         {servicesDropdownItems.map((subItem) => (
                           <button
-                            key={subItem.slug}
+                            key={subItem.path}
                             onClick={() => {
                               setMobileMenuOpen(false);
                               navigate(subItem.path);
@@ -673,7 +603,7 @@ export const Header: React.FC<HeaderProps> = ({
                         : 'text-slate-300 hover:bg-slate-900'
                     }`}
                   >
-                    <span>Products</span>
+                    <span>Categories</span>
                     <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${mobileProductsOpen ? 'rotate-180' : ''}`} />
                   </button>
 
@@ -690,7 +620,9 @@ export const Header: React.FC<HeaderProps> = ({
                             key={subItem.label}
                             onClick={() => {
                               setMobileMenuOpen(false);
-                              handleNavClick(subItem.sectionId);
+                              if (subItem.path) {
+                                navigate(subItem.path);
+                              }
                             }}
                             className="w-full px-4 py-2 text-left text-[11.5px] font-medium text-slate-400 hover:text-amber-300 flex items-center gap-2 rounded-lg hover:bg-slate-900/50 cursor-pointer"
                           >

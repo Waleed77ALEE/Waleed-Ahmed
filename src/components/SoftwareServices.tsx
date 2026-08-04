@@ -313,13 +313,13 @@ export const SoftwareServices: React.FC<SoftwareServicesProps> = ({
                   {/* Card Actions */}
                   <div className="pt-4 mt-4 border-t border-slate-800/80 space-y-3">
                     <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setDetailProduct(prod)}
-                        className="px-3.5 py-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors cursor-pointer flex-1 text-center"
+                      <a
+                        href={`/products/${prod.category.toLowerCase().replace(/ /g, '-')}/${prod.slug}`}
+                        className="px-3.5 py-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors cursor-pointer flex-1 text-center flex items-center justify-center gap-1.5"
                       >
-                        Details
-                      </button>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>Details Page</span>
+                      </a>
 
                       <button
                         type="button"

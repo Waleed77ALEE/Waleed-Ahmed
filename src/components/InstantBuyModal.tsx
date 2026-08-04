@@ -45,7 +45,6 @@ export const InstantBuyModal: React.FC<InstantBuyModalProps> = ({
 
     setIsProcessing(true);
 
-    // Simulate instant key processing & payment
     setTimeout(() => {
       const orderNum = 'WKA-' + Math.floor(100000 + Math.random() * 900000);
       const generatedKey = 'KEY-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-' + Math.random().toString(36).substring(2, 10).toUpperCase();
@@ -73,20 +72,16 @@ export const InstantBuyModal: React.FC<InstantBuyModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fadeIn">
-      {/* Modal Container */}
       <div className="relative w-full max-w-4xl bg-[#0B0F19] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] overflow-y-auto">
-        
-        {/* Close Button */}
         <button 
           onClick={handleClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-white z-20 transition-colors p-2 rounded-xl bg-slate-900/60 hover:bg-slate-800 border border-slate-800"
+          className="absolute top-4 right-4 text-slate-400 hover:text-white z-20 transition-colors p-2 rounded-xl bg-slate-900/60 hover:bg-slate-800 border border-slate-800 cursor-pointer"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
         </button>
 
         {completedOrder ? (
-          /* Order Complete State */
           <div className="w-full p-8 md:p-12 text-center space-y-6 flex flex-col items-center justify-center">
             <div className="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30 animate-bounce">
               <Check className="w-8 h-8" />
@@ -112,14 +107,13 @@ export const InstantBuyModal: React.FC<InstantBuyModalProps> = ({
 
             <button
               onClick={handleClose}
-              className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all"
+              className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all cursor-pointer"
             >
               Done &amp; Close
             </button>
           </div>
         ) : (
           <>
-            {/* Left Side: Order Summary */}
             <div className="w-full md:w-5/12 bg-[#111827] p-6 sm:p-8 border-b md:border-b-0 md:border-r border-slate-800 flex flex-col justify-between">
               <div>
                 <div className="flex items-center space-x-3 mb-6">
@@ -163,7 +157,6 @@ export const InstantBuyModal: React.FC<InstantBuyModalProps> = ({
               </div>
             </div>
 
-            {/* Right Side: Checkout Form */}
             <div className="w-full md:w-7/12 p-6 sm:p-8 bg-[#0B0F19]">
               <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-indigo-400" />
@@ -216,7 +209,7 @@ export const InstantBuyModal: React.FC<InstantBuyModalProps> = ({
                   <button 
                     type="submit"
                     disabled={isProcessing}
-                    className="w-full py-4 px-6 bg-gradient-to-r from-indigo-600 via-indigo-500 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-bold text-sm sm:text-base rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+                    className="w-full py-4 px-6 bg-gradient-to-r from-indigo-600 via-indigo-500 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-bold text-sm sm:text-base rounded-xl shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transition-all flex items-center justify-center space-x-2 disabled:opacity-50 cursor-pointer"
                   >
                     {isProcessing ? (
                       <div className="flex items-center space-x-2">
