@@ -36,8 +36,8 @@ export const INITIAL_AI_SUBSCRIPTIONS: AiSubscriptionPlan[] = [
     platformKey: 'claude',
     planName: 'Claude Max (3 Months)',
     category: 'AI Reasoning & Code',
-    shortDescription: 'Featured 3-Month Subscription for Claude Max with 5x message limits & extended thinking.',
-    detailedDescription: 'Anthropic Claude Max provides 5x higher usage limits on Claude 3.7 Sonnet & Opus models, extended context, Projects, Artifacts, and 3 months full replacement warranty.',
+    shortDescription: 'Featured 3-Month Subscription for Claude Max with 20x message limits & extended thinking.',
+    detailedDescription: 'Anthropic Claude Max provides 20x higher usage limits on Claude 3.7 Sonnet & Opus models, extended context, Projects, Artifacts, and 3 months full replacement warranty.',
     prices: {
       Monthly: 65.00,
       '3 Months': 180.00,
@@ -47,7 +47,7 @@ export const INITIAL_AI_SUBSCRIPTIONS: AiSubscriptionPlan[] = [
     features: [
       'Claude 3.7 Sonnet & Opus Maximum Context Capacity',
       '3 Months Guaranteed Subscription ($180 Special Offer)',
-      '5x Higher Usage Limits & Priority Queue Access',
+      '20x Higher Usage Limits & Priority Queue Access',
       'Advanced Code Execution & Project Workspace Support',
       'Artifacts & Extended Thinking / Hybrid Reasoning',
       '3 Months Complete Replacement Warranty & 24/7 Support'
@@ -62,7 +62,7 @@ export const INITIAL_AI_SUBSCRIPTIONS: AiSubscriptionPlan[] = [
     faqs: [
       {
         question: 'What is included in the Claude Max 3-Month Offer ($180)?',
-        answer: 'You receive 3 months full guaranteed access to Claude Max edition with 5x message rate limits, flagship Sonnet/Opus models, and instant checkout delivery.'
+        answer: 'You receive 3 months full guaranteed access to Claude Max edition with 20x message rate limits, flagship Sonnet/Opus models, and instant checkout delivery.'
       }
     ],
     reviews: [

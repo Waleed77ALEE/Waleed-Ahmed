@@ -17,7 +17,7 @@ export const ClaudeMaxPage: React.FC = () => {
     features: [
       'Claude 3.7 Sonnet & Opus Maximum Context Capacity',
       '3 Months Guaranteed Subscription ($180 Special Offer)',
-      '5x Higher Usage Limits & Priority Queue Access',
+      '20x Higher Usage Limits & Priority Queue Access',
       'Advanced Code Execution & Project Workspace Support',
       'Artifacts & Extended Thinking / Hybrid Reasoning',
       '3 Months Complete Replacement Warranty & 24/7 Support',
@@ -45,7 +45,7 @@ export const ClaudeMaxPage: React.FC = () => {
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto font-medium">
-            Get 3 Months of Claude Max 5x limit access for just <span className="text-orange-400 font-bold">$180 USD</span> ($60/mo equivalent). Extended context, Artifacts & instant delivery.
+            Get 3 Months of Claude Max 20x limit access for just <span className="text-orange-400 font-bold">$180 USD</span> ($60/mo equivalent). Extended context, Artifacts & instant delivery.
           </p>
         </div>
 
@@ -137,9 +137,9 @@ export const ClaudeMaxPage: React.FC = () => {
             <div className="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400">
               <Cpu className="w-5 h-5" />
             </div>
-            <h4 className="text-base font-bold text-white">5x Usage Rate Limits</h4>
+            <h4 className="text-base font-bold text-white">20x Usage Rate Limits</h4>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Claude Max tier provides 5 times standard message capacity, allowing extensive codebases and lengthy documents processing.
+              Claude Max tier provides 20 times standard message capacity, allowing extensive codebases and lengthy documents processing.
             </p>
           </div>
 
@@ -173,7 +173,7 @@ export const ClaudeMaxPage: React.FC = () => {
           <div className="space-y-4 text-sm text-slate-300">
             <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
               <h5 className="font-bold text-white">What is Claude Max?</h5>
-              <p className="text-xs text-slate-400">Claude Max provides highest usage capacity on Claude 3.7 Sonnet & Opus, Projects, Artifacts, and extended thinking models.</p>
+              <p className="text-xs text-slate-400">Claude Max provides 20x higher usage capacity on Claude 3.7 Sonnet & Opus, Projects, Artifacts, and extended thinking models.</p>
             </div>
             <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
               <h5 className="font-bold text-white">How do I receive my credentials?</h5>
