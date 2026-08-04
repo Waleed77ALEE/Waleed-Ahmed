@@ -53,6 +53,20 @@ export interface SupabaseOrder {
   created_at?: string;
 }
 
+export interface SupabasePaymentProof {
+  id?: string;
+  user_id?: string;
+  order_number?: string;
+  payment_method?: string;
+  binance_pay_id?: string;
+  tx_id: string;
+  proof_url?: string;
+  amount?: number;
+  service_title?: string;
+  status?: string;
+  created_at?: string;
+}
+
 export interface SupabaseContactMessage {
   id?: string;
   user_id?: string;
@@ -154,7 +168,30 @@ CREATE POLICY "Anyone can insert contact messages" ON public.contact_messages
 CREATE POLICY "Users can view own contact messages" ON public.contact_messages
   FOR SELECT USING (auth.uid() = user_id);
 
--- 5. AUTOMATIC PROFILE CREATION TRIGGER
+-- 5. PAYMENT PROOFS TABLE
+CREATE TABLE IF NOT EXISTS public.payment_proofs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  order_number TEXT DEFAULT '',
+  payment_method TEXT DEFAULT 'Binance Pay',
+  binance_pay_id TEXT DEFAULT '787445946',
+  tx_id TEXT NOT NULL,
+  proof_url TEXT DEFAULT '',
+  amount NUMERIC DEFAULT 0,
+  service_title TEXT DEFAULT '',
+  status TEXT DEFAULT 'Pending Verification',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.payment_proofs ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can insert payment proofs" ON public.payment_proofs
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Users can view own payment proofs" ON public.payment_proofs
+  FOR SELECT USING (auth.uid() = user_id OR user_id IS NULL);
+
+-- 6. AUTOMATIC PROFILE CREATION TRIGGER
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -497,3 +534,52 @@ function saveLocalMessage(msg: SupabaseContactMessage) {
     localStorage.setItem('wka_local_messages', JSON.stringify(existing));
   } catch (e) {}
 }
+
+// Payment Proofs Management
+export async function submitPaymentProofDB(proof: SupabasePaymentProof): Promise<boolean> {
+  try {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const userId = sessionData?.session?.user?.id || proof.user_id;
+
+    const record = {
+      order_number: proof.order_number || `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
+      payment_method: proof.payment_method || 'Binance Pay',
+      binance_pay_id: proof.binance_pay_id || '787445946',
+      tx_id: proof.tx_id,
+      proof_url: proof.proof_url || '',
+      amount: proof.amount || 0,
+      service_title: proof.service_title || 'Digital Purchase',
+      status: proof.status || 'Pending Verification',
+      user_id: userId || null
+    };
+
+    const { error } = await supabase
+      .from('payment_proofs')
+      .insert(record);
+
+    if (error) {
+      console.warn('Supabase submitPaymentProof error:', error.message);
+      saveLocalPaymentProof(record);
+      return true;
+    }
+    return true;
+  } catch (err) {
+    console.error('submitPaymentProof exception:', err);
+    saveLocalPaymentProof(proof);
+    return true;
+  }
+}
+
+function saveLocalPaymentProof(proof: SupabasePaymentProof) {
+  try {
+    const stored = localStorage.getItem('wka_local_payment_proofs');
+    const existing = stored ? JSON.parse(stored) : [];
+    existing.unshift({
+      ...proof,
+      id: 'proof_' + Date.now(),
+      created_at: new Date().toISOString()
+    });
+    localStorage.setItem('wka_local_payment_proofs', JSON.stringify(existing));
+  } catch (e) {}
+}
+

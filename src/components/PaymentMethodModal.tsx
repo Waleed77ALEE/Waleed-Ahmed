@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Copy, Check, QrCode, Upload, ShieldCheck, CheckCircle2, Image as ImageIcon, Sparkles, Key, RefreshCw, MessageSquare, Wallet, Smartphone } from 'lucide-react';
 import paymentData from '../data/paymentMethods.json';
 import { loadUserWallet, deductWalletBalance, subscribeWallet, UserWallet } from '../services/walletStore';
+import { submitPaymentProofDB } from '../lib/supabase';
 import { JazzCashPaymentSection } from './JazzCashPaymentSection';
 
 export interface PaymentMethodModalProps {
@@ -128,7 +129,22 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
     if (!txId && !proofImage) return;
 
     setIsSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1200));
+
+    try {
+      await submitPaymentProofDB({
+        order_number: orderNumber || `ORD-${Math.floor(100000 + Math.random() * 900000)}`,
+        payment_method: currentMethod.tabName || 'Binance Pay',
+        binance_pay_id: merchant.binancePayId || '787445946',
+        tx_id: txId,
+        proof_url: proofImage || '',
+        amount: totalAmount,
+        service_title: serviceTitle || 'Digital Order',
+        status: 'Pending Verification'
+      });
+    } catch (err) {
+      console.warn('Failed to submit proof to Supabase:', err);
+    }
+
     setIsSubmitting(false);
     setIsSuccess(true);
 

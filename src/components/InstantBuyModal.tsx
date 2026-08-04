@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Zap, Check, Lock, ShieldCheck, CreditCard } from 'lucide-react';
+import { submitPaymentProofDB } from '../lib/supabase';
 
 export interface InstantBuyProduct {
   id?: string;
@@ -36,7 +37,7 @@ export const InstantBuyModal: React.FC<InstantBuyModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handlePay = (e: React.FormEvent) => {
+  const handlePay = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
       alert('Please enter your email address');
@@ -45,20 +46,32 @@ export const InstantBuyModal: React.FC<InstantBuyModalProps> = ({
 
     setIsProcessing(true);
 
-    setTimeout(() => {
-      const orderNum = 'WKA-' + Math.floor(100000 + Math.random() * 900000);
-      const generatedKey = 'KEY-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-' + Math.random().toString(36).substring(2, 10).toUpperCase();
-      
-      setIsProcessing(false);
-      setCompletedOrder({
-        orderNumber: orderNum,
-        licenseKey: generatedKey
-      });
+    const orderNum = 'WKA-' + Math.floor(100000 + Math.random() * 900000);
+    const generatedKey = 'KEY-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-' + Math.random().toString(36).substring(2, 10).toUpperCase();
 
-      if (onSuccess) {
-        onSuccess({ email, orderNumber: orderNum });
-      }
-    }, 1500);
+    try {
+      await submitPaymentProofDB({
+        order_number: orderNum,
+        payment_method: 'Binance Pay',
+        binance_pay_id: '787445946',
+        tx_id: cardNumber || 'DIRECT-KEY-BUY',
+        amount: parseFloat(product?.price?.replace(/[^0-9.]/g, '') || '0'),
+        service_title: product?.title || 'AI Subscription',
+        status: 'Pending Verification'
+      });
+    } catch (err) {
+      console.warn('Failed to log payment proof in InstantBuyModal:', err);
+    }
+
+    setIsProcessing(false);
+    setCompletedOrder({
+      orderNumber: orderNum,
+      licenseKey: generatedKey
+    });
+
+    if (onSuccess) {
+      onSuccess({ email, orderNumber: orderNum });
+    }
   };
 
   const handleClose = () => {
