@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck, Smartphone, Wallet, Search, ChevronDown, Code2, Palette, ShoppingBag as ShopIcon, Cpu, Shield, Bot, TrendingUp } from 'lucide-react';
+import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck, Smartphone, Wallet, Search, ChevronDown, Code2, Palette, ShoppingBag as ShopIcon, Cpu, Shield, Bot, TrendingUp, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../lib/supabase';
 import brandLogoImg from '../assets/images/brand_logo_1785031049165.jpg';
@@ -56,6 +56,24 @@ export const Header: React.FC<HeaderProps> = ({
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSeoManagerOpen, setIsSeoManagerOpen] = useState(false);
   const [initialSearchQuery, setInitialSearchQuery] = useState('');
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    return (localStorage.getItem('theme') as 'dark' | 'light') || 'dark';
+  });
+
+  useEffect(() => {
+    if (theme === 'light') {
+      document.documentElement.classList.add('light');
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
   const [wallet, setWallet] = useState<UserWallet>(() =>
     loadUserWallet(user?.id, user?.email, profile?.full_name)
   );
@@ -448,6 +466,42 @@ export const Header: React.FC<HeaderProps> = ({
               </kbd>
             </button>
 
+            {/* Persistent Dark/Light Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 sm:px-2.5 sm:py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800/80 hover:border-amber-500/40 text-slate-300 hover:text-amber-400 transition-all duration-300 hover:scale-[1.05] active:scale-[0.95] flex items-center justify-center cursor-pointer shadow-sm group"
+              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label="Toggle dark/light theme"
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                {theme === 'dark' ? (
+                  <motion.div
+                    key="sun"
+                    initial={{ scale: 0.5, rotate: -90, opacity: 0 }}
+                    animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                    exit={{ scale: 0.5, rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.18 }}
+                    className="flex items-center gap-1.5"
+                  >
+                    <Sun className="w-3.5 h-3.5 text-amber-400 group-hover:rotate-45 transition-transform" />
+                    <span className="hidden xl:inline text-[11.5px] font-medium text-slate-300 group-hover:text-amber-300">Light</span>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="moon"
+                    initial={{ scale: 0.5, rotate: 90, opacity: 0 }}
+                    animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                    exit={{ scale: 0.5, rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.18 }}
+                    className="flex items-center gap-1.5"
+                  >
+                    <Moon className="w-3.5 h-3.5 text-cyan-500 group-hover:-rotate-12 transition-transform" />
+                    <span className="hidden xl:inline text-[11.5px] font-medium text-slate-700 group-hover:text-cyan-600">Dark</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
+
             {/* Wallet Balance Button */}
             {(user || wallet.balance > 0 || wallet.userId !== 'guest') && (
               <button
@@ -537,6 +591,24 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
                 <span className="px-2 py-0.5 rounded-md bg-slate-800 text-[10px] font-mono font-bold text-slate-400">
                   Search
+                </span>
+              </button>
+
+              {/* Mobile Theme Toggle Button */}
+              <button
+                onClick={toggleTheme}
+                className="w-full px-4 py-2.5 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-amber-500/40 text-slate-300 text-xs font-semibold flex items-center justify-between transition-all cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  {theme === 'dark' ? (
+                    <Sun className="w-4 h-4 text-amber-400" />
+                  ) : (
+                    <Moon className="w-4 h-4 text-cyan-500" />
+                  )}
+                  <span>Theme Preference: <strong className="text-white capitalize">{theme} Mode</strong></span>
+                </span>
+                <span className="px-2 py-0.5 rounded-md bg-slate-800 text-[10px] font-mono font-bold text-amber-400 uppercase">
+                  Toggle
                 </span>
               </button>
 
