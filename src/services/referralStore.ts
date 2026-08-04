@@ -129,7 +129,7 @@ const INITIAL_AFFILIATES: AffiliatePartnerProfile[] = [
     referralCode: 'WALEED123',
     customCouponCode: 'WALEED10',
     paymentMethod: 'Binance Pay (USDT)',
-    paymentAccountDetails: 'Binance Pay ID: 284910381 (USDT TRC20)',
+    paymentAccountDetails: 'Binance Pay ID: 787445946 (USDT TRC20)',
     status: 'Active',
     createdAt: '2026-01-15T10:00:00Z',
     badges: ['First Referral', 'Fast Starter', 'Super Affiliate', 'Century Club', 'Conversion Master']
@@ -454,7 +454,7 @@ const INITIAL_WITHDRAWALS: WithdrawalRequest[] = [
     username: 'WALEED123',
     amount: 500.00,
     method: 'Binance Pay (USDT)',
-    accountDetails: 'Binance Pay ID: 284910381',
+    accountDetails: 'Binance Pay ID: 787445946',
     status: 'Completed',
     requestedAt: '2026-07-20T12:00:00Z',
     processedAt: '2026-07-20T14:30:00Z',

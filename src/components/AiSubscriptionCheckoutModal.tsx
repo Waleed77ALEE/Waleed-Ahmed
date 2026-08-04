@@ -307,14 +307,14 @@ export const AiSubscriptionCheckoutModal: React.FC<AiSubscriptionCheckoutModalPr
                         <span className="font-bold text-amber-400">Binance Pay ID / USDT:</span>
                         <button
                           type="button"
-                          onClick={() => handleCopyPaymentInfo('882910481')}
+                          onClick={() => handleCopyPaymentInfo('787445946')}
                           className="text-[10px] text-amber-400 hover:underline flex items-center gap-1"
                         >
                           {copiedAccount ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                           Copy ID
                         </button>
                       </div>
-                      <p className="font-mono text-white text-sm font-bold mt-0.5">882910481</p>
+                      <p className="font-mono text-white text-sm font-bold mt-0.5">787445946</p>
                       <p className="text-[11px] text-slate-400">Send <strong>${finalPrice.toFixed(2)} USDT</strong> via Binance Pay (No transfer fees).</p>
                     </div>
                   )}

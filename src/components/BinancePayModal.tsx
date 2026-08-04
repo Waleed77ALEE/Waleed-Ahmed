@@ -4,7 +4,7 @@ import { PaymentMethodModal, PaymentMethodModalProps } from './PaymentMethodModa
 export type BinancePayModalProps = PaymentMethodModalProps;
 
 export const BinancePayModal: React.FC<BinancePayModalProps> = (props) => {
-  return <PaymentMethodModal {...props} />;
+  return <PaymentMethodModal initialTab="binance_pay" {...props} />;
 };
 
 export { PaymentMethodModal };

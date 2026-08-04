@@ -415,10 +415,10 @@ export const SoftwareOrderModal: React.FC<SoftwareOrderModalProps> = ({
                         <span className="text-[10px] text-slate-400">Zero Fee Transfer</span>
                       </div>
                       <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-                        <code className="font-mono text-white font-bold">289018449</code>
+                        <code className="font-mono text-white font-bold">787445946</code>
                         <button
                           type="button"
-                          onClick={() => handleCopy('289018449', 'binance')}
+                          onClick={() => handleCopy('787445946', 'binance')}
                           className="px-2 py-1 rounded bg-slate-800 text-slate-300 hover:text-white text-[10px] font-bold flex items-center gap-1"
                         >
                           {copiedText === 'binance' ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}

@@ -12,6 +12,7 @@ export interface PaymentMethodModalProps {
   orderNumber?: string;
   serviceTitle?: string;
   onPaymentSubmitted?: (txId: string, proofUrl: string) => void;
+  initialTab?: string;
 }
 
 export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
@@ -21,12 +22,19 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
   totalAmount = 0,
   orderNumber = '',
   serviceTitle = '',
-  onPaymentSubmitted
+  onPaymentSubmitted,
+  initialTab = 'binance_pay'
 }) => {
   const { merchant, paymentMethods } = paymentData;
-  const [activeTab, setActiveTab] = useState<string>('jazzcash');
+  const [activeTab, setActiveTab] = useState<string>(initialTab);
   const [wallet, setWallet] = useState<UserWallet>(() => loadUserWallet());
   const [walletError, setWalletError] = useState('');
+
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab(initialTab);
+    }
+  }, [isOpen, initialTab]);
 
   useEffect(() => {
     const unsubscribe = subscribeWallet((updated) => {
@@ -347,40 +355,44 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
 
           {/* Binance Pay Details */}
           {activeTab === 'binance_pay' && (
-            <div className="p-5 rounded-2xl bg-slate-950 border border-amber-500/30 space-y-4">
+            <div className="p-5 rounded-2xl bg-slate-950 border border-amber-500/40 space-y-4 shadow-xl">
               <div className="flex items-center justify-between">
                 <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-black uppercase tracking-wider border border-amber-500/30">
-                  {currentMethod.badge}
+                  {currentMethod.badge || 'Zero Fee • Instant Delivery'}
                 </span>
-                <span className="text-[10px] text-emerald-400 font-bold">{currentMethod.fee}</span>
+                <span className="text-[10px] text-emerald-400 font-bold">{currentMethod.fee || '0% Fee'}</span>
               </div>
 
               <div className="space-y-2">
-                <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  Binance Pay ID
+                <label className="text-[11px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <ShieldCheck className="w-4 h-4 text-amber-400" />
+                  <span>Official Binance Pay ID / User ID</span>
                 </label>
-                <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl p-3">
-                  <div className="flex-1 font-mono text-sm font-black text-white tracking-widest">
-                    {merchant.binancePayId}
+                <div className="flex items-center gap-3 bg-slate-900 border-2 border-amber-500/40 rounded-xl p-3.5 shadow-inner">
+                  <div className="flex-1 font-mono text-lg font-black text-amber-300 tracking-widest select-all">
+                    {merchant.binancePayId || '787445946'}
                   </div>
                   <button
-                    onClick={() => handleCopy(merchant.binancePayId, 'payId')}
-                    className="px-3 py-1.5 rounded-lg bg-amber-500/20 border border-amber-500/30 text-amber-300 hover:bg-amber-500/30 text-xs font-bold transition-all flex items-center gap-1.5 shrink-0"
+                    type="button"
+                    onClick={() => handleCopy(merchant.binancePayId || '787445946', 'payId')}
+                    className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black transition-all flex items-center gap-1.5 shrink-0 shadow-lg cursor-pointer"
                   >
-                    {copiedPayId ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copiedPayId ? 'Copied Pay ID!' : 'Copy Pay ID'}</span>
+                    {copiedPayId ? <Check className="w-4 h-4 text-slate-950" /> : <Copy className="w-4 h-4" />}
+                    <span>{copiedPayId ? 'Copied Pay ID!' : 'Copy Pay ID (787445946)'}</span>
                   </button>
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-900/80 border border-slate-800/80 text-xs space-y-2">
+              <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-xs space-y-2">
                 <span className="font-bold text-amber-300 block uppercase tracking-wider text-[11px]">
-                  How to Pay via Binance Pay:
+                  How to Pay via Binance Pay (Pay ID: 787445946):
                 </span>
                 <ol className="list-decimal list-inside space-y-1.5 text-slate-300 text-[11px] leading-relaxed">
-                  {currentMethod.instructions?.map((step, idx) => (
-                    <li key={idx}>{step}</li>
-                  ))}
+                  <li>Open the Binance Mobile App or Web Dashboard.</li>
+                  <li>Navigate to <strong>Pay → Send → Select Pay ID / User ID</strong>.</li>
+                  <li>Enter Pay ID: <strong className="text-amber-300 font-mono select-all">787445946</strong> (Recipient: Waleed Khan Afridi).</li>
+                  <li>Enter the required amount in USDT/BUSD and confirm.</li>
+                  <li>Copy your Transaction ID (TxID) and upload the payment proof screenshot below.</li>
                 </ol>
               </div>
             </div>

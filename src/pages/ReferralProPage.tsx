@@ -1405,7 +1405,7 @@ export const ReferralProPage: React.FC<ReferralProPageProps> = ({
                     </label>
                     <textarea
                       rows={3}
-                      placeholder="e.g. Binance Pay ID: 284910381, or JazzCash Number: 03001234567, or Bank IBAN PK00..."
+                      placeholder="e.g. Binance Pay ID: 787445946, or JazzCash Number: 03141137917, or Bank IBAN PK00..."
                       value={withdrawAccountDetails}
                       onChange={(e) => setWithdrawAccountDetails(e.target.value)}
                       className="w-full px-3 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-emerald-500"
