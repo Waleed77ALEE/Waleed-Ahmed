@@ -1288,6 +1288,8 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                                   ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
                                   : swOrder.orderStatus === 'Cancelled'
                                   ? 'bg-rose-500/20 text-rose-400 border-rose-500/30'
+                                  : swOrder.orderStatus === 'Processing'
+                                  ? 'bg-sky-500/20 text-sky-400 border-sky-500/30'
                                   : 'bg-amber-500/20 text-amber-400 border-amber-500/30'
                               }`}
                             >
@@ -1371,6 +1373,10 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
                           order.status === 'Completed'
                             ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                            : order.status === 'Cancelled'
+                            ? 'bg-rose-500/20 text-rose-400 border-rose-500/30'
+                            : order.status === 'Processing'
+                            ? 'bg-sky-500/20 text-sky-400 border-sky-500/30'
                             : 'bg-amber-500/20 text-amber-400 border-amber-500/30'
                         }`}>
                           {order.status}

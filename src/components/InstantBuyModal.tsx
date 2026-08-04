@@ -177,32 +177,24 @@ export const InstantBuyModal: React.FC<InstantBuyModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-400 mb-2">Card Information</label>
-                  <div className="space-y-3">
-                    <input 
-                      type="text" 
-                      value={cardNumber}
-                      onChange={(e) => setCardNumber(e.target.value)}
-                      placeholder="Card number (e.g. 4242 •••• •••• 4242)" 
-                      className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-white placeholder-slate-500 text-sm transition-all outline-none font-mono"
-                    />
-                    <div className="flex space-x-3">
-                      <input 
-                        type="text" 
-                        value={expiry}
-                        onChange={(e) => setExpiry(e.target.value)}
-                        placeholder="MM / YY" 
-                        className="w-1/2 px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-white placeholder-slate-500 text-sm transition-all outline-none font-mono"
-                      />
-                      <input 
-                        type="text" 
-                        value={cvc}
-                        onChange={(e) => setCvc(e.target.value)}
-                        placeholder="CVC" 
-                        className="w-1/2 px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-white placeholder-slate-500 text-sm transition-all outline-none font-mono"
-                      />
-                    </div>
+                  <label className="block text-xs font-medium text-slate-400 mb-2">Binance Pay Instructions</label>
+                  <div className="p-4 bg-slate-900 border border-slate-700 rounded-xl space-y-2 text-sm text-slate-300">
+                    <p>1. Open Binance app</p>
+                    <p>2. Send to Binance Pay ID: <span className="font-mono text-cyan-400 font-bold select-all">787445946</span></p>
+                    <p>3. Copy the TxID and paste below</p>
                   </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-400 mb-2">Binance Transaction ID (TxID)</label>
+                  <input 
+                    type="text" 
+                    required
+                    value={cardNumber}
+                    onChange={(e) => setCardNumber(e.target.value)}
+                    placeholder="Paste your Binance TxID here" 
+                    className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-white placeholder-slate-500 text-sm transition-all outline-none font-mono"
+                  />
                 </div>
 
                 <div className="pt-2">
