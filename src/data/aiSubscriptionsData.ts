@@ -29,6 +29,52 @@ export interface AiSubscriptionPlan {
 }
 
 export const INITIAL_AI_SUBSCRIPTIONS: AiSubscriptionPlan[] = [
+  // 0a. Claude Max 3 Months (Featured Deal)
+  {
+    id: 'claude-max-3mo',
+    platformName: 'Anthropic Claude',
+    platformKey: 'claude',
+    planName: 'Claude Max (3 Months)',
+    category: 'AI Reasoning & Code',
+    shortDescription: 'Featured 3-Month Subscription for Claude Max with 5x message limits & extended thinking.',
+    detailedDescription: 'Anthropic Claude Max provides 5x higher usage limits on Claude 3.7 Sonnet & Opus models, extended context, Projects, Artifacts, and 3 months full replacement warranty.',
+    prices: {
+      Monthly: 65.00,
+      '3 Months': 180.00,
+      '6 Months': 340.00,
+      Yearly: 620.00
+    },
+    features: [
+      'Claude 3.7 Sonnet & Opus Maximum Context Capacity',
+      '3 Months Guaranteed Subscription ($180 Special Offer)',
+      '5x Higher Usage Limits & Priority Queue Access',
+      'Advanced Code Execution & Project Workspace Support',
+      'Artifacts & Extended Thinking / Hybrid Reasoning',
+      '3 Months Complete Replacement Warranty & 24/7 Support'
+    ],
+    supportedDevices: ['Web Browser', 'iOS', 'Android', 'macOS', 'Windows'],
+    badge: 'Limited Offer',
+    rating: 5.0,
+    reviewsCount: 148,
+    ordersCount: 420,
+    featured: true,
+    status: 'Active',
+    faqs: [
+      {
+        question: 'What is included in the Claude Max 3-Month Offer ($180)?',
+        answer: 'You receive 3 months full guaranteed access to Claude Max edition with 5x message rate limits, flagship Sonnet/Opus models, and instant checkout delivery.'
+      }
+    ],
+    reviews: [
+      {
+        name: 'David K.',
+        rating: 5,
+        date: '2 days ago',
+        comment: 'Claude Max is the best for large coding projects. $180 for 3 months was a smooth process!',
+        plan: 'Claude Max (3 Months)'
+      }
+    ]
+  },
   // 0. Grok SuperGrok Heavy (Featured Deal)
   {
     id: 'grok-supergrok-heavy',

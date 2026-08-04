@@ -16,6 +16,17 @@ const products = [
   },
   {
     id: 2,
+    platform: 'Anthropic Claude',
+    tier: 'Claude Max (3-Mo)',
+    price: '180.00',
+    duration: '/ 3 months',
+    description: 'Featured Deal: 5x higher message capacity on Claude 3.7 Sonnet & Opus with Artifacts.',
+    features: ['3 Months Guaranteed Access', 'Claude Max 5x Message Limits', 'Claude 3.7 Sonnet & Opus', 'Instant Auto-Delivery'],
+    highlighted: true,
+    badge: 'Limited Offer',
+  },
+  {
+    id: 3,
     platform: 'HeyGen Video',
     tier: 'Creator Plan Key',
     price: '22.00',
@@ -25,7 +36,7 @@ const products = [
     highlighted: false,
   },
   {
-    id: 3,
+    id: 4,
     platform: 'ChatGPT Shared',
     tier: 'Pro (5x) Access',
     price: '35.00',

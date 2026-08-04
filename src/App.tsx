@@ -28,6 +28,7 @@ const ReferralProPage = lazy(() => import('./pages/ReferralProPage').then(m => (
 const JazzCashPaymentPage = lazy(() => import('./pages/JazzCashPaymentPage').then(m => ({ default: m.JazzCashPaymentPage })));
 const AiSeoManagerPage = lazy(() => import('./pages/AiSeoManagerPage').then(m => ({ default: m.AiSeoManagerPage })));
 const SuperGrokPage = lazy(() => import('./pages/SuperGrokPage').then(m => ({ default: m.SuperGrokPage })));
+const ClaudeMaxPage = lazy(() => import('./pages/ClaudeMaxPage').then(m => ({ default: m.ClaudeMaxPage })));
 const SingleProductPage = lazy(() => import('./pages/products/SingleProductPage').then(m => ({ default: m.SingleProductPage })));
 const GamingMarketplacePage = lazy(() => import('./pages/GamingMarketplacePage').then(m => ({ default: m.GamingMarketplacePage })));
 const SoftwareServicesPage = lazy(() => import('./pages/SoftwareServicesPage').then(m => ({ default: m.SoftwareServicesPage })));
@@ -532,6 +533,11 @@ export default function App() {
               <Route path="/superg" element={<SuperGrokPage />} />
               <Route path="/supergrok" element={<SuperGrokPage />} />
               <Route path="/supergrok-heavy" element={<SuperGrokPage />} />
+
+              {/* Dedicated Claude Max Featured Offer Route */}
+              <Route path="/claudem" element={<ClaudeMaxPage />} />
+              <Route path="/claude-max" element={<ClaudeMaxPage />} />
+              <Route path="/claudemax" element={<ClaudeMaxPage />} />
 
               {/* Requirement: Production Legal Pages & SEO Compliant Routes */}
               <Route path="/terms-and-conditions" element={<TermsPage />} />
