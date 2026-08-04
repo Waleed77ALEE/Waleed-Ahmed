@@ -1288,6 +1288,8 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                                   ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
                                   : swOrder.orderStatus === 'Cancelled'
                                   ? 'bg-rose-500/20 text-rose-400 border-rose-500/30'
+                                  : swOrder.orderStatus === 'Processing'
+                                  ? 'bg-sky-500/20 text-sky-400 border-sky-500/30'
                                   : 'bg-amber-500/20 text-amber-400 border-amber-500/30'
                               }`}
                             >
@@ -1359,7 +1361,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
               ) : (
                 orders.map((order) => (
                   <div key={order.id} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800/90 space-y-3">
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2 pb-2">
                       <div>
                         <span className="text-xs font-bold font-mono text-cyan-400">Order #{order.order_number}</span>
                         <p className="text-[10px] text-slate-500">
@@ -1371,6 +1373,10 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                         <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
                           order.status === 'Completed'
                             ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                            : order.status === 'Cancelled'
+                            ? 'bg-rose-500/20 text-rose-400 border-rose-500/30'
+                            : order.status === 'Processing'
+                            ? 'bg-sky-500/20 text-sky-400 border-sky-500/30'
                             : 'bg-amber-500/20 text-amber-400 border-amber-500/30'
                         }`}>
                           {order.status}
@@ -1378,6 +1384,46 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                         <span className="text-sm font-black font-mono text-white">${order.total_amount?.toFixed(2)}</span>
                       </div>
                     </div>
+
+                    {/* Visual Order Tracker */}
+                    {order.status === 'Cancelled' ? (
+                      <div className="flex items-center gap-2 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 mb-3">
+                         <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                         <span className="text-[11px] font-bold text-rose-400">This order has been cancelled and will not be fulfilled.</span>
+                      </div>
+                    ) : (
+                      <div className="py-3 px-1 mb-3 border-y border-slate-800/80">
+                        <div className="flex items-center justify-between mb-2 text-[10px] font-bold px-1 relative z-10">
+                          {['Pending', 'Processing', 'Completed'].map((step, i) => {
+                            const currentStep = ['Pending', 'Processing', 'Completed'].indexOf(order.status) >= 0 ? ['Pending', 'Processing', 'Completed'].indexOf(order.status) : 0;
+                            return (
+                              <span key={step} className={i <= currentStep ? 'text-cyan-400 drop-shadow-md' : 'text-slate-600'}>
+                                {step}
+                              </span>
+                            );
+                          })}
+                        </div>
+                        <div className="relative flex items-center justify-between w-full h-1.5 bg-slate-800 rounded-full">
+                          {/* Progress Bar Fill */}
+                          <div 
+                            className="absolute left-0 top-0 h-full bg-gradient-to-r from-cyan-500 to-indigo-500 rounded-full transition-all duration-500" 
+                            style={{ width: order.status === 'Completed' ? '100%' : order.status === 'Processing' ? '50%' : '0%' }}
+                          />
+                          {/* Step Nodes */}
+                          {['Pending', 'Processing', 'Completed'].map((step, i) => {
+                            const currentStep = ['Pending', 'Processing', 'Completed'].indexOf(order.status) >= 0 ? ['Pending', 'Processing', 'Completed'].indexOf(order.status) : 0;
+                            return (
+                              <div 
+                                key={`node-${step}`} 
+                                className={`w-3 h-3 rounded-full z-10 border-2 transition-all duration-500 ${
+                                  i <= currentStep ? 'bg-cyan-400 border-slate-900 shadow-[0_0_8px_rgba(34,211,238,0.6)]' : 'bg-slate-800 border-slate-700'
+                                }`} 
+                              />
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Order Items List */}
                     <div className="space-y-1.5">
