@@ -93,7 +93,17 @@ export const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
 
             {/* Main Cover Banner */}
             <div className="rounded-2xl overflow-hidden h-64 sm:h-80 w-full bg-slate-950 border border-slate-800 relative">
-              <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+              <img 
+                src={project.image} 
+                alt={project.title} 
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null;
+                  target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop';
+                }}
+                className="w-full h-full object-cover" 
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
             </div>
 
@@ -233,7 +243,17 @@ export const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
                 </div>
                 <p className="text-xs sm:text-sm text-slate-300 italic">"{project.testimonial.quote}"</p>
                 <div className="flex items-center gap-3 pt-2">
-                  <img src={project.testimonial.avatar} alt={project.testimonial.clientName} className="w-8 h-8 rounded-full border border-cyan-500/40 object-cover" />
+                  <img 
+                    src={project.testimonial.avatar} 
+                    alt={project.testimonial.clientName} 
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.onerror = null;
+                      target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(project.testimonial!.clientName)}&background=0D8ABC&color=fff`;
+                    }}
+                    className="w-8 h-8 rounded-full border border-cyan-500/40 object-cover" 
+                  />
                   <div>
                     <div className="text-xs font-bold text-white">{project.testimonial.clientName}</div>
                     <div className="text-[10px] text-slate-400">{project.testimonial.role}</div>

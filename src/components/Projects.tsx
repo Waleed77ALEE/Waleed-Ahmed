@@ -85,6 +85,12 @@ export const Projects: React.FC<ProjectsProps> = ({ onNavigateContact }) => {
                     <img
                       src={project.image}
                       alt={project.title}
+                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.onerror = null;
+                        target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop';
+                      }}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-90 group-hover:opacity-100"
                       loading="lazy"
                     />

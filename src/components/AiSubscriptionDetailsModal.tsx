@@ -20,6 +20,7 @@ import {
 import { AiSubscriptionPlan, SubscriptionDuration } from '../data/aiSubscriptionsData';
 import { PlatformLogo } from './PlatformLogo';
 import { aiSubscriptionStore } from '../services/aiSubscriptionStore';
+import { ServiceReviews } from './ServiceReviews';
 
 interface AiSubscriptionDetailsModalProps {
   isOpen: boolean;
@@ -28,6 +29,8 @@ interface AiSubscriptionDetailsModalProps {
   onBuyNow: (plan: AiSubscriptionPlan, duration: SubscriptionDuration) => void;
   whatsappNumber: string;
   allPlans: AiSubscriptionPlan[];
+  user?: any;
+  onOpenAuthModal?: () => void;
 }
 
 export const AiSubscriptionDetailsModal: React.FC<AiSubscriptionDetailsModalProps> = ({
@@ -36,7 +39,9 @@ export const AiSubscriptionDetailsModal: React.FC<AiSubscriptionDetailsModalProp
   plan,
   onBuyNow,
   whatsappNumber,
-  allPlans
+  allPlans,
+  user,
+  onOpenAuthModal
 }) => {
   if (!isOpen || !plan) return null;
 
@@ -244,30 +249,15 @@ export const AiSubscriptionDetailsModal: React.FC<AiSubscriptionDetailsModalProp
               </div>
             )}
 
-            {/* Customer Reviews */}
-            {plan.reviews && plan.reviews.length > 0 && (
-              <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Verified Buyer Reviews</h4>
-                <div className="space-y-2.5">
-                  {plan.reviews.map((rev, idx) => (
-                    <div key={idx} className="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 space-y-1">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-white">{rev.name}</span>
-                          <span className="text-[10px] text-emerald-400 font-semibold">• Verified Purchase ({rev.plan})</span>
-                        </div>
-                        <div className="flex text-amber-400">
-                          {[...Array(rev.rating)].map((_, i) => (
-                            <Star key={i} className="w-3 h-3 fill-amber-400" />
-                          ))}
-                        </div>
-                      </div>
-                      <p className="text-xs text-slate-300 italic">"{rev.comment}"</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* Live Service Reviews */}
+            <div className="pt-4 border-t border-slate-800">
+              <ServiceReviews
+                serviceId={plan.id}
+                serviceTitle={plan.planName}
+                user={user}
+                onOpenAuthModal={onOpenAuthModal}
+              />
+            </div>
 
             {/* Related Subscriptions */}
             {related.length > 0 && (

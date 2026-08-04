@@ -1,0 +1,30 @@
+{
+  "entities": {
+    "service_reviews": {
+      "title": "Service Reviews",
+      "description": "Reviews and ratings submitted by clients for specific services.",
+      "properties": {
+        "service_id": { "type": "string", "description": "ID of the service reviewed" },
+        "user_id": { "type": "string", "description": "Auth UID of the user" },
+        "user_name": { "type": "string", "description": "Display name of the user" },
+        "user_avatar": { "type": "string", "description": "Avatar URL" },
+        "rating": { "type": "number", "description": "Star rating 1 to 5" },
+        "comment": { "type": "string", "description": "Review text content" },
+        "created_at": { "type": "string", "description": "ISO timestamp" }
+      },
+      "required": ["service_id", "user_name", "rating", "comment"]
+    },
+    "profiles": {
+      "title": "User Profiles",
+      "description": "User profile details stored in Firestore.",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "description": "User email address" },
+        "full_name": { "type": "string", "description": "User full name" },
+        "avatar_url": { "type": "string", "description": "Avatar URL font" },
+        "created_at": { "type": "string", "description": "Timestamp" }
+      },
+      "required": ["uid", "email"]
+    }
+  }
+}

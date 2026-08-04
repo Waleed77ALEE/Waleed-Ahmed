@@ -32,7 +32,17 @@ export const PopularGames: React.FC = () => {
                 transition={{ delay: idx * 0.1 }}
                 className="group relative rounded-2xl overflow-hidden aspect-[3/4] bg-[#11161d] border border-[#1c232e] hover:border-cyan-500/50 transition-colors shadow-lg hover:shadow-cyan-500/10"
               >
-                <img src={game.image} alt={game.name} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-110" />
+                <img 
+                  src={game.image} 
+                  alt={game.name} 
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.onerror = null;
+                    target.src = 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=500&auto=format&fit=crop';
+                  }}
+                  className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-500 group-hover:scale-110" 
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0b0e14] via-[#0b0e14]/50 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-4">
                   <h3 className="text-white font-bold text-sm text-center group-hover:text-cyan-400 transition-colors leading-tight">

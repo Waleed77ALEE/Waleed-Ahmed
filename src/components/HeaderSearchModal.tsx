@@ -353,6 +353,12 @@ export const HeaderSearchModal: React.FC<HeaderSearchModalProps> = ({
                       <img
                         src={project.image}
                         alt={project.title}
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop';
+                        }}
                         className="w-14 h-14 rounded-xl object-cover shrink-0 border border-slate-800 group-hover:scale-105 transition-transform"
                       />
                       <div className="min-w-0 flex-1">

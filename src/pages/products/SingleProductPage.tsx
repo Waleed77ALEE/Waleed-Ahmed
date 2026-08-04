@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { ShoppingBag, ChevronRight, CheckCircle2, Shield, Star, Download, Monitor, Zap } from 'lucide-react';
 import { SOFTWARE_PRODUCTS, SoftwareProduct } from '../../data/softwareData';
 import { SoftwareOrderModal } from '../../components/SoftwareOrderModal';
+import { ServiceReviews } from '../../components/ServiceReviews';
 
 interface SingleProductPageProps {
   user?: any;
@@ -169,6 +170,16 @@ export const SingleProductPage: React.FC<SingleProductPageProps> = ({ user, prof
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Service Reviews */}
+      <div className="mt-16 pt-12 border-t border-slate-800">
+        <ServiceReviews
+          serviceId={product.id}
+          serviceTitle={product.name}
+          user={user}
+          onOpenAuthModal={onOpenAccount}
+        />
       </div>
       
       {/* Instant Checkout Modal */}

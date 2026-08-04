@@ -14,6 +14,12 @@ export const GamingHero: React.FC = () => {
         <img 
           src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop" 
           alt="Gaming Background" 
+          referrerPolicy="no-referrer"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.onerror = null;
+            target.src = 'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=2070&auto=format&fit=crop';
+          }}
           className="w-full h-full object-cover opacity-30"
         />
       </div>

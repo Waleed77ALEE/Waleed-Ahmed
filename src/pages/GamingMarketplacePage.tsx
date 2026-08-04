@@ -270,7 +270,17 @@ export const GamingMarketplacePage: React.FC = () => {
                       {/* Seller Info */}
                       <div className="flex items-center gap-2.5">
                         <div className="relative">
-                          <img src={product.seller.avatarUrl} alt={product.seller.username} className="w-9 h-9 rounded-full bg-[#0b0e14] border border-[#1c232e]" />
+                          <img 
+                            src={product.seller.avatarUrl} 
+                            alt={product.seller.username} 
+                            referrerPolicy="no-referrer"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.onerror = null;
+                              target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(product.seller.username)}&background=0D8ABC&color=fff`;
+                            }}
+                            className="w-9 h-9 rounded-full bg-[#0b0e14] border border-[#1c232e]" 
+                          />
                           {product.seller.isOnline ? (
                             <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-[#11161d] rounded-full" />
                           ) : (

@@ -1,4 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
+import { 
+  fetchServiceReviewsFirestore, 
+  submitServiceReviewFirestore,
+  saveOrderFirestore,
+  fetchOrdersFirestore
+} from './firebaseServices';
 
 // Supabase Environment Credentials
 const env = (import.meta as any).env || {};
@@ -76,6 +82,17 @@ export interface SupabaseContactMessage {
   service_requested: string;
   message: string;
   status?: 'New' | 'In Progress' | 'Resolved';
+  created_at?: string;
+}
+
+export interface SupabaseServiceReview {
+  id?: string;
+  service_id: string;
+  user_id?: string;
+  user_name: string;
+  user_avatar?: string;
+  rating: number; // 1 to 5
+  comment: string;
   created_at?: string;
 }
 
@@ -243,6 +260,26 @@ DROP TRIGGER IF EXISTS on_new_order_placed ON public.orders;
 CREATE TRIGGER on_new_order_placed
   AFTER INSERT ON public.orders
   FOR EACH ROW EXECUTE FUNCTION public.notify_admin_on_new_order();
+
+-- 7. SERVICE REVIEWS TABLE
+CREATE TABLE IF NOT EXISTS public.service_reviews (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  service_id TEXT NOT NULL,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_name TEXT NOT NULL,
+  user_avatar TEXT DEFAULT '',
+  rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+  comment TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.service_reviews ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view service reviews" ON public.service_reviews
+  FOR SELECT USING (true);
+
+CREATE POLICY "Authenticated users can insert reviews" ON public.service_reviews
+  FOR INSERT WITH CHECK (true);
 `;
 
 // Supabase Helper Functions with Local Storage Fallback for Guest Users
@@ -434,6 +471,9 @@ function saveLocalCart(cart: SupabaseCartItem[]) {
 // Orders Management
 export async function createOrderDB(order: Omit<SupabaseOrder, 'id' | 'created_at'>): Promise<SupabaseOrder | null> {
   try {
+    // Save to Firestore as well
+    saveOrderFirestore(order);
+
     const { data, error } = await supabase
       .from('orders')
       .insert(order)
@@ -452,6 +492,7 @@ export async function createOrderDB(order: Omit<SupabaseOrder, 'id' | 'created_a
       saveLocalOrder(createdOrderObj);
     } else {
       createdOrderObj = data;
+      saveLocalOrder(createdOrderObj);
     }
 
     // Trigger Supabase Edge Function email alert for admin
@@ -475,17 +516,57 @@ export async function createOrderDB(order: Omit<SupabaseOrder, 'id' | 'created_a
 
 export async function fetchUserOrders(userId: string): Promise<SupabaseOrder[]> {
   try {
-    const { data, error } = await supabase
-      .from('orders')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false });
+    const localOrders = getLocalOrders().filter(o => o.user_id === userId || o.user_id === 'guest');
+    
+    // Fetch from Supabase
+    let supabaseOrders: SupabaseOrder[] = [];
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
 
-    if (error) {
-      console.warn('Supabase fetchUserOrders error:', error.message);
-      return getLocalOrders().filter(o => o.user_id === userId || o.user_id === 'guest');
+      if (!error && data) {
+        supabaseOrders = data;
+      }
+    } catch (e) {
+      console.warn('Supabase fetchUserOrders error:', e);
     }
-    return data || [];
+
+    // Fetch from Firestore
+    let firestoreOrders: any[] = [];
+    if (userId) {
+      firestoreOrders = await fetchOrdersFirestore(userId);
+    }
+
+    // Combine and deduplicate
+    const combinedMap = new Map<string, SupabaseOrder>();
+    
+    localOrders.forEach(o => combinedMap.set(o.order_number || o.id, o));
+    firestoreOrders.forEach(o => {
+      const key = o.order_number || o.id;
+      if (!combinedMap.has(key)) {
+        combinedMap.set(key, {
+          id: o.id,
+          order_number: o.order_number || o.id,
+          user_id: o.user_id,
+          items: o.items || [],
+          total_amount: o.total_amount || 0,
+          status: o.status || 'Pending',
+          payment_method: o.payment_method || 'Online',
+          contact_whatsapp: o.contact_whatsapp || '',
+          notes: o.notes,
+          binance_tx_id: o.binance_tx_id,
+          payment_proof: o.payment_proof,
+          created_at: o.created_at
+        });
+      }
+    });
+    supabaseOrders.forEach(o => combinedMap.set(o.order_number || o.id, o));
+
+    const resultList = Array.from(combinedMap.values());
+    return resultList.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
   } catch (err) {
     console.error('fetchUserOrders exception:', err);
     return getLocalOrders().filter(o => o.user_id === userId || o.user_id === 'guest');
@@ -585,4 +666,100 @@ function saveLocalPaymentProof(proof: SupabasePaymentProof) {
     localStorage.setItem('wka_local_payment_proofs', JSON.stringify(existing));
   } catch (e) {}
 }
+
+// Service Reviews Management
+export async function fetchServiceReviewsDB(serviceId: string): Promise<SupabaseServiceReview[]> {
+  try {
+    const { data, error } = await supabase
+      .from('service_reviews')
+      .select('*')
+      .eq('service_id', serviceId)
+      .order('created_at', { ascending: false });
+
+    const firebaseReviews = await fetchServiceReviewsFirestore(serviceId);
+
+    const localReviews = getLocalServiceReviews(serviceId);
+    const dbReviews = data || [];
+    const combined = [...localReviews];
+
+    for (const r of [...dbReviews, ...firebaseReviews]) {
+      if (!combined.some(item => item.id === r.id)) {
+        combined.push(r);
+      }
+    }
+    return combined.sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime());
+  } catch (err) {
+    console.error('fetchServiceReviews exception:', err);
+    return getLocalServiceReviews(serviceId);
+  }
+}
+
+export async function submitServiceReviewDB(review: Omit<SupabaseServiceReview, 'id' | 'created_at'>): Promise<SupabaseServiceReview | null> {
+  try {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const currentUser = sessionData?.session?.user;
+
+    const newRecord: Omit<SupabaseServiceReview, 'id'> = {
+      service_id: review.service_id,
+      user_id: currentUser?.id || review.user_id || undefined,
+      user_name: review.user_name || currentUser?.user_metadata?.full_name || currentUser?.email?.split('@')[0] || 'Verified Client',
+      user_avatar: review.user_avatar || currentUser?.user_metadata?.avatar_url || '',
+      rating: review.rating,
+      comment: review.comment,
+      created_at: new Date().toISOString()
+    };
+
+    // Save to Firebase Firestore
+    const fbResult = await submitServiceReviewFirestore(newRecord);
+
+    const { data, error } = await supabase
+      .from('service_reviews')
+      .insert([newRecord])
+      .select('*')
+      .single();
+
+    if (error) {
+      console.warn('Supabase submitServiceReview error, saving locally:', error.message);
+      const fallback = fbResult || saveLocalServiceReview(newRecord);
+      return fallback;
+    }
+
+    saveLocalServiceReview(data || fbResult || newRecord);
+    return data || fbResult || newRecord;
+  } catch (err) {
+    console.error('submitServiceReview exception:', err);
+    return saveLocalServiceReview(review);
+  }
+}
+
+function getLocalServiceReviews(serviceId: string): SupabaseServiceReview[] {
+  try {
+    const raw = localStorage.getItem(`wka_service_reviews_${serviceId}`);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveLocalServiceReview(review: Partial<SupabaseServiceReview>): SupabaseServiceReview {
+  const fullReview: SupabaseServiceReview = {
+    id: review.id || `rev_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    service_id: review.service_id || '',
+    user_id: review.user_id,
+    user_name: review.user_name || 'Verified User',
+    user_avatar: review.user_avatar || '',
+    rating: review.rating || 5,
+    comment: review.comment || '',
+    created_at: review.created_at || new Date().toISOString()
+  };
+
+  try {
+    const existing = getLocalServiceReviews(fullReview.service_id);
+    existing.unshift(fullReview);
+    localStorage.setItem(`wka_service_reviews_${fullReview.service_id}`, JSON.stringify(existing));
+  } catch (e) {}
+
+  return fullReview;
+}
+
 

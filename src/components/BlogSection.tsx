@@ -140,6 +140,12 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onNavigateContact }) =
                   <img
                     src={article.image}
                     alt={article.title}
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.onerror = null;
+                      target.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop';
+                    }}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />
@@ -251,6 +257,12 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onNavigateContact }) =
                       <img
                         src={activeArticle.author.avatar}
                         alt={activeArticle.author.name}
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.onerror = null;
+                          target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(activeArticle.author.name)}&background=0D8ABC&color=fff`;
+                        }}
                         className="w-8 h-8 rounded-full border border-cyan-500/40 object-cover"
                       />
                       <div>
@@ -276,6 +288,12 @@ export const BlogSection: React.FC<BlogSectionProps> = ({ onNavigateContact }) =
                   <img
                     src={activeArticle.image}
                     alt={activeArticle.title}
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.onerror = null;
+                      target.src = 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop';
+                    }}
                     className="w-full h-full object-cover"
                   />
                 </div>

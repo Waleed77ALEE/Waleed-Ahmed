@@ -85,6 +85,12 @@ export const Testimonials: React.FC = () => {
                   <img
                     src={review.avatar}
                     alt={review.name}
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.onerror = null;
+                      target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(review.name)}&background=0D8ABC&color=fff`;
+                    }}
                     className="w-11 h-11 rounded-full object-cover border-2 border-slate-700/80 shadow-md"
                     loading="lazy"
                   />

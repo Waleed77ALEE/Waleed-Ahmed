@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { ServiceItem } from '../types';
 import { PlatformLogo } from './PlatformLogo';
-import { X, Check, Clock, ShieldCheck, MessageSquare, ShoppingBag, Info, Award } from 'lucide-react';
+import { ServiceReviews } from './ServiceReviews';
+import { X, Check, Clock, ShieldCheck, ShoppingBag, Info, Award } from 'lucide-react';
 
 interface ServiceDetailsModalProps {
   service: ServiceItem | null;
@@ -9,6 +10,8 @@ interface ServiceDetailsModalProps {
   whatsappNumber: string;
   onContactClick: () => void;
   onBuyNow?: (service: ServiceItem) => void;
+  user?: any;
+  onOpenAuthModal?: () => void;
 }
 
 export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
@@ -16,7 +19,9 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
   onClose,
   whatsappNumber,
   onContactClick,
-  onBuyNow
+  onBuyNow,
+  user,
+  onOpenAuthModal
 }) => {
   useEffect(() => {
     if (!service) return;
@@ -82,13 +87,13 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
       <div
-        className="relative w-full max-w-xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden p-6 sm:p-8 animate-in zoom-in-95 duration-200"
+        className="relative w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden p-6 sm:p-8 animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-xl bg-slate-950/60 border border-slate-800 transition-colors"
+          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-xl bg-slate-950/60 border border-slate-800 transition-colors z-20"
           aria-label="Close details modal"
         >
           <X className="w-5 h-5" />
@@ -167,7 +172,7 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-center gap-3 mb-8">
           <button
             onClick={() => {
               if (onBuyNow) {
@@ -175,7 +180,7 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
               }
               onClose();
             }}
-            className="w-full sm:flex-1 py-3.5 px-6 rounded-xl text-sm font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 shadow-xl shadow-emerald-500/20 transition-all flex items-center justify-center gap-2"
+            className="w-full sm:flex-1 py-3.5 px-6 rounded-xl text-sm font-bold text-slate-950 bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-300 hover:to-teal-300 shadow-xl shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <ShoppingBag className="w-4 h-4 text-slate-950" />
             <span>Buy Now (Select Payment Method)</span>
@@ -186,10 +191,20 @@ export const ServiceDetailsModal: React.FC<ServiceDetailsModalProps> = ({
               onClose();
               onContactClick();
             }}
-            className="w-full sm:w-auto py-3.5 px-5 rounded-xl text-sm font-semibold text-slate-300 bg-slate-950 hover:bg-slate-800 border border-slate-800 transition-colors"
+            className="w-full sm:w-auto py-3.5 px-5 rounded-xl text-sm font-semibold text-slate-300 bg-slate-950 hover:bg-slate-800 border border-slate-800 transition-colors cursor-pointer"
           >
             Inquire / Contact
           </button>
+        </div>
+
+        {/* Service Reviews Section */}
+        <div className="pt-6 border-t border-slate-800">
+          <ServiceReviews
+            serviceId={service.id}
+            serviceTitle={service.title}
+            user={user}
+            onOpenAuthModal={onOpenAuthModal}
+          />
         </div>
       </div>
     </div>

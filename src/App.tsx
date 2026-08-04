@@ -576,6 +576,8 @@ export default function App() {
         whatsappNumber={whatsappNumber}
         onContactClick={() => scrollToSection('contact')}
         onBuyNow={handleBuyNow}
+        user={user}
+        onOpenAuthModal={() => setIsAuthModalOpen(true)}
       />
 
       {/* Supabase Authentication Modal */}
