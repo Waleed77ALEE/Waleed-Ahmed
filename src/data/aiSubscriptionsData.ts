@@ -29,6 +29,53 @@ export interface AiSubscriptionPlan {
 }
 
 export const INITIAL_AI_SUBSCRIPTIONS: AiSubscriptionPlan[] = [
+  // 0. Grok SuperGrok Heavy (Featured Deal)
+  {
+    id: 'grok-supergrok-heavy',
+    platformName: 'xAI Grok',
+    platformKey: 'grok',
+    planName: 'SuperGrok Heavy',
+    category: 'AI Reasoning & Code',
+    shortDescription: 'Featured 4-Month Subscription with heavy computing throughput, Grok 3 flagship reasoning & zero latency.',
+    detailedDescription: 'SuperGrok Heavy offers raw computing power with maximum rate limits for xAI Grok 3 & Grok 2 models, deep code analysis, visual reasoning, realtime search grounding, and 4 months uninterrupted full warranty access.',
+    prices: {
+      Monthly: 35.00,
+      '3 Months': 95.00,
+      '6 Months': 180.00,
+      Yearly: 320.00
+    },
+    features: [
+      'SuperGrok Heavy High-Throughput Access',
+      '4 Months Guaranteed Subscription ($120 Special Offer)',
+      'Grok 3 & Grok 2 Vision & Reasoning Models',
+      'Real-time Live Web Grounding & X Data Streams',
+      'Unrestricted Code & File Analysis',
+      'Instant Credential Delivery & Dedicated Account',
+      '4 Months Replacement & Support Warranty'
+    ],
+    supportedDevices: ['Web Browser', 'iOS', 'Android', 'macOS', 'Windows'],
+    badge: 'Limited Offer',
+    rating: 5.0,
+    reviewsCount: 112,
+    ordersCount: 340,
+    featured: true,
+    status: 'Active',
+    faqs: [
+      {
+        question: 'What is included in the SuperGrok Heavy 4-Month Offer ($120)?',
+        answer: 'You receive 4 months full guaranteed access to SuperGrok Heavy edition with maximum rate limits, flagship Grok reasoning models, and instant checkout delivery.'
+      }
+    ],
+    reviews: [
+      {
+        name: 'Alex Vance',
+        rating: 5,
+        date: '1 day ago',
+        comment: 'SuperGrok Heavy is insanely fast! The 4-month $120 deal saved me a lot compared to standard monthly costs.',
+        plan: 'SuperGrok Heavy (4 Months)'
+      }
+    ]
+  },
   // 1. HeyGen
   {
     id: 'heygen-creator',

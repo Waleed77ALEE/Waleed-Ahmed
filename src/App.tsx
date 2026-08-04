@@ -27,6 +27,7 @@ const SingleServicePage = lazy(() => import('./pages/services/SingleServicePage'
 const ReferralProPage = lazy(() => import('./pages/ReferralProPage').then(m => ({ default: m.ReferralProPage })));
 const JazzCashPaymentPage = lazy(() => import('./pages/JazzCashPaymentPage').then(m => ({ default: m.JazzCashPaymentPage })));
 const AiSeoManagerPage = lazy(() => import('./pages/AiSeoManagerPage').then(m => ({ default: m.AiSeoManagerPage })));
+const SuperGrokPage = lazy(() => import('./pages/SuperGrokPage').then(m => ({ default: m.SuperGrokPage })));
 const SingleProductPage = lazy(() => import('./pages/products/SingleProductPage').then(m => ({ default: m.SingleProductPage })));
 const GamingMarketplacePage = lazy(() => import('./pages/GamingMarketplacePage').then(m => ({ default: m.GamingMarketplacePage })));
 const SoftwareServicesPage = lazy(() => import('./pages/SoftwareServicesPage').then(m => ({ default: m.SoftwareServicesPage })));
@@ -526,6 +527,11 @@ export default function App() {
               {/* Dedicated Autonomous AI SEO Agent Platform Route */}
               <Route path="/seo-agent" element={<AiSeoManagerPage />} />
               <Route path="/ai-seo-manager" element={<AiSeoManagerPage />} />
+
+              {/* Dedicated Grok SuperGrok Heavy Featured Offer Route */}
+              <Route path="/superg" element={<SuperGrokPage />} />
+              <Route path="/supergrok" element={<SuperGrokPage />} />
+              <Route path="/supergrok-heavy" element={<SuperGrokPage />} />
 
               {/* Requirement: Production Legal Pages & SEO Compliant Routes */}
               <Route path="/terms-and-conditions" element={<TermsPage />} />

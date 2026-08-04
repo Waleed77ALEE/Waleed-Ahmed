@@ -5,13 +5,14 @@ import { InstantBuyModal, InstantBuyProduct } from './InstantBuyModal';
 const products = [
   {
     id: 1,
-    platform: 'ChatGPT Shared',
-    tier: 'Pro (5x) Access',
-    price: '35.00',
-    duration: '/month',
-    description: 'Perfect for power users needing flagship models without the $100 price tag.',
-    features: ['Access to Sol, Terra, Luna', '5x standard usage limits', 'Agent Mode enabled', 'Instant auto-delivery'],
-    highlighted: false,
+    platform: 'Grok xAI',
+    tier: 'SuperGrok Heavy (4-Mo)',
+    price: '120.00',
+    duration: '/ 4 months',
+    description: 'Featured Deal: Heavy computing power, Grok 3 & Grok 2 deep reasoning, zero-lag access.',
+    features: ['4 Months Guaranteed Access', 'SuperGrok Heavy Max Limits', 'Grok 3 Reasoning & Vision', 'Instant Auto-Delivery'],
+    highlighted: true,
+    badge: 'Exclusive Offer',
   },
   {
     id: 2,
@@ -21,17 +22,16 @@ const products = [
     duration: '/month',
     description: 'Generate AI video from images. Official activation key sent instantly.',
     features: ['600 video credits', '1080p export quality', 'No watermarks', 'Full platform access'],
-    highlighted: true,
-    badge: 'High Demand',
+    highlighted: false,
   },
   {
     id: 3,
-    platform: 'Midjourney',
-    tier: 'Standard Auto-Renew',
-    price: '25.00',
+    platform: 'ChatGPT Shared',
+    tier: 'Pro (5x) Access',
+    price: '35.00',
     duration: '/month',
-    description: 'Unlimited relaxed generations and 15 hours of fast GPU time.',
-    features: ['Private Discord server setup', '15 Fast GPU hours', 'Unlimited relaxed mode', 'Instant credentials'],
+    description: 'Perfect for power users needing flagship models without the $100 price tag.',
+    features: ['Access to Sol, Terra, Luna', '5x standard usage limits', 'Agent Mode enabled', 'Instant auto-delivery'],
     highlighted: false,
   }
 ];
@@ -45,7 +45,7 @@ export default function AIPricingGrid() {
       id: String(prod.id),
       title: `${prod.platform} - ${prod.tier}`,
       price: `$${prod.price}`,
-      subscriptionPeriod: '1 Month',
+      subscriptionPeriod: prod.duration.replace('/', '').trim(),
       features: prod.features,
     });
     setIsModalOpen(true);

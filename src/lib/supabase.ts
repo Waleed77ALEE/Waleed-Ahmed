@@ -193,18 +193,21 @@ CREATE POLICY "Users can view own payment proofs" ON public.payment_proofs
 
 -- 6. AUTOMATIC PROFILE CREATION TRIGGER
 CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER SET search_path = public
+AS $$
 BEGIN
-  INSERT INTO public.profiles (id, email, full_name, whatsapp)
+  INSERT INTO public.profiles (id, full_name, email, whatsapp)
   VALUES (
     NEW.id,
-    NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
+    NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'whatsapp', '')
   );
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
