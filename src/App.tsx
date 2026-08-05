@@ -49,6 +49,10 @@ const AndroidAppModal = lazy(() => import('./components/AndroidAppModal').then(m
 const LegalPagesModal = lazy(() => import('./components/LegalPagesModal').then(m => ({ default: m.LegalPagesModal })));
 import type { LegalTabType } from './components/LegalPagesModal';
 
+import { auth } from './lib/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { OrderNotification } from './components/OrderNotification';
+
 import {
   supabase,
   UserProfile,
@@ -214,6 +218,28 @@ export default function App() {
       }
     });
 
+    // 3. Firebase Auth State Listener
+    const unsubscribeFb = onAuthStateChanged(auth, async (fbUser) => {
+      if (fbUser) {
+        console.log('🔔 Firebase Auth Active Session:', fbUser.email);
+        const mappedUser = {
+          id: fbUser.uid,
+          email: fbUser.email || '',
+          user_metadata: {
+            full_name: fbUser.displayName || fbUser.email?.split('@')[0],
+            avatar_url: fbUser.photoURL || ''
+          },
+          app_metadata: {
+            provider: 'google'
+          },
+          created_at: fbUser.metadata?.creationTime || new Date().toISOString()
+        };
+        setUser(mappedUser);
+        await loadUserProfile(fbUser.uid, mappedUser);
+        loadCart(fbUser.uid);
+      }
+    });
+
     // Check hash for #admin or #apk or #privacy or #terms
     if (window.location.hash === '#admin') {
       setIsAdminModalOpen(true);
@@ -238,6 +264,7 @@ export default function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => {
       subscription.unsubscribe();
+      if (unsubscribeFb) unsubscribeFb();
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('keydown', handleKeyDown);
     };
@@ -291,7 +318,12 @@ export default function App() {
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch (e) {}
+    try {
+      await auth.signOut();
+    } catch (e) {}
     setUser(null);
     setProfile(null);
     loadCart(null);
@@ -327,6 +359,9 @@ export default function App() {
     <div className="min-h-screen w-full max-w-full overflow-x-hidden relative bg-slate-950 text-slate-100 font-sans selection:bg-cyan-500 selection:text-slate-950">
       {/* Dynamic SEO JSON-LD Schemas */}
       <SeoSchemas />
+      
+      {/* Toast Notifications */}
+      <OrderNotification userId={user?.id} />
 
       {/* Navigation Header */}
       <Header

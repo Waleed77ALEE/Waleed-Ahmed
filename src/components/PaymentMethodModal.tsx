@@ -545,8 +545,9 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
                       type="text"
                       value={txId}
                       onChange={(e) => setTxId(e.target.value)}
-                      placeholder="e.g. Payoneer Ref ID or Binance TxID"
+                      placeholder={activeTab === 'binance_pay' ? "e.g. Binance TxID (mandatory)" : "e.g. Payoneer Ref ID or Binance TxID"}
                       className="w-full bg-slate-900 border border-slate-800 rounded-xl py-2.5 px-3.5 text-xs text-white placeholder-slate-600 font-mono focus:outline-none focus:border-orange-500 transition-colors"
+                      required={activeTab === 'binance_pay' && !proofImage}
                     />
                   </div>
 
