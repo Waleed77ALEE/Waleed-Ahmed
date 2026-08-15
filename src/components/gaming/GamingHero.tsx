@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Search, ShieldCheck, Zap, Star, Sparkles, ChevronRight, Gamepad2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { generateImageAltText } from '../../lib/seo';
 
 export const GamingHero: React.FC = () => {
   const navigate = useNavigate();
@@ -111,7 +112,7 @@ export const GamingHero: React.FC = () => {
               <div className="absolute inset-0 z-0">
                 <img 
                   src={card.image} 
-                  alt={card.title}
+                  alt={generateImageAltText(card.title, card.platform)}
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-90"
                 />

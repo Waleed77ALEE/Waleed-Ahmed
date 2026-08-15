@@ -15,6 +15,7 @@ import {
   Award
 } from 'lucide-react';
 import { Project } from '../types';
+import { generateImageAltText } from '../lib/seo';
 
 interface ProjectDetailsModalProps {
   project: Project | null;
@@ -95,7 +96,7 @@ export const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({
             <div className="rounded-2xl overflow-hidden h-64 sm:h-80 w-full bg-slate-950 border border-slate-800 relative">
               <img 
                 src={project.image} 
-                alt={project.title} 
+                alt={generateImageAltText(project.title, project.category)} 
                 referrerPolicy="no-referrer"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;

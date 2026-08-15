@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight, Zap, ArrowRight, Tag } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { generateImageAltText } from '../lib/seo';
 
 const OFFERS = [
   {
@@ -64,7 +65,7 @@ export const OffersSlider: React.FC = () => {
             >
               <img 
                 src={OFFERS[currentIndex].image} 
-                alt={OFFERS[currentIndex].title}
+                alt={generateImageAltText(OFFERS[currentIndex].title, OFFERS[currentIndex].badge)}
                 className="w-full h-full object-cover opacity-40 mix-blend-overlay"
               />
               <div className={`absolute inset-0 bg-gradient-to-r ${OFFERS[currentIndex].color} opacity-20`} />

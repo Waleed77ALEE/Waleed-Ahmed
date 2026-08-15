@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CheckCircle2, Zap } from 'lucide-react';
 import { InstantBuyModal, InstantBuyProduct } from './InstantBuyModal';
+import { generateImageAltText } from '../lib/seo';
 
 const products = [
   {
@@ -89,7 +90,7 @@ export default function AIPricingGrid() {
               }`}
             >
               <div className="h-40 w-full overflow-hidden shrink-0 relative">
-                <img src={product.image} alt={product.platform} className="w-full h-full object-cover opacity-80 hover:opacity-100 hover:scale-105 transition-all duration-500" />
+                <img src={product.image} alt={generateImageAltText(product.platform, product.tier)} className="w-full h-full object-cover opacity-80 hover:opacity-100 hover:scale-105 transition-all duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
               </div>
               <div className="p-8 pt-6 flex flex-col flex-1">

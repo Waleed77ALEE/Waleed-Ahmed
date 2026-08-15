@@ -22,6 +22,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { CORE_SERVICES, PORTFOLIO_PROJECTS } from '../data/portfolioData';
 import { productStore } from '../services/productStore';
 import { ServiceItem } from '../types';
+import { generateImageAltText } from '../lib/seo';
 
 interface HeaderSearchModalProps {
   isOpen: boolean;
@@ -352,7 +353,7 @@ export const HeaderSearchModal: React.FC<HeaderSearchModalProps> = ({
                     >
                       <img
                         src={project.image}
-                        alt={project.title}
+                        alt={generateImageAltText(project.title, project.category)}
                         referrerPolicy="no-referrer"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;

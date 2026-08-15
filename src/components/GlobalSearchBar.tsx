@@ -6,6 +6,7 @@ import { productStore } from '../services/productStore';
 import { SOFTWARE_PRODUCTS } from '../data/softwareData';
 import { MOCK_GAMING_PRODUCTS } from '../data/gamingMarketData';
 import { ServiceItem } from '../types';
+import { generateImageAltText } from '../lib/seo';
 
 interface GlobalSearchBarProps {
   onNavigate: (sectionId: string) => void;
@@ -187,7 +188,7 @@ export const GlobalSearchBar: React.FC<GlobalSearchBarProps> = ({ onNavigate }) 
                             className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-800/80 transition-colors group flex items-start gap-3"
                           >
                             {p.image ? (
-                               <img src={p.image} alt={p.title} className="w-8 h-8 rounded-lg object-cover shrink-0 border border-slate-700" />
+                               <img src={p.image} alt={generateImageAltText(p.title, p.category)} className="w-8 h-8 rounded-lg object-cover shrink-0 border border-slate-700" />
                             ) : (
                                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
                                  <ShoppingBag className="w-4 h-4" />
@@ -220,7 +221,7 @@ export const GlobalSearchBar: React.FC<GlobalSearchBarProps> = ({ onNavigate }) 
                             onClick={() => handleNavigate('portfolio')}
                             className="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-800/80 transition-colors group flex items-start gap-3"
                           >
-                            <img src={p.image} alt={p.title} className="w-8 h-8 rounded-lg object-cover shrink-0 border border-slate-700" />
+                            <img src={p.image} alt={generateImageAltText(p.title, p.category)} className="w-8 h-8 rounded-lg object-cover shrink-0 border border-slate-700" />
                             <div className="flex-1 min-w-0">
                               <h4 className="text-xs font-bold text-slate-200 group-hover:text-indigo-300 truncate">{p.title}</h4>
                               <p className="text-[10px] text-slate-400 truncate">{p.category}</p>

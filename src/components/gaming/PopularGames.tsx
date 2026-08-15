@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
+import { generateImageAltText } from '../../lib/seo';
 
 const CATEGORIES = [
   { id: 'ai', name: 'AI Subscriptions', image: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=500&auto=format&fit=crop' },
@@ -34,7 +35,7 @@ export const PopularGames: React.FC = () => {
               >
                 <img 
                   src={game.image} 
-                  alt={game.name} 
+                  alt={generateImageAltText(game.name, 'Game Keys & Assets')}
                   referrerPolicy="no-referrer"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;

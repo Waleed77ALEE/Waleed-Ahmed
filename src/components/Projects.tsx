@@ -4,6 +4,7 @@ import { FolderGit2, ExternalLink, Github, ArrowUpRight, Code, Sparkles, BookOpe
 import { motion, AnimatePresence } from 'motion/react';
 import { ProjectDetailsModal } from './ProjectDetailsModal';
 import { Project } from '../types';
+import { generateImageAltText } from '../lib/seo';
 
 interface ProjectsProps {
   onNavigateContact?: () => void;
@@ -84,7 +85,7 @@ export const Projects: React.FC<ProjectsProps> = ({ onNavigateContact }) => {
                   <div className="relative h-60 overflow-hidden bg-slate-950">
                     <img
                       src={project.image}
-                      alt={project.title}
+                      alt={generateImageAltText(project.title, project.category)}
                       referrerPolicy="no-referrer"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;

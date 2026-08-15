@@ -27,6 +27,7 @@ import { SecurityFeature } from './SecurityFeature';
 import { ProductGridSkeleton } from './SkeletonLoader';
 import { SoftwareOrderModal } from './SoftwareOrderModal';
 import { SoftwareDetailModal } from './SoftwareDetailModal';
+import { generateImageAltText } from '../lib/seo';
 
 interface SoftwareServicesProps {
   user?: any;
@@ -246,7 +247,7 @@ export const SoftwareServices: React.FC<SoftwareServicesProps> = ({
                   {/* Card Cover Image */}
                   {prod.image ? (
                     <div className="h-40 w-full overflow-hidden shrink-0 relative border-b border-slate-800/80">
-                      <img src={prod.image} alt={prod.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
+                      <img src={prod.image} alt={generateImageAltText(prod.name, prod.category)} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent"></div>
                       <div className="absolute bottom-4 left-6">
                         <SoftwareBrandLogo
