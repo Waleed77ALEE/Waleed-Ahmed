@@ -15,7 +15,8 @@ export const GamingHero: React.FC = () => {
       badgeColor: "bg-blue-600 text-white",
       platform: "EA App · Key · GLOBAL",
       image: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=1000&auto=format&fit=crop",
-      price: "$59.99"
+      price: "$59.99",
+      originalPrice: "$69.99"
     },
     {
       id: 2,
@@ -24,7 +25,8 @@ export const GamingHero: React.FC = () => {
       badgeColor: "bg-amber-600 text-white",
       platform: "Steam · Key · GLOBAL",
       image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=1000&auto=format&fit=crop",
-      price: "$39.99"
+      price: "$39.99",
+      originalPrice: "$49.99"
     },
     {
       id: 3,
@@ -33,7 +35,8 @@ export const GamingHero: React.FC = () => {
       badgeColor: "bg-red-600 text-white",
       platform: "Steam · Key · GLOBAL",
       image: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1000&auto=format&fit=crop",
-      price: "$29.99"
+      price: "$29.99",
+      originalPrice: "$49.99"
     },
     {
       id: 4,
@@ -42,7 +45,8 @@ export const GamingHero: React.FC = () => {
       badgeColor: "bg-purple-600 text-white",
       platform: "Dare to try something new?",
       image: "https://images.unsplash.com/photo-1534423861386-85a16f5d13fd?q=80&w=1000&auto=format&fit=crop",
-      price: "$4.99"
+      price: "$4.99",
+      originalPrice: "$9.99"
     }
   ];
 
@@ -133,9 +137,19 @@ export const GamingHero: React.FC = () => {
                   {card.title}
                 </h3>
                 <div className="flex items-center justify-between pt-3 border-t border-zinc-800/80">
-                  <div>
-                    <span className="text-[10px] text-gray-500 uppercase block font-bold">Best Price</span>
-                    <span className="text-lg font-black text-white">{card.price}</span>
+                  <div className="flex flex-col gap-1">
+                    {card.originalPrice && (
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[9px] text-gray-500 uppercase font-bold">Original Price</span>
+                        <span className="text-xs font-semibold text-gray-500 line-through decoration-red-500/50">
+                          {card.originalPrice}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex items-end gap-1.5">
+                      <span className="text-[10px] text-red-400 uppercase font-black">Discounted Price</span>
+                      <span className="text-lg leading-none font-black text-white">{card.price}</span>
+                    </div>
                   </div>
                   <span className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs rounded-xl transition-all shadow-md group-hover:scale-105">
                     Buy Now
