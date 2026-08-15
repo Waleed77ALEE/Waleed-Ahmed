@@ -43,6 +43,7 @@ const CookiePage = lazy(() => import('./pages/legal/CookiePage').then(m => ({ de
 const ReferralTermsPage = lazy(() => import('./pages/legal/ReferralTermsPage').then(m => ({ default: m.ReferralTermsPage })));
 
 // Lazy Loaded Modals
+const TodoManagerModal = lazy(() => import('./components/TodoManagerModal').then(m => ({ default: m.TodoManagerModal })));
 const SupabaseSqlModal = lazy(() => import('./components/SupabaseSqlModal').then(m => ({ default: m.SupabaseSqlModal })));
 const BinancePayModal = lazy(() => import('./components/BinancePayModal').then(m => ({ default: m.BinancePayModal })));
 const AdminPanelModal = lazy(() => import('./components/AdminPanelModal').then(m => ({ default: m.AdminPanelModal })));
@@ -96,6 +97,7 @@ export default function App() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+  const [isTodoModalOpen, setIsTodoModalOpen] = useState(false);
   const [isSqlModalOpen, setIsSqlModalOpen] = useState(false);
   const [isBinanceModalOpen, setIsBinanceModalOpen] = useState(false);
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
@@ -375,6 +377,7 @@ export default function App() {
         onOpenAuth={() => setIsAuthModalOpen(true)}
         onOpenAccount={() => setIsAccountModalOpen(true)}
         onOpenCart={() => setIsCartModalOpen(true)}
+        onOpenTodos={() => setIsTodoModalOpen(true)}
         onOpenSql={() => setIsSqlModalOpen(true)}
         onOpenBinancePay={() => setIsBinanceModalOpen(true)}
         onOpenAdmin={() => setIsAdminModalOpen(true)}
@@ -575,11 +578,22 @@ export default function App() {
               <Route path="/claude-max" element={<ClaudeMaxPage />} />
               <Route path="/claudemax" element={<ClaudeMaxPage />} />
 
-              {/* Requirement: Production Legal Pages & SEO Compliant Routes */}
+              {/* Terms of Service canonical /tos, subpages and aliases */}
+              <Route path="/tos" element={<TermsPage />} />
+              <Route path="/tos/:subsection" element={<TermsPage />} />
+              <Route path="/terms-of-service" element={<TermsPage />} />
+              <Route path="/terms-of-service/:subsection" element={<TermsPage />} />
               <Route path="/terms-and-conditions" element={<TermsPage />} />
+              <Route path="/terms-and-conditions/:subsection" element={<TermsPage />} />
               <Route path="/terms" element={<TermsPage />} />
+              <Route path="/terms/:subsection" element={<TermsPage />} />
+              {/* Privacy Policy canonical and subpages / sublinks */}
+              <Route path="/privacypolicy" element={<PrivacyPage />} />
+              <Route path="/privacypolicy/:subsection" element={<PrivacyPage />} />
               <Route path="/privacy-policy" element={<PrivacyPage />} />
+              <Route path="/privacy-policy/:subsection" element={<PrivacyPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/privacy/:subsection" element={<PrivacyPage />} />
               <Route path="/refund-policy" element={<RefundPage />} />
               <Route path="/refunds" element={<RefundPage />} />
               <Route path="/cookie-policy" element={<CookiePage />} />
@@ -655,6 +669,13 @@ export default function App() {
       />
 
       <Suspense fallback={null}>
+        {/* Supabase Todo & Task Manager Modal */}
+        <TodoManagerModal
+          isOpen={isTodoModalOpen}
+          onClose={() => setIsTodoModalOpen(false)}
+          userId={user?.id}
+        />
+
         {/* Supabase SQL Schema Viewer Modal */}
         <SupabaseSqlModal
           isOpen={isSqlModalOpen}
@@ -690,6 +711,9 @@ export default function App() {
           onClose={() => setIsLegalModalOpen(false)}
           defaultTab={legalActiveTab}
         />
+
+        {/* Floating WhatsApp Contact Button */}
+        <FloatingWhatsApp whatsappNumber={whatsappNumber} />
       </Suspense>
     </div>
   );

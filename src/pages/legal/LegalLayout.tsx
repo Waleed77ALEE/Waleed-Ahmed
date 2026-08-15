@@ -130,13 +130,13 @@ export const LegalLayout: React.FC<LegalLayoutProps> = ({
 
   const legalNavItems = [
     {
-      path: '/terms-and-conditions',
+      path: '/tos',
       label: 'Terms & Conditions',
       icon: <FileText className="w-4 h-4 text-amber-400" />,
       type: 'terms'
     },
     {
-      path: '/privacy-policy',
+      path: '/privacypolicy',
       label: 'Privacy Policy',
       icon: <Lock className="w-4 h-4 text-cyan-400" />,
       type: 'privacy'

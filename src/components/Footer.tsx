@@ -122,16 +122,36 @@ export const Footer: React.FC<FooterProps> = ({
             <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-3">Merchant Compliance &amp; Policies</h4>
             <ul className="space-y-2 mb-4">
               <li>
-                <Link to="/privacy-policy" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer">
-                  <Shield className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Privacy Policy</span>
+                <Link to="/privacypolicy" className="hover:text-cyan-400 transition-colors flex items-center justify-between group cursor-pointer">
+                  <span className="flex items-center gap-1.5 font-bold text-cyan-300">
+                    <Shield className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Privacy Policy</span>
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-500 group-hover:text-cyan-400">/privacypolicy</span>
                 </Link>
+                <div className="pl-5 pt-1 pb-1 flex flex-wrap gap-x-2.5 gap-y-1 text-[11px] text-slate-400">
+                  <Link to="/privacypolicy#data-deletion" className="hover:text-rose-400 transition-colors">Data Deletion</Link>
+                  <span>•</span>
+                  <Link to="/privacypolicy#gdpr" className="hover:text-amber-400 transition-colors">GDPR Rights</Link>
+                  <span>•</span>
+                  <Link to="/privacypolicy#cookies" className="hover:text-purple-400 transition-colors">Cookies</Link>
+                </div>
               </li>
               <li>
-                <Link to="/terms-and-conditions" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer">
-                  <FileText className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Terms &amp; Conditions</span>
+                <Link to="/tos" className="hover:text-amber-400 transition-colors flex items-center justify-between group cursor-pointer">
+                  <span className="flex items-center gap-1.5 font-bold text-amber-300">
+                    <FileText className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Terms of Service (ToS)</span>
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-500 group-hover:text-amber-400">/tos</span>
                 </Link>
+                <div className="pl-5 pt-1 pb-1 flex flex-wrap gap-x-2.5 gap-y-1 text-[11px] text-slate-400">
+                  <Link to="/tos#payments" className="hover:text-amber-400 transition-colors">Payments</Link>
+                  <span>•</span>
+                  <Link to="/tos#licenses" className="hover:text-emerald-400 transition-colors">Licenses</Link>
+                  <span>•</span>
+                  <Link to="/tos#referrals" className="hover:text-rose-400 transition-colors">Referrals</Link>
+                </div>
               </li>
               <li>
                 <Link to="/refund-policy" className="hover:text-cyan-400 transition-colors flex items-center gap-1.5 cursor-pointer">
