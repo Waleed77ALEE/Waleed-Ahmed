@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useParams, useLocation } from 'react-router-do
 import { motion, AnimatePresence } from 'motion/react';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { ServiceDetailsModal } from './components/ServiceDetailsModal';
 import { AuthModal } from './components/AuthModal';
 import { AccountModal } from './components/AccountModal';

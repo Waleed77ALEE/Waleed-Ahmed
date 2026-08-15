@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Smartphone, Download, CheckCircle2, ShieldCheck, Sparkles, Share2, Layers, Zap, WifiOff, Bell, QrCode, ExternalLink, Info, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import brandLogoImg from '../assets/images/brand_logo_1785031049165.jpg';
+import brandLogoImg from '../assets/images/wka_brand_logo_1785901835661.jpg';
 
 interface AndroidAppModalProps {
   isOpen: boolean;

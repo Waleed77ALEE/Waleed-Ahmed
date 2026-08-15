@@ -25,6 +25,7 @@ export interface SoftwareProduct {
   seoDescription?: string;
   downloadUrl?: string;
   activationInstructions?: string;
+  image?: string;
 }
 
 export interface SoftwareOrder {
@@ -65,6 +66,7 @@ export const SOFTWARE_PRODUCTS: SoftwareProduct[] = [
     version: '2026 (v27.0)',
     category: 'Adobe Products',
     price: 25,
+    image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?q=80&w=500&auto=format&fit=crop',
     originalPrice: 239,
     licenseType: 'Genuine Lifetime License',
     description: 'The industry standard in digital photo editing, neural filters, AI generative fill, and graphic design.',
@@ -105,6 +107,7 @@ export const SOFTWARE_PRODUCTS: SoftwareProduct[] = [
     version: '2026 (v25.0)',
     category: 'Adobe Products',
     price: 25,
+    image: 'https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=500&auto=format&fit=crop',
     originalPrice: 239,
     licenseType: 'Genuine Lifetime License',
     description: 'Professional NLE video editing software with AI text-based editing, color grading, and Lumetri tools.',
@@ -179,6 +182,7 @@ export const SOFTWARE_PRODUCTS: SoftwareProduct[] = [
     version: '2026 Complete Suite',
     category: 'Adobe Products',
     price: 45,
+    image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=500&auto=format&fit=crop',
     originalPrice: 659,
     licenseType: '1-Year Official Subscription',
     description: 'Complete suite of 20+ Adobe creative desktop & mobile applications with 100GB cloud storage.',
@@ -200,6 +204,7 @@ export const SOFTWARE_PRODUCTS: SoftwareProduct[] = [
     version: '2026 Edition',
     category: 'Microsoft Products',
     price: 30,
+    image: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=500&auto=format&fit=crop',
     originalPrice: 69,
     licenseType: '1-Year Official Subscription',
     description: 'Word, Excel, PowerPoint, Outlook, OneNote, and 1TB OneDrive cloud storage for 1 user (5 devices).',
@@ -256,6 +261,7 @@ export const SOFTWARE_PRODUCTS: SoftwareProduct[] = [
     version: '23H2 / 24H2',
     category: 'Microsoft Products',
     price: 35,
+    image: 'https://images.unsplash.com/photo-1633419461186-7d40a38105ec?q=80&w=500&auto=format&fit=crop',
     originalPrice: 199,
     licenseType: 'Retail Lifetime Activation Key',
     description: 'Advanced operating system with BitLocker Encryption, Hyper-V virtualization, Remote Desktop, and enterprise security.',
@@ -314,6 +320,7 @@ export const SOFTWARE_PRODUCTS: SoftwareProduct[] = [
     version: '2026 Commercial',
     category: 'Autodesk',
     price: 55,
+    image: 'https://images.unsplash.com/photo-1635398246830-dbb60ccbe51d?q=80&w=500&auto=format&fit=crop',
     originalPrice: 1975,
     licenseType: '1-Year Commercial License',
     description: 'Industry standard 2D and 3D CAD design software for architectural drafting, engineering, and construction layout.',
@@ -429,6 +436,7 @@ export const SOFTWARE_PRODUCTS: SoftwareProduct[] = [
     version: 'v21 / v22 Producer',
     category: 'Music Production',
     price: 50,
+    image: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=500&auto=format&fit=crop',
     originalPrice: 199,
     licenseType: 'Lifetime Free Updates',
     description: 'The iconic DAW for beatmakers, electronic music producers, audio recording, mixing, and mastering.',

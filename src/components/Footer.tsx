@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowUp, Code2, Globe, ShieldCheck, MessageSquare, Smartphone, FileText, BookOpen, Shield, RefreshCw, Truck, Building2, Lock } from 'lucide-react';
 import { SocialLinks } from './SocialLinks';
 import { LegalTabType } from './LegalPagesModal';
+import brandLogoImg from '../assets/images/wka_brand_logo_1785901835661.jpg';
 
 interface FooterProps {
   onNavigate: (sectionId: string) => void;
@@ -29,11 +30,14 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
           {/* Col 1: Brand & Merchant Headquarter */}
           <div className="md:col-span-2 space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-cyan-500 to-indigo-600 p-[1px]">
-                <div className="w-full h-full bg-slate-950 rounded-[7px] flex items-center justify-center">
-                  <Code2 className="w-4 h-4 text-cyan-400" />
-                </div>
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-400 via-cyan-400 to-indigo-500 p-[1.5px] shadow-md shadow-cyan-500/20 overflow-hidden shrink-0">
+                <img
+                  src={brandLogoImg}
+                  alt="Waleed Khan Afridi Logo"
+                  referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover rounded-[10px]"
+                />
               </div>
               <span className="text-base font-bold text-white tracking-tight">WALEED KHAN AFRIDI</span>
             </div>

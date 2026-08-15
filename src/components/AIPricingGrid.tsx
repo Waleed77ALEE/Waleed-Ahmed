@@ -11,6 +11,7 @@ const products = [
     duration: '/ 4 months',
     description: 'Featured Deal: Heavy computing power, Grok 3 & Grok 2 deep reasoning, zero-lag access.',
     features: ['4 Months Guaranteed Access', 'SuperGrok Heavy Max Limits', 'Grok 3 Reasoning & Vision', 'Instant Auto-Delivery'],
+    image: 'https://images.unsplash.com/photo-1614729939124-032f0b56c9ce?q=80&w=500&auto=format&fit=crop',
     highlighted: true,
     badge: 'Exclusive Offer',
   },
@@ -22,6 +23,7 @@ const products = [
     duration: '/ 3 months',
     description: 'Featured Deal: 20x higher message capacity on Claude 3.7 Sonnet & Opus with Artifacts.',
     features: ['3 Months Guaranteed Access', 'Claude Max 20x Message Limits', 'Claude 3.7 Sonnet & Opus', 'Instant Auto-Delivery'],
+    image: 'https://images.unsplash.com/photo-1678129712739-5095f9d1469e?q=80&w=500&auto=format&fit=crop',
     highlighted: true,
     badge: 'Limited Offer',
   },
@@ -33,6 +35,7 @@ const products = [
     duration: '/month',
     description: 'Generate AI video from images. Official activation key sent instantly.',
     features: ['600 video credits', '1080p export quality', 'No watermarks', 'Full platform access'],
+    image: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=500&auto=format&fit=crop',
     highlighted: false,
   },
   {
@@ -43,6 +46,7 @@ const products = [
     duration: '/month',
     description: 'Perfect for power users needing flagship models without the $100 price tag.',
     features: ['Access to Sol, Terra, Luna', '5x standard usage limits', 'Agent Mode enabled', 'Instant auto-delivery'],
+    image: 'https://images.unsplash.com/photo-1684496291993-3d92fc89d9ab?q=80&w=500&auto=format&fit=crop',
     highlighted: false,
   }
 ];
@@ -67,10 +71,10 @@ export default function AIPricingGrid() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-            Premium AI Accounts &amp; Tools
+            Enterprise-Grade AI Subscriptions
           </h2>
           <p className="mt-4 text-xl text-slate-400">
-            Instant delivery. Verified access. Unbeatable pricing.
+            Unlock exclusive access to industry-leading AI models. Instant deployment, verified credentials, and unmetered potential.
           </p>
         </div>
 
@@ -78,22 +82,27 @@ export default function AIPricingGrid() {
           {products.map((product) => (
             <div
               key={product.id}
-              className={`relative flex flex-col p-8 rounded-2xl ${
+              className={`relative flex flex-col rounded-2xl overflow-hidden ${
                 product.highlighted
                   ? 'bg-slate-900 border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.15)]'
                   : 'bg-slate-900 border border-slate-800'
               }`}
             >
+              <div className="h-40 w-full overflow-hidden shrink-0 relative">
+                <img src={product.image} alt={product.platform} className="w-full h-full object-cover opacity-80 hover:opacity-100 hover:scale-105 transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
+              </div>
+              <div className="p-8 pt-6 flex flex-col flex-1">
               {product.badge && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide flex items-center gap-1">
+                <div className="absolute top-[140px] left-1/2 -translate-x-1/2 z-10 w-full text-center">
+                  <span className="bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide inline-flex items-center gap-1 shadow-lg shadow-emerald-500/20">
                     <Zap size={14} />
                     {product.badge}
                   </span>
                 </div>
               )}
 
-              <div className="mb-6">
+              <div className="mb-6 mt-2">
                 <p className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">
                   {product.platform}
                 </p>
@@ -118,7 +127,7 @@ export default function AIPricingGrid() {
 
               <button
                 onClick={() => handleBuy(product)}
-                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 cursor-pointer ${
+                className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 cursor-pointer relative z-10 ${
                   product.highlighted
                     ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg hover:shadow-emerald-500/25'
                     : 'bg-slate-800 hover:bg-slate-700 text-white'
@@ -126,6 +135,7 @@ export default function AIPricingGrid() {
               >
                 Instant Buy
               </button>
+              </div>
             </div>
           ))}
         </div>

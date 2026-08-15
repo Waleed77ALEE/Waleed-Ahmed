@@ -3,9 +3,10 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck, Smartphone, Wallet, Search, ChevronDown, Code2, Palette, ShoppingBag as ShopIcon, Cpu, Shield, Bot, TrendingUp, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../lib/supabase';
-import brandLogoImg from '../assets/images/brand_logo_1785031049165.jpg';
+import brandLogoImg from '../assets/images/wka_brand_logo_1785901835661.jpg';
 import { loadUserWallet, subscribeWallet, UserWallet } from '../services/walletStore';
 import { HeaderSearchModal } from './HeaderSearchModal';
+import { GlobalSearchBar } from './GlobalSearchBar';
 import { AiSeoManagerModal } from './AiSeoManagerModal';
 import { ServiceItem } from '../types';
 
@@ -79,16 +80,6 @@ export const Header: React.FC<HeaderProps> = ({
   );
   const [balanceHighlight, setBalanceHighlight] = useState(false);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        setIsSearchOpen(true);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
   useEffect(() => {
     const fresh = loadUserWallet(user?.id, user?.email, profile?.full_name);
@@ -450,21 +441,7 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="hidden xl:inline px-1 py-0.2 rounded bg-cyan-500 text-slate-950 text-[9px] font-black">PRO</span>
             </button>
 
-            {/* Global Search Trigger Button */}
-            <button
-              onClick={() => {
-                setInitialSearchQuery('');
-                setIsSearchOpen(true);
-              }}
-              className="px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800/80 hover:border-cyan-500/40 text-slate-300 hover:text-cyan-300 text-xs font-medium transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] flex items-center gap-1.5 cursor-pointer shadow-sm group"
-              title="Global Search (Ctrl + K)"
-            >
-              <Search className="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition-transform" />
-              <span className="hidden lg:inline text-[12px] text-slate-400 group-hover:text-slate-200">Search...</span>
-              <kbd className="hidden xl:inline-block px-1.5 py-0.5 text-[9px] font-mono font-bold bg-slate-800/90 border border-slate-700/80 text-slate-400 group-hover:text-cyan-300 rounded-md">
-                Ctrl K
-              </kbd>
-            </button>
+            <GlobalSearchBar onNavigate={onNavigate} onAddToCart={onAddToCart} onBuyNow={onBuyNow} />
 
             {/* Persistent Dark/Light Theme Toggle */}
             <button

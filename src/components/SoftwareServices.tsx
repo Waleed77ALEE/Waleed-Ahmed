@@ -144,7 +144,7 @@ export const SoftwareServices: React.FC<SoftwareServicesProps> = ({
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight flex items-center justify-center gap-3 flex-wrap">
             <Laptop className="w-8 h-8 sm:w-12 sm:h-12 text-cyan-400 shrink-0" />
-            <span>Premium <span className="bg-gradient-to-r from-cyan-400 via-indigo-300 to-amber-400 bg-clip-text text-transparent">Software Licenses</span></span>
+            <span>Professional <span className="bg-gradient-to-r from-cyan-400 via-indigo-300 to-amber-400 bg-clip-text text-transparent">Software & Solutions</span></span>
           </h1>
 
           <p className="text-sm sm:text-base lg:text-lg text-slate-300 max-w-3xl mx-auto font-normal leading-relaxed">
@@ -241,20 +241,39 @@ export const SoftwareServices: React.FC<SoftwareServicesProps> = ({
               {filteredProducts.map((prod) => (
                 <div
                   key={prod.id}
-                  className="group relative p-6 rounded-3xl bg-slate-900/70 border border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/95 transition-all duration-300 shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1.5 flex flex-col justify-between h-full"
+                  className="group relative rounded-3xl bg-slate-900/70 border border-slate-800/80 hover:border-cyan-500/50 hover:bg-slate-900/95 transition-all duration-300 shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1.5 flex flex-col justify-between h-full overflow-hidden"
                 >
-                  {/* Card Top Info */}
+                  {/* Card Cover Image */}
+                  {prod.image ? (
+                    <div className="h-40 w-full overflow-hidden shrink-0 relative border-b border-slate-800/80">
+                      <img src={prod.image} alt={prod.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent"></div>
+                      <div className="absolute bottom-4 left-6">
+                        <SoftwareBrandLogo
+                          slug={prod.slug}
+                          category={prod.category}
+                          size="md"
+                          className="drop-shadow-lg"
+                        />
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {/* Card Content */}
+                  <div className="p-6 flex flex-col justify-between flex-1">
                   <div className="space-y-4">
                     <div className="flex items-start justify-between gap-3">
-                      {/* Official Software Logo */}
-                      <SoftwareBrandLogo
-                        slug={prod.slug}
-                        category={prod.category}
-                        size="md"
-                        className="group-hover:scale-110 group-hover:shadow-cyan-500/20 transition-all duration-300"
-                      />
+                      {/* Official Software Logo (if no image) */}
+                      {!prod.image && (
+                        <SoftwareBrandLogo
+                          slug={prod.slug}
+                          category={prod.category}
+                          size="md"
+                          className="group-hover:scale-110 group-hover:shadow-cyan-500/20 transition-all duration-300"
+                        />
+                      )}
 
-                      <div className="flex flex-col items-end gap-1">
+                      <div className={`flex flex-col items-end gap-1 ${prod.image ? 'ml-auto' : ''}`}>
                         <span className="text-xl font-black font-mono text-emerald-400">
                           ${prod.price} USD
                         </span>
@@ -333,6 +352,7 @@ export const SoftwareServices: React.FC<SoftwareServicesProps> = ({
 
                     {/* Security & Guarantee Badges Footer */}
                     <SecurityFeature variant="compact" />
+                  </div>
                   </div>
                 </div>
               ))}

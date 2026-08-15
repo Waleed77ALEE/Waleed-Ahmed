@@ -11,9 +11,9 @@ export const MarketplaceFeatures: React.FC = () => {
             <div className="w-14 h-14 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-lg shadow-emerald-500/10">
               <Shield className="w-7 h-7" />
             </div>
-            <h3 className="font-bold text-white mb-2 text-lg">GamerProtect™</h3>
+            <h3 className="font-bold text-white mb-2 text-lg">SecureProtect™</h3>
             <p className="text-sm text-slate-400 leading-relaxed font-medium">
-              Your payment is held securely in escrow until you confirm full receipt of your digital items.
+              Your payment is held securely in escrow until you confirm full receipt of your digital assets and services.
             </p>
           </div>
 
@@ -23,7 +23,7 @@ export const MarketplaceFeatures: React.FC = () => {
             </div>
             <h3 className="font-bold text-white mb-2 text-lg">Instant Delivery</h3>
             <p className="text-sm text-slate-400 leading-relaxed font-medium">
-              Thousands of automated offers. Get your game keys, accounts, and currency in seconds.
+              Thousands of automated offers. Get your software keys, AI subscriptions, and assets in seconds.
             </p>
           </div>
 
@@ -33,7 +33,7 @@ export const MarketplaceFeatures: React.FC = () => {
             </div>
             <h3 className="font-bold text-white mb-2 text-lg">Global Community</h3>
             <p className="text-sm text-slate-400 leading-relaxed font-medium">
-              Over 1 million verified gamers trading securely across 150+ countries.
+              Over 10,000 verified professionals and businesses trading securely across 150+ countries.
             </p>
           </div>
 

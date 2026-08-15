@@ -2,13 +2,13 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 
-const GAMES = [
-  { id: 'wow', name: 'World of Warcraft', image: 'https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=500&auto=format&fit=crop' },
-  { id: 'osrs', name: 'Old School RuneScape', image: 'https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=500&auto=format&fit=crop' },
-  { id: 'valorant', name: 'Valorant', image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=500&auto=format&fit=crop' },
-  { id: 'lol', name: 'League of Legends', image: 'https://images.unsplash.com/photo-1623945417336-39832798e16f?q=80&w=500&auto=format&fit=crop' },
-  { id: 'apex', name: 'Apex Legends', image: 'https://images.unsplash.com/photo-1635398246830-dbb60ccbe51d?q=80&w=500&auto=format&fit=crop' },
-  { id: 'diablo', name: 'Diablo IV', image: 'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?q=80&w=500&auto=format&fit=crop' },
+const CATEGORIES = [
+  { id: 'ai', name: 'AI Subscriptions', image: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=500&auto=format&fit=crop' },
+  { id: 'web', name: 'Web Development', image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=500&auto=format&fit=crop' },
+  { id: 'seo', name: 'SEO Optimization', image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=500&auto=format&fit=crop' },
+  { id: 'design', name: 'UI/UX Design', image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?q=80&w=500&auto=format&fit=crop' },
+  { id: 'software', name: 'Custom Software', image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=500&auto=format&fit=crop' },
+  { id: 'mobile', name: 'Mobile Apps', image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=500&auto=format&fit=crop' },
 ];
 
 export const PopularGames: React.FC = () => {
@@ -16,14 +16,14 @@ export const PopularGames: React.FC = () => {
     <section className="py-20 bg-[#0b0e14]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-10">
-          <h2 className="text-3xl font-black text-white tracking-tight">Trending Games</h2>
+          <h2 className="text-3xl font-black text-white tracking-tight">Trending Categories</h2>
           <Link to="/gaming-market" className="text-cyan-400 hover:text-cyan-300 font-bold text-sm flex items-center gap-1 transition-colors uppercase tracking-wider">
-            View All Games &rarr;
+            View All Categories &rarr;
           </Link>
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {GAMES.map((game, idx) => (
+          {CATEGORIES.map((game, idx) => (
             <Link key={game.id} to="/gaming-market">
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}

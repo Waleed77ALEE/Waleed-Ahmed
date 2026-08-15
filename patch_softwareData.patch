@@ -1,0 +1,50 @@
+--- src/data/softwareData.ts
++++ src/data/softwareData.ts
+@@ -20,6 +20,7 @@
+   orderStatus: 'Processing' | 'Fulfilled' | 'Cancelled';
+   createdAt: string;
+   seller: string;
++  image?: string;
+ }
+ 
+ export const SOFTWARE_PRODUCTS: SoftwareProduct[] = [
+@@ -34,6 +35,7 @@
+     licenseType: 'Volume License Key (VLK) / Retail',
+     deliveryTime: 'Under 1 Hour',
+     features: ['Lifetime Activation', 'Official Updates', 'Pro Features Unlocked', 'BitLocker & RDP'],
++    image: 'https://images.unsplash.com/photo-1633419461186-7d40a38105ec?q=80&w=500&auto=format&fit=crop',
+     originalPrice: 199.99,
+     stock: 50,
+     downloadSize: '5.2 GB ISO',
+@@ -53,6 +55,7 @@
+     licenseType: 'Pre-activated / Lifetime Account',
+     deliveryTime: 'Instant',
+     features: ['Photoshop, Premiere, After Effects', 'Lightroom, Illustrator, Audition', 'One-click installer', 'No monthly fees'],
++    image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=500&auto=format&fit=crop',
+     originalPrice: 599.99,
+     stock: 120,
+     downloadSize: '24 GB',
+@@ -72,6 +75,7 @@
+     licenseType: 'Volume License / Retail Key',
+     deliveryTime: 'Instant',
+     features: ['Word, Excel, PowerPoint', 'Outlook, Access, Publisher', '1 TB OneDrive (on selected)', 'Lifetime validity'],
++    image: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=500&auto=format&fit=crop',
+     originalPrice: 149.99,
+     stock: 200,
+     downloadSize: '3.8 GB',
+@@ -91,6 +95,7 @@
+     licenseType: '1-Year Account Subscription',
+     deliveryTime: 'Under 1 Hour',
+     features: ['Full 3D/2D CAD tools', 'Cloud collaboration', 'Official updates', 'Genuine Autodesk license'],
++    image: 'https://images.unsplash.com/photo-1635398246830-dbb60ccbe51d?q=80&w=500&auto=format&fit=crop',
+     originalPrice: 1865.00,
+     stock: 15,
+     downloadSize: '3.5 GB',
+@@ -110,6 +115,7 @@
+     licenseType: 'Pre-activated Lifetime',
+     deliveryTime: 'Instant',
+     features: ['Edit 4K & 8K video', 'Motion graphics templates', 'Advanced color grading', 'No subscriptions'],
++    image: 'https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=500&auto=format&fit=crop',
+     originalPrice: 239.88,
+     stock: 45,
+     downloadSize: '2.1 GB',

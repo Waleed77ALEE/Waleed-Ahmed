@@ -1,8 +1,10 @@
 import React from 'react';
 import { GamingHero } from '../components/gaming/GamingHero';
+import { OffersSlider } from '../components/OffersSlider';
+import { TrustBanner } from '../components/TrustBanner';
 import { PopularGames } from '../components/gaming/PopularGames';
-import { FeaturedListings } from '../components/gaming/FeaturedListings';
 import { MarketplaceFeatures } from '../components/gaming/MarketplaceFeatures';
+import { TestimonialSlider } from '../components/TestimonialSlider';
 import AIPricingGrid from '../components/AIPricingGrid';
 import { SoftwareServices } from '../components/SoftwareServices';
 import { UserProfile } from '../lib/supabase';
@@ -25,8 +27,10 @@ export const HomePage: React.FC<HomePageProps> = ({ user, profile, onOpenAccount
   return (
     <div className="bg-[#0b0e14] min-h-screen">
       <GamingHero />
+      <OffersSlider />
+      <TrustBanner />
       <PopularGames />
-      <FeaturedListings />
+      
       
       {/* AI Accounts Subscriptions */}
       <div id="ai-accounts">
@@ -39,6 +43,7 @@ export const HomePage: React.FC<HomePageProps> = ({ user, profile, onOpenAccount
       </div>
 
       <MarketplaceFeatures />
+      <TestimonialSlider />
     </div>
   );
 };

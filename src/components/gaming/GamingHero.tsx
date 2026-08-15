@@ -12,7 +12,7 @@ export const GamingHero: React.FC = () => {
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-[#0b0e14]/80 via-[#0b0e14]/90 to-[#0b0e14] z-10" />
         <img 
-          src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop" 
+          src="https://images.unsplash.com/photo-1614729939124-03290b56c9ce?q=80&w=2070&auto=format&fit=crop" 
           alt="Gaming Background" 
           referrerPolicy="no-referrer"
           onError={(e) => {
@@ -31,7 +31,7 @@ export const GamingHero: React.FC = () => {
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold uppercase tracking-widest mb-8"
         >
           <Zap className="w-3.5 h-3.5" />
-          <span>The Ultimate Gaming Exchange</span>
+          <span>The Ultimate Digital Marketplace</span>
         </motion.div>
 
         <motion.h1 
@@ -42,7 +42,7 @@ export const GamingHero: React.FC = () => {
         >
           Premium Marketplace for <br className="hidden md:block" />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500">
-            Gamers & Digital Assets
+            Software, AI & Digital Assets
           </span>
         </motion.h1>
 
@@ -52,7 +52,7 @@ export const GamingHero: React.FC = () => {
           transition={{ delay: 0.2 }}
           className="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto mb-10 font-medium"
         >
-          Buy, sell, and trade virtual goods, cheap in-game currency, premium accounts, and boosting services with 100% secure escrow protection.
+          Unlock premium software, AI subscriptions, engineering services, and top-tier digital assets. Guaranteed safety, instant delivery, and 24/7 support.
         </motion.p>
 
         {/* Global Search Bar */}
