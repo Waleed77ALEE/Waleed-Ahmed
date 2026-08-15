@@ -217,17 +217,17 @@ export const Header: React.FC<HeaderProps> = ({
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-3">
-          {/* Brand Logo - AleePay */}
+          {/* Brand Logo - WALEEDKHANAFRIDI.ONLINE */}
           <button
             onClick={() => handleNavClick('hero')}
             className="flex items-center gap-2.5 text-left group focus:outline-none cursor-pointer"
-            title="AleePay Home"
+            title="WALEEDKHANAFRIDI.ONLINE Home"
           >
             <div className="relative shrink-0">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-red-500 via-amber-400 to-cyan-400 p-[1.5px] shadow-md shadow-amber-500/20 group-hover:scale-105 group-hover:shadow-cyan-400/30 transition-all duration-300 overflow-hidden">
                 <img
                   src={brandLogoImg}
-                  alt="AleePay Logo"
+                  alt="WALEEDKHANAFRIDI.ONLINE Logo"
                   referrerPolicy="no-referrer"
                   decoding="async"
                   loading="eager"
@@ -238,7 +238,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="text-base sm:text-lg font-black tracking-tight text-white group-hover:text-amber-400 transition-colors">
-                  Alee<span className="text-cyan-400">Pay</span>
+                  WALEEDKHANAFRIDI.<span className="text-cyan-400">ONLINE</span>
                 </span>
                 <span className="hidden xl:inline-block px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wider bg-red-500/15 text-red-400 border border-red-500/30">
                   Digital Hub
@@ -271,7 +271,7 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="relative z-10">Home</span>
             </button>
 
-            {/* About AleePay Purpose Link */}
+            {/* About WALEEDKHANAFRIDI.ONLINE Purpose Link */}
             <button
               onClick={() => handleNavClick('about-aleepay')}
               className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none ${

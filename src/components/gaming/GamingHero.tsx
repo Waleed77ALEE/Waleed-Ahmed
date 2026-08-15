@@ -81,7 +81,7 @@ export const GamingHero: React.FC = () => {
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-500 text-xs font-black uppercase tracking-widest mb-4"
           >
             <Gamepad2 className="w-3.5 h-3.5" />
-            <span>AleePay — Verified Digital Goods &amp; Payments</span>
+            <span>WALEEDKHANAFRIDI.ONLINE — Verified Digital Goods &amp; Payments</span>
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 15 }}
@@ -89,10 +89,10 @@ export const GamingHero: React.FC = () => {
             transition={{ delay: 0.1 }}
             className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-4"
           >
-            AleePay: Instant Gaming Keys, AI Licenses &amp; <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-cyan-400">Digital Assets</span>
+            WALEEDKHANAFRIDI.ONLINE: Instant Gaming Keys, AI Licenses &amp; <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-cyan-400">Digital Assets</span>
           </motion.h1>
           <p className="text-sm sm:text-base text-gray-300 font-medium max-w-2xl mx-auto">
-            Welcome to <strong>AleePay</strong>. Your trusted marketplace for authentic software licenses, AI subscription access, gaming CD keys, and instant multi-rail digital payments.
+            Welcome to <strong>WALEEDKHANAFRIDI.ONLINE</strong>. Your trusted marketplace for authentic software licenses, AI subscription access, gaming CD keys, and instant multi-rail digital payments.
           </p>
         </div>
 

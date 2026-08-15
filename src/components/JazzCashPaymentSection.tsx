@@ -45,7 +45,7 @@ export const JazzCashPaymentSection: React.FC<JazzCashPaymentSectionProps> = ({
   onPaymentSubmitted,
   standalone = false
 }) => {
-  const merchantName = "Alee Customers";
+  const merchantName = "Waleed Customers";
   const merchantNumber = "03141137917";
   const tillId = "981241835";
   const pkrExchangeRate = 278; // Approx 1 USD to PKR
@@ -154,7 +154,7 @@ export const JazzCashPaymentSection: React.FC<JazzCashPaymentSectionProps> = ({
   };
 
   const whatsappMessage = encodeURIComponent(
-    `Hello Alee Customers! I have completed my JazzCash payment.\n\n` +
+    `Hello Waleed Customers! I have completed my JazzCash payment.\n\n` +
     `👤 Name: ${fullName}\n` +
     `📧 Email: ${email}\n` +
     `📑 Order ID: ${formOrderId}\n` +
@@ -218,7 +218,7 @@ export const JazzCashPaymentSection: React.FC<JazzCashPaymentSectionProps> = ({
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[16px] p-5 shadow-sm space-y-3">
             <h3 className="text-xs font-black uppercase tracking-wider text-[#F15A24] flex items-center gap-2">
               <Building2 className="w-4 h-4" />
-              <span>Alee Customers Merchant Details</span>
+              <span>Waleed Customers Merchant Details</span>
             </h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
@@ -281,7 +281,7 @@ export const JazzCashPaymentSection: React.FC<JazzCashPaymentSectionProps> = ({
                   </span>
                   <div className="text-xs">
                     <span className="font-bold text-slate-900 dark:text-white block text-sm">Option A: Scan QR Code</span>
-                    <span className="text-slate-500 dark:text-slate-400">Scan the official yellow <strong>Alee Customers</strong> QR Code with your JazzCash or Raast enabled app.</span>
+                    <span className="text-slate-500 dark:text-slate-400">Scan the official yellow <strong>Waleed Customers</strong> QR Code with your JazzCash or Raast enabled app.</span>
                   </div>
                 </li>
 
@@ -304,7 +304,7 @@ export const JazzCashPaymentSection: React.FC<JazzCashPaymentSectionProps> = ({
                   <div className="text-xs">
                     <span className="font-bold text-slate-900 dark:text-white block text-sm">Option C: Direct Mobile Transfer</span>
                     <span className="text-slate-500 dark:text-slate-400">
-                      Send payment to JazzCash account <strong className="text-[#F15A24] font-mono font-bold">{merchantNumber}</strong> (Business Title: <strong>Alee Customers</strong>).
+                      Send payment to JazzCash account <strong className="text-[#F15A24] font-mono font-bold">{merchantNumber}</strong> (Business Title: <strong>Waleed Customers</strong>).
                     </span>
                   </div>
                 </li>
@@ -338,14 +338,14 @@ export const JazzCashPaymentSection: React.FC<JazzCashPaymentSectionProps> = ({
                   <QrCode className="w-4 h-4" />
                   <span>Official QR Code &amp; Barcode</span>
                 </span>
-                <p className="text-xs text-slate-500 dark:text-slate-400">JazzCash &amp; Raast payments accepted here for <strong>Alee Customers</strong></p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">JazzCash &amp; Raast payments accepted here for <strong>Waleed Customers</strong></p>
               </div>
 
               {/* Official QR Code Image Standee Container */}
               <div className="w-full max-w-[260px] mx-auto rounded-2xl overflow-hidden border-2 border-amber-400 shadow-xl group relative bg-amber-400/10 p-2 transition-transform duration-300 hover:scale-[1.02]">
                 <img
                   src="/jazzcash_alee_qr.jpg"
-                  alt="Alee Customers Official JazzCash and Raast QR Code Barcode Standee"
+                  alt="Waleed Customers Official JazzCash and Raast QR Code Barcode Standee"
                   className="w-full h-auto object-cover rounded-xl shadow-md"
                   referrerPolicy="no-referrer"
                 />
@@ -422,7 +422,7 @@ export const JazzCashPaymentSection: React.FC<JazzCashPaymentSectionProps> = ({
                   </div>
                   <div className="flex justify-between">
                     <span className="text-slate-500">Merchant Account:</span>
-                    <span className="font-bold text-slate-900 dark:text-white">03141137917 (Alee Customers)</span>
+                    <span className="font-bold text-slate-900 dark:text-white">03141137917 (Waleed Customers)</span>
                   </div>
                 </div>
 

@@ -265,7 +265,7 @@ export const AiSubscriptionCheckoutModal: React.FC<AiSubscriptionCheckoutModalPr
                       }`}
                     >
                       <QrCode className="w-5 h-5 text-amber-400" />
-                      <span className="text-xs font-bold">Binance Pay</span>
+                      <span className="text-xs font-bold">Binance ONLINE</span>
                       <span className="text-[9px] text-slate-400">USDT / Crypto</span>
                     </button>
 
@@ -351,7 +351,7 @@ export const AiSubscriptionCheckoutModal: React.FC<AiSubscriptionCheckoutModalPr
                         </button>
                       </div>
                       <p className="font-mono text-[#F15A24] text-base font-black mt-0.5 tracking-wider">03141137917</p>
-                      <p className="text-[11px] text-slate-300">Business Name: <strong className="text-white">Alee Customers</strong> (Rate ~278 PKR/USD)</p>
+                      <p className="text-[11px] text-slate-300">Business Name: <strong className="text-white">Waleed Customers</strong> (Rate ~278 PKR/USD)</p>
                     </div>
                   )}
 

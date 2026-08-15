@@ -383,7 +383,7 @@ export const SoftwareOrderModal: React.FC<SoftwareOrderModalProps> = ({
                       }`}
                     >
                       <QrCode className="w-4 h-4 text-amber-400" />
-                      <span>Binance Pay</span>
+                      <span>Binance ONLINE</span>
                     </button>
 
                     <button
@@ -484,7 +484,7 @@ export const SoftwareOrderModal: React.FC<SoftwareOrderModalProps> = ({
                       <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
                         <div>
                           <code className="font-mono text-[#F15A24] font-black text-sm block tracking-wider">03141137917</code>
-                          <span className="text-[10px] text-slate-300 block">Business: <strong>Alee Customers</strong></span>
+                          <span className="text-[10px] text-slate-300 block">Business: <strong>Waleed Customers</strong></span>
                         </div>
                         <button
                           type="button"

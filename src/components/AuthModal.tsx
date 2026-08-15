@@ -325,12 +325,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
             <KeyRound className="w-6 h-6" />
           </div>
           <h3 className="text-2xl font-black text-white">
-            {mode === 'signin' ? 'Sign in to AleePay' : 'Create AleePay Account'}
+            {mode === 'signin' ? 'Sign in to WALEEDKHANAFRIDI.ONLINE' : 'Create WALEEDKHANAFRIDI.ONLINE Account'}
           </h3>
           <p className="text-xs text-gray-400 mt-1">
             {mode === 'signin'
-              ? 'Sign in to your AleePay account to access your purchased keys, wallet balance, and order history.'
-              : 'Register your AleePay account to manage digital software licenses, wallet credits, and order fulfillment.'}
+              ? 'Sign in to your WALEEDKHANAFRIDI.ONLINE account to access your purchased keys, wallet balance, and order history.'
+              : 'Register your WALEEDKHANAFRIDI.ONLINE account to manage digital software licenses, wallet credits, and order fulfillment.'}
           </p>
         </div>
 
@@ -422,7 +422,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
               <ShieldCheck className="w-3.5 h-3.5 text-red-400" />
               Google Verified
             </span>
-            <span className="text-[10px] text-red-300/80 mt-0.5">Sign in with Google to synchronize your AleePay orders, digital keys, and wallet securely.</span>
+            <span className="text-[10px] text-red-300/80 mt-0.5">Sign in with Google to synchronize your WALEEDKHANAFRIDI.ONLINE orders, digital keys, and wallet securely.</span>
           </div>
         </div>
 

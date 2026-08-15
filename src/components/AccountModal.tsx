@@ -631,7 +631,7 @@ export const AccountModal: React.FC<AccountModalProps> = ({
                     <div className="p-3.5 rounded-2xl bg-[#F15A24]/10 border border-[#F15A24]/30 text-xs space-y-1 text-slate-300 font-mono">
                       <p className="font-bold text-[#F15A24]">JazzCash Merchant PKR Account:</p>
                       <p>Merchant Number: <strong className="text-white text-sm">03141137917</strong></p>
-                      <p>Business Name: <strong className="text-white">Alee Customers</strong></p>
+                      <p>Business Name: <strong className="text-white">Waleed Customers</strong></p>
                       <p className="text-[10px] text-slate-400 mt-1">Rate conversion: 1 USD = ~278 PKR</p>
                     </div>
                   )}

@@ -465,13 +465,13 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
               <div className="inline-block p-3 bg-amber-400/10 border-2 border-amber-400 rounded-2xl shadow-xl max-w-[260px] mx-auto">
                 <img
                   src="/jazzcash_alee_qr.jpg"
-                  alt="Alee Customers Official JazzCash and Raast QR Code Barcode Standee"
+                  alt="Waleed Customers Official JazzCash and Raast QR Code Barcode Standee"
                   className="w-full h-auto rounded-xl shadow-md"
                   referrerPolicy="no-referrer"
                 />
               </div>
               <div className="space-y-1.5">
-                <span className="text-xs font-mono text-amber-300 font-extrabold block">Official Merchant: Alee Customers</span>
+                <span className="text-xs font-mono text-amber-300 font-extrabold block">Official Merchant: Waleed Customers</span>
                 <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-center space-y-1">
                   <span className="text-[10px] text-amber-400 font-bold uppercase block">JazzCash / Raast TILL ID</span>
                   <span className="font-mono font-black text-amber-300 text-lg tracking-widest block">981241835</span>

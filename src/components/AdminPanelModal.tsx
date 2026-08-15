@@ -278,7 +278,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({ isOpen, onClos
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (passcode === 'Alee772002') {
+    if (passcode === 'Waleed772002') {
       setIsAuthenticated(true);
       localStorage.setItem('wka_admin_authed', 'true');
       setAuthError('');

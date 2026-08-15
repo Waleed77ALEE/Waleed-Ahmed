@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'motion/react';
 
-export const AleePayPurposeSection: React.FC = () => {
+export const WaleedStorePurposeSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'workflow' | 'oauth' | 'security'>('overview');
 
   const corePillars = [
@@ -51,7 +51,7 @@ export const AleePayPurposeSection: React.FC = () => {
       id: "wallet",
       icon: <Wallet className="w-6 h-6 text-emerald-400" />,
       badge: "Payment Rail",
-      title: "Multi-Rail AleePay Wallet",
+      title: "Multi-Rail WALEEDKHANAFRIDI.ONLINE Wallet",
       description: "Fast multi-currency checkout supporting Binance Pay (USDT/crypto), JazzCash, EasyPaisa, and bank transfers with zero hidden transaction surcharges."
     },
     {
@@ -90,7 +90,7 @@ export const AleePayPurposeSection: React.FC = () => {
       desc: "Linking your purchases to your verified Google account ensures that only you can view and redeem your digital activation keys, serial codes, and download links."
     },
     {
-      title: "AleePay Wallet & Fund Protection",
+      title: "WALEEDKHANAFRIDI.ONLINE Wallet & Fund Protection",
       desc: "Your account credentials protect your deposited wallet balance, cashback reward credits, and referral earnings from unauthorized third-party access."
     },
     {
@@ -99,7 +99,7 @@ export const AleePayPurposeSection: React.FC = () => {
     },
     {
       title: "Strict Data Minimization Guarantee",
-      desc: "We strictly request only basic profile identity (email address, display name, and profile picture). AleePay NEVER requests access to your Gmail messages, Google Drive files, or Google Contacts."
+      desc: "We strictly request only basic profile identity (email address, display name, and profile picture). WALEEDKHANAFRIDI.ONLINE NEVER requests access to your Gmail messages, Google Drive files, or Google Contacts."
     }
   ];
 
@@ -119,11 +119,11 @@ export const AleePayPurposeSection: React.FC = () => {
           </div>
 
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight mb-4">
-            Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-cyan-400">AleePay</span>
+            Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-cyan-400">WALEEDKHANAFRIDI.ONLINE</span>
           </h2>
 
           <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-medium">
-            <strong>AleePay</strong> is an all-in-one digital goods marketplace, software license exchange, and multi-rail payment ecosystem developed and operated by <strong>Waleed Khan Afridi Digital Agency</strong>. Built to provide gamers, creators, and business clients with verified digital licenses, AI tools, and bespoke web engineering solutions with instant delivery and escrow security.
+            <strong>WALEEDKHANAFRIDI.ONLINE</strong> is an all-in-one digital goods marketplace, software license exchange, and multi-rail payment ecosystem developed and operated by <strong>Waleed Khan Afridi Digital Agency</strong>. Built to provide gamers, creators, and business clients with verified digital licenses, AI tools, and bespoke web engineering solutions with instant delivery and escrow security.
           </p>
         </div>
 
@@ -150,7 +150,7 @@ export const AleePayPurposeSection: React.FC = () => {
               }`}
             >
               <Zap className="w-3.5 h-3.5" />
-              <span>How AleePay Works</span>
+              <span>How WALEEDKHANAFRIDI.ONLINE Works</span>
             </button>
             <button
               onClick={() => setActiveTab('oauth')}
@@ -239,12 +239,12 @@ export const AleePayPurposeSection: React.FC = () => {
           </div>
         )}
 
-        {/* Tab 2: Workflow & How AleePay Works */}
+        {/* Tab 2: Workflow & How WALEEDKHANAFRIDI.ONLINE Works */}
         {activeTab === 'workflow' && (
           <div className="animate-fade-in mb-14">
             <div className="p-6 sm:p-8 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl mb-8">
               <div className="text-center max-w-xl mx-auto mb-8">
-                <h3 className="text-xl font-extrabold text-white mb-2">How Does AleePay Work?</h3>
+                <h3 className="text-xl font-extrabold text-white mb-2">How Does WALEEDKHANAFRIDI.ONLINE Work?</h3>
                 <p className="text-xs text-slate-400">Simple, 3-step streamlined process for purchasing digital goods and managing licenses.</p>
               </div>
 
@@ -281,12 +281,12 @@ export const AleePayPurposeSection: React.FC = () => {
                     <span>OAuth Verification &amp; Account Integrity</span>
                   </div>
                   <h3 className="text-xl sm:text-2xl font-black text-white">
-                    Why AleePay Requires User Authentication
+                    Why WALEEDKHANAFRIDI.ONLINE Requires User Authentication
                   </h3>
                 </div>
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-medium">
                   <ShieldCheck className="w-4 h-4 text-cyan-400" />
-                  <span>Google Verified Application: AleePay</span>
+                  <span>Google Verified Application: WALEEDKHANAFRIDI.ONLINE</span>
                 </div>
               </div>
 
@@ -336,7 +336,7 @@ export const AleePayPurposeSection: React.FC = () => {
                 <div className="inline-flex p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 mb-2">
                   <ShieldCheck className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-extrabold text-white mb-1">AleePay Security &amp; Guarantee</h3>
+                <h3 className="text-xl font-extrabold text-white mb-1">WALEEDKHANAFRIDI.ONLINE Security &amp; Guarantee</h3>
                 <p className="text-xs text-slate-400">Complete buyer protection and certified digital license authenticity.</p>
               </div>
 
@@ -371,7 +371,7 @@ export const AleePayPurposeSection: React.FC = () => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h4 className="text-base font-extrabold text-white">AleePay</h4>
+                <h4 className="text-base font-extrabold text-white">WALEEDKHANAFRIDI.ONLINE</h4>
                 <span className="text-xs text-slate-400">by Waleed Khan Afridi Digital Agency</span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">

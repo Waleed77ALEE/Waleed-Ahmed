@@ -1,7 +1,7 @@
 {
   "merchant": {
     "name": "Waleed Khan Afridi",
-    "businessName": "Alee Customers",
+    "businessName": "Waleed Customers",
     "email": "waleedkhanafridi7@gmail.com",
     "whatsappLink": "https://wa.me/923416860077",
     "binancePayId": "787445946",
@@ -12,10 +12,10 @@
       "id": "jazzcash",
       "tabName": "JazzCash Mobile",
       "title": "Pay Securely with JazzCash",
-      "badge-[#F15A24]": "Alee Customers • Instant",
+      "badge-[#F15A24]": "Waleed Customers • Instant",
       "icon": "smartphone",
       "merchantNumber": "03141137917",
-      "businessName": "Alee Customers",
+      "businessName": "Waleed Customers",
       "fee": "0% Fee",
       "currencies": ["PKR"],
       "instructions": [
