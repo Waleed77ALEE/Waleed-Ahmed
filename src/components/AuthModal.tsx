@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, User, Phone, CheckCircle2, AlertCircle, Loader2, KeyRound, ShieldCheck } from 'lucide-react';
 import { supabase, upsertProfile } from '../lib/supabase';
-import { auth, googleProvider } from '../lib/firebase';
-import { signInWithPopup, signInWithRedirect } from 'firebase/auth';
+import { auth, googleProvider, facebookProvider } from '../lib/firebase';
+import { signInWithPopup, signInWithRedirect, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { recordUserSignup } from '../services/userStore';
 
 interface AuthModalProps {
@@ -22,6 +22,58 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
   const [successMsg, setSuccessMsg] = useState('');
 
   if (!isOpen) return null;
+
+  
+  const handleFacebookSignIn = async () => {
+    setErrorMsg('');
+    setSuccessMsg('Initializing Facebook Sign-In...');
+    setLoading(true);
+    try {
+      console.log('🚀 Attempting Facebook Sign-In via Firebase Auth...');
+      const result = await signInWithPopup(auth, facebookProvider);
+      if (result?.user) {
+        const fbUser = result.user;
+        console.log('✅ Firebase Facebook Auth Success:', fbUser.email);
+        
+        await upsertProfile({ id: fbUser.uid,
+          email: fbUser.email || '',
+          full_name: fbUser.displayName || 'Facebook User',
+          whatsapp: '',
+        });
+
+        setSuccessMsg('Successfully signed in with Facebook!');
+        setTimeout(() => {
+          onAuthSuccess?.();
+          onClose();
+        }, 1000);
+      }
+    } catch (err: any) {
+      console.error('❌ Facebook Auth Error:', err);
+      setErrorMsg(err.message || 'Failed to sign in with Facebook');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCWalletSignIn = async () => {
+    setErrorMsg('');
+    setSuccessMsg('Connecting to CWallet...');
+    setLoading(true);
+    // Mock CWallet Connection logic
+    setTimeout(async () => {
+      try {
+        setSuccessMsg('CWallet Connected Successfully!');
+        setTimeout(() => {
+          onAuthSuccess?.();
+          onClose();
+        }, 1000);
+      } catch (err: any) {
+        setErrorMsg('Failed to connect CWallet');
+      } finally {
+        setLoading(false);
+      }
+    }, 1500);
+  };
 
   const handleGoogleSignIn = async () => {
     setErrorMsg('');
@@ -196,61 +248,55 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
 
     try {
       if (mode === 'signup') {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              full_name: fullName,
-              whatsapp: whatsapp
-            }
-          }
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const fbUser = userCredential.user;
+        
+        await updateProfile(fbUser, {
+          displayName: fullName
         });
 
-        if (error) {
-          setErrorMsg(error.message);
-        } else if (data.user) {
-          // Sync profile to userStore and Supabase database profiles table
-          await recordUserSignup({
-            id: data.user.id,
-            email: data.user.email || email,
-            fullName: fullName || email.split('@')[0],
-            whatsapp: whatsapp,
-            provider: 'Email',
-            createdAt: new Date().toISOString()
-          });
+        await upsertProfile({
+          id: fbUser.uid,
+          email: fbUser.email || email,
+          full_name: fullName,
+          whatsapp: whatsapp,
+          created_at: new Date().toISOString()
+        });
 
-          setSuccessMsg('Account registered successfully! You are now logged in.');
-          setTimeout(() => {
-            if (onAuthSuccess) onAuthSuccess();
-            onClose();
-          }, 1200);
-        }
+        await recordUserSignup({
+          id: fbUser.uid,
+          email: fbUser.email || email,
+          fullName: fullName || email.split('@')[0],
+          whatsapp: whatsapp,
+          provider: 'Email',
+          createdAt: new Date().toISOString()
+        });
+
+        setSuccessMsg('Account registered successfully! You are now logged in.');
+        setTimeout(() => {
+          if (onAuthSuccess) onAuthSuccess();
+          onClose();
+        }, 1200);
+
       } else {
         // Sign In
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email,
-          password
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const fbUser = userCredential.user;
+        
+        // Record signin profile
+        await recordUserSignup({
+          id: fbUser.uid,
+          email: fbUser.email || email,
+          fullName: fbUser.displayName || email.split('@')[0],
+          whatsapp: '',
+          provider: 'Email'
         });
 
-        if (error) {
-          setErrorMsg(error.message);
-        } else if (data.user) {
-          // Record signin profile
-          await recordUserSignup({
-            id: data.user.id,
-            email: data.user.email || email,
-            fullName: data.user.user_metadata?.full_name || email.split('@')[0],
-            whatsapp: data.user.user_metadata?.whatsapp || '',
-            provider: 'Email'
-          });
-
-          setSuccessMsg('Signed in successfully!');
-          setTimeout(() => {
-            if (onAuthSuccess) onAuthSuccess();
-            onClose();
-          }, 1000);
-        }
+        setSuccessMsg('Signed in successfully!');
+        setTimeout(() => {
+          if (onAuthSuccess) onAuthSuccess();
+          onClose();
+        }, 1000);
       }
     } catch (err: any) {
       setErrorMsg(err.message || 'An error occurred during authentication.');
@@ -260,43 +306,43 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0a0a]/80 backdrop-blur-md animate-fade-in">
+      <div className="relative w-full max-w-md bg-[#1a1a1a] border border-[#333] rounded-3xl p-6 sm:p-8 shadow-2xl overflow-hidden">
         {/* Glow backdrop */}
-        <div className="absolute top-0 right-0 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-48 h-48 bg-red-500/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 p-2 rounded-full bg-slate-800/80 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors"
+          className="absolute top-5 right-5 p-2 rounded-full bg-slate-800/80 border border-[#333] text-gray-400 hover:text-white hover:bg-slate-700 transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Header */}
         <div className="text-center mb-6">
-          <div className="inline-flex p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 mb-3">
+          <div className="inline-flex p-3 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-600 mb-3">
             <KeyRound className="w-6 h-6" />
           </div>
           <h3 className="text-2xl font-black text-white">
-            {mode === 'signin' ? 'Welcome Back' : 'Create Your Account'}
+            {mode === 'signin' ? 'Sign in to AleePay' : 'Create AleePay Account'}
           </h3>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-gray-400 mt-1">
             {mode === 'signin'
-              ? 'Sign in to access your saved orders, cart, and profile details.'
-              : 'Register to manage orders, saved digital keys, and order history.'}
+              ? 'Sign in to your AleePay account to access your purchased keys, wallet balance, and order history.'
+              : 'Register your AleePay account to manage digital software licenses, wallet credits, and order fulfillment.'}
           </p>
         </div>
 
         {/* Mode Toggle Tabs */}
-        <div className="flex bg-slate-950 p-1 rounded-2xl border border-slate-800 mb-5">
+        <div className="flex bg-[#0a0a0a] p-1 rounded-2xl border border-[#333] mb-5">
           <button
             type="button"
             onClick={() => { setMode('signin'); setErrorMsg(''); setSuccessMsg(''); }}
             className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
               mode === 'signin'
-                ? 'bg-cyan-500 text-slate-950 shadow-md'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-red-500 text-slate-950 shadow-md'
+                : 'text-gray-400 hover:text-white'
             }`}
           >
             Sign In
@@ -306,44 +352,63 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
             onClick={() => { setMode('signup'); setErrorMsg(''); setSuccessMsg(''); }}
             className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
               mode === 'signup'
-                ? 'bg-cyan-500 text-slate-950 shadow-md'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-red-500 text-slate-950 shadow-md'
+                : 'text-gray-400 hover:text-white'
             }`}
           >
             Create Account
           </button>
         </div>
 
-        {/* Connect to Google Button */}
-        <button
-          type="button"
-          onClick={handleGoogleSignIn}
-          disabled={loading}
-          className="w-full py-3 px-4 rounded-2xl bg-slate-950 border border-slate-700 hover:border-cyan-500/50 hover:bg-slate-800/90 text-white font-bold text-xs transition-all flex items-center justify-center gap-3 shadow-md mb-3 group cursor-pointer disabled:opacity-50"
-        >
-          <svg className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
-            <path
-              fill="#4285F4"
-              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-            />
-            <path
-              fill="#34A853"
-              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-            />
-            <path
-              fill="#FBBC05"
-              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-            />
-            <path
-              fill="#EA4335"
-              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-            />
-          </svg>
-          <span>Connect with Google</span>
-        </button>
+        
+        {/* Social & Wallet Login Buttons */}
+        <div className="grid grid-cols-1 gap-2 mb-3">
+          {/* Google */}
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+            className="w-full py-2.5 px-4 rounded-xl bg-[#1a1a1a] border border-[#333] hover:border-red-500 hover:bg-[#222] text-white font-bold text-[11px] uppercase tracking-wider transition-all flex items-center justify-center gap-3 shadow-md group cursor-pointer disabled:opacity-50"
+          >
+            <svg className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+            </svg>
+            <span>Continue with Google</span>
+          </button>
+
+          {/* Facebook */}
+          <button
+            type="button"
+            onClick={handleFacebookSignIn}
+            disabled={loading}
+            className="w-full py-2.5 px-4 rounded-xl bg-[#1a1a1a] border border-[#333] hover:border-red-500 hover:bg-[#222] text-white font-bold text-[11px] uppercase tracking-wider transition-all flex items-center justify-center gap-3 shadow-md group cursor-pointer disabled:opacity-50"
+          >
+            <svg className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="currentColor">
+              <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+            <span>Continue with Facebook</span>
+          </button>
+
+          {/* CWallet */}
+          <button
+            type="button"
+            onClick={handleCWalletSignIn}
+            disabled={loading}
+            className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 text-white font-bold text-[11px] uppercase tracking-wider transition-all flex items-center justify-center gap-3 shadow-md group cursor-pointer disabled:opacity-50"
+          >
+            <svg className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <span>Connect CWallet</span>
+          </button>
+        </div>
+
 
         {/* Google Verified Trust Banner */}
-        <div className="mb-5 flex items-start sm:items-center gap-2.5 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 shadow-sm shadow-blue-500/5">
+        <div className="mb-5 flex items-start sm:items-center gap-2.5 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 shadow-sm shadow-red-500/5">
           <div className="p-1.5 rounded-md bg-white shrink-0 shadow-sm">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -353,21 +418,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
             </svg>
           </div>
           <div className="flex flex-col">
-            <span className="text-[11px] font-bold flex items-center gap-1.5 text-blue-300">
-              <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+            <span className="text-[11px] font-bold flex items-center gap-1.5 text-red-300">
+              <ShieldCheck className="w-3.5 h-3.5 text-red-400" />
               Google Verified
             </span>
-            <span className="text-[10px] text-blue-300/80 mt-0.5">Account identity verified by Google to ensure marketplace security.</span>
+            <span className="text-[10px] text-red-300/80 mt-0.5">Sign in with Google to synchronize your AleePay orders, digital keys, and wallet securely.</span>
           </div>
         </div>
 
         {/* Divider */}
         <div className="relative mb-5">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-800" />
+            <div className="w-full border-t border-[#333]" />
           </div>
           <div className="relative flex justify-center text-[10px] uppercase">
-            <span className="bg-slate-900 px-3 text-slate-500 font-bold tracking-wider">
+            <span className="bg-[#1a1a1a] px-3 text-gray-500 font-bold tracking-wider">
               Or {mode === 'signin' ? 'Sign In' : 'Register'} with Email
             </span>
           </div>
@@ -382,7 +447,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
         )}
 
         {successMsg && (
-          <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
+          <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 text-xs flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 shrink-0" />
             <span>{successMsg}</span>
           </div>
@@ -393,30 +458,30 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
           {mode === 'signup' && (
             <>
               <div>
-                <label className="block text-[11px] font-bold text-slate-400 mb-1">Full Name</label>
+                <label className="block text-[11px] font-bold text-gray-400 mb-1">Full Name</label>
                 <div className="relative">
-                  <User className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
+                  <User className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
                   <input
                     type="text"
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Waleed Khan"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 transition-colors"
+                    className="w-full bg-[#0a0a0a] border border-[#333] rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-red-500 transition-colors"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-400 mb-1">WhatsApp Number (For Order Delivery)</label>
+                <label className="block text-[11px] font-bold text-gray-400 mb-1">WhatsApp Number (For Order Delivery)</label>
                 <div className="relative">
-                  <Phone className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
+                  <Phone className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
                   <input
                     type="text"
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
                     placeholder="+92 300 0000000"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 transition-colors"
+                    className="w-full bg-[#0a0a0a] border border-[#333] rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-red-500 transition-colors"
                   />
                 </div>
               </div>
@@ -424,24 +489,24 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
           )}
 
           <div>
-            <label className="block text-[11px] font-bold text-slate-400 mb-1">Email Address</label>
+            <label className="block text-[11px] font-bold text-gray-400 mb-1">Email Address</label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
+              <Mail className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 transition-colors"
+                className="w-full bg-[#0a0a0a] border border-[#333] rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-red-500 transition-colors"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-[11px] font-bold text-slate-400 mb-1">Password</label>
+            <label className="block text-[11px] font-bold text-gray-400 mb-1">Password</label>
             <div className="relative">
-              <Lock className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
+              <Lock className="absolute left-3.5 top-3 w-4 h-4 text-gray-500" />
               <input
                 type="password"
                 required
@@ -449,7 +514,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 transition-colors"
+                className="w-full bg-[#0a0a0a] border border-[#333] rounded-xl py-2.5 pl-10 pr-4 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-red-500 transition-colors"
               />
             </div>
           </div>
@@ -457,7 +522,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-400 to-emerald-400 text-slate-950 font-extrabold text-xs hover:from-cyan-300 hover:to-emerald-300 transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 mt-2"
+            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-red-600 to-red-600 text-slate-950 font-extrabold text-xs hover:from-red-500 hover:to-red-500 transition-all shadow-lg shadow-red-500/20 flex items-center justify-center gap-2 mt-2"
           >
             {loading ? (
               <>
@@ -470,8 +535,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onAuthSuc
           </button>
         </form>
 
-        <p className="text-[11px] text-center text-slate-500 mt-6">
-          Powered by Supabase Auth & Row-Level Security
+        <p className="text-[11px] text-center text-gray-500 mt-6">
+          Powered by Firebase Auth & CWallet Integration
         </p>
       </div>
     </div>

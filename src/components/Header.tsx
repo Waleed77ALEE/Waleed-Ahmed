@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck, Smartphone, Wallet, Search, ChevronDown, Code2, Palette, ShoppingBag as ShopIcon, Cpu, Shield, Bot, TrendingUp, Sun, Moon } from 'lucide-react';
+import { Menu, X, ShoppingBag, ListTodo, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck, Smartphone, Wallet, Search, ChevronDown, Code2, Palette, ShoppingBag as ShopIcon, Cpu, Shield, Bot, TrendingUp, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../lib/supabase';
 import brandLogoImg from '../assets/images/wka_brand_logo_1785901835661.jpg';
@@ -21,6 +21,7 @@ interface HeaderProps {
   onOpenAccount: () => void;
   onOpenCart: () => void;
   onOpenSql: () => void;
+  onOpenTodos?: () => void;
   onOpenBinancePay?: () => void;
   onOpenAdmin?: () => void;
   onOpenAndroidApp?: () => void;
@@ -39,6 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAccount,
   onOpenCart,
   onOpenSql,
+  onOpenTodos,
   onOpenBinancePay,
   onOpenAdmin,
   onOpenAndroidApp,
@@ -215,16 +217,17 @@ export const Header: React.FC<HeaderProps> = ({
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-3">
-          {/* Brand Logo */}
+          {/* Brand Logo - AleePay */}
           <button
             onClick={() => handleNavClick('hero')}
             className="flex items-center gap-2.5 text-left group focus:outline-none cursor-pointer"
+            title="AleePay Home"
           >
             <div className="relative shrink-0">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-amber-400 via-amber-500 to-cyan-400 p-[1.5px] shadow-md shadow-amber-500/15 group-hover:scale-105 group-hover:shadow-cyan-400/25 transition-all duration-300 overflow-hidden">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-red-500 via-amber-400 to-cyan-400 p-[1.5px] shadow-md shadow-amber-500/20 group-hover:scale-105 group-hover:shadow-cyan-400/30 transition-all duration-300 overflow-hidden">
                 <img
                   src={brandLogoImg}
-                  alt="Waleed Khan Afridi Logo"
+                  alt="AleePay Logo"
                   referrerPolicy="no-referrer"
                   decoding="async"
                   loading="eager"
@@ -232,12 +235,17 @@ export const Header: React.FC<HeaderProps> = ({
                 />
               </div>
             </div>
-            <div className="hidden sm:block">
-              <div className="text-[13px] font-black tracking-wider text-white group-hover:text-cyan-300 transition-colors">
-                WALEED KHAN AFRIDI
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-base sm:text-lg font-black tracking-tight text-white group-hover:text-amber-400 transition-colors">
+                  Alee<span className="text-cyan-400">Pay</span>
+                </span>
+                <span className="hidden xl:inline-block px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wider bg-red-500/15 text-red-400 border border-red-500/30">
+                  Digital Hub
+                </span>
               </div>
-              <div className="text-[10px] text-slate-400 font-medium tracking-wide">
-                Full Stack Engineer
+              <div className="text-[10px] text-slate-400 font-medium tracking-wide hidden sm:block">
+                Digital Marketplace &amp; Payments
               </div>
             </div>
           </button>
@@ -519,6 +527,18 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="hidden sm:inline text-[12px]">{user ? (profile?.full_name || 'Account') : 'Sign In'}</span>
             </button>
 
+            {/* Supabase Todos Button */}
+            {onOpenTodos && (
+              <button
+                onClick={onOpenTodos}
+                className="px-2.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800/80 hover:border-emerald-500/40 text-slate-300 hover:text-emerald-400 text-xs font-semibold transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] hidden lg:flex items-center gap-1.5 shadow-sm cursor-pointer"
+                title="Supabase Tasks & Todos Hub"
+              >
+                <ListTodo className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="text-[11px] font-bold">Todos</span>
+              </button>
+            )}
+
             {/* Admin Portal Button */}
             {onOpenAdmin && (
               <button
@@ -778,6 +798,20 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               </button>
 
+              {onOpenTodos && (
+                <button
+                  onClick={() => { onOpenTodos(); setMobileMenuOpen(false); }}
+                  className="w-full px-4 py-2.5 text-left text-xs font-bold rounded-xl text-emerald-300 bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between"
+                >
+                  <span className="flex items-center gap-2">
+                    <ListTodo className="w-4 h-4 text-emerald-400" />
+                    <span>Supabase Tasks & Todos Hub</span>
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 font-mono text-[9px] font-black">
+                    LIVE
+                  </span>
+                </button>
+              )}
               <button
                 onClick={() => { onOpenSql(); setMobileMenuOpen(false); }}
                 className="w-full px-4 py-2.5 text-left text-xs font-semibold rounded-xl text-slate-400 bg-slate-900 flex items-center justify-between"

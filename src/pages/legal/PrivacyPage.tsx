@@ -74,8 +74,8 @@ export const PrivacyPage: React.FC = () => {
     '@type': 'WebPage',
     '@id': 'https://waleedkhanafridi.online/privacypolicy',
     url: 'https://waleedkhanafridi.online/privacypolicy',
-    name: 'Privacy Policy | Waleed Khan Afridi Digital Agency',
-    description: 'GDPR & CCPA compliant Privacy Policy for Waleed Khan Afridi Digital Agency (waleedkhanafridi.online/privacypolicy) detailing data collection, processing, user rights, and data deletion procedures.',
+    name: 'Privacy Policy | AleePay by Waleed Khan Afridi',
+    description: 'GDPR & CCPA compliant Privacy Policy for AleePay by Waleed Khan Afridi Digital Agency (waleedkhanafridi.online/privacypolicy) detailing data collection, Google OAuth data usage, and user rights.',
     publisher: {
       '@type': 'Organization',
       name: 'Waleed Khan Afridi Digital Agency',
@@ -86,7 +86,7 @@ export const PrivacyPage: React.FC = () => {
   return (
     <LegalLayout
       title="Privacy Policy"
-      subtitle="Complete Data Protection, Privacy Practices, GDPR & CCPA Compliance Disclosures for Waleed Khan Afridi Digital Agency (waleedkhanafridi.online/privacypolicy)."
+      subtitle="Complete Data Protection, Privacy Practices, GDPR & CCPA Compliance Disclosures for AleePay by Waleed Khan Afridi Digital Agency (waleedkhanafridi.online/privacypolicy)."
       lastUpdated="August 15, 2026"
       effectiveDate="January 1, 2026"
       documentType="privacy"
@@ -154,7 +154,7 @@ export const PrivacyPage: React.FC = () => {
           <span>ZERO DATA SELLING &amp; MAXIMUM ENCRYPTION GUARANTEE</span>
         </div>
         <p>
-          At <strong>Waleed Khan Afridi Digital Agency</strong>, we respect your right to privacy. We strictly <strong>DO NOT sell, rent, or trade</strong> your personal data to third-party ad brokers. Data collected is strictly used to fulfill client development contracts, process secure order transactions, and deliver digital software assets.
+          At <strong>AleePay</strong> (operated by <strong>Waleed Khan Afridi Digital Agency</strong>), we respect your right to privacy. We strictly <strong>DO NOT sell, rent, or trade</strong> your personal data to third-party ad brokers. Data collected is strictly used to fulfill client development contracts, process secure order transactions, and deliver digital software assets.
         </p>
       </div>
 

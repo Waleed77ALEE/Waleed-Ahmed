@@ -84,8 +84,8 @@ export const TermsPage: React.FC = () => {
     '@type': 'WebPage',
     '@id': 'https://waleedkhanafridi.online/tos',
     url: 'https://waleedkhanafridi.online/tos',
-    name: 'Terms of Service | Waleed Khan Afridi Digital Agency',
-    description: 'Master Terms of Service governing website engineering services, software marketplace, digital assets, AI subscriptions, and referral programs for Waleed Khan Afridi Digital Agency (waleedkhanafridi.online/tos).',
+    name: 'Terms of Service | AleePay by Waleed Khan Afridi',
+    description: 'Master Terms of Service governing AleePay digital marketplace, software licenses, AI subscriptions, and payment services operated by Waleed Khan Afridi Digital Agency (waleedkhanafridi.online/tos).',
     publisher: {
       '@type': 'Organization',
       name: 'Waleed Khan Afridi Digital Agency',
@@ -96,7 +96,7 @@ export const TermsPage: React.FC = () => {
   return (
     <LegalLayout
       title="Terms of Service"
-      subtitle="Master Service Agreement, Digital Goods License Terms, and Acceptable Use Policy for Waleed Khan Afridi Digital Agency (waleedkhanafridi.online/tos)."
+      subtitle="Master Service Agreement, Digital Goods License Terms, and Acceptable Use Policy for AleePay by Waleed Khan Afridi Digital Agency (waleedkhanafridi.online/tos)."
       lastUpdated="August 15, 2026"
       effectiveDate="January 1, 2026"
       documentType="terms"
@@ -183,7 +183,7 @@ export const TermsPage: React.FC = () => {
           </button>
         </div>
         <p>
-          Welcome to <strong>Waleed Khan Afridi Digital Agency</strong> (&quot;Agency&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;), operated under the primary commercial web domain <strong>waleedkhanafridi.online</strong> and canonical public terms subpage <a href="https://waleedkhanafridi.online/tos" className="text-amber-400 font-mono underline">waleedkhanafridi.online/tos</a>. We specialize in enterprise website design and full-stack engineering (React, Next.js, Node.js), WordPress &amp; WooCommerce custom e-commerce builds, technical SEO audits and Core Web Vitals optimization, graphic design, verified software sales, AI subscription accounts marketplace, digital downloadable products, and an integrated referral partner portal.
+          Welcome to <strong>AleePay</strong>, operated by <strong>Waleed Khan Afridi Digital Agency</strong> (&quot;Agency&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;), operated under the primary commercial web domain <strong>waleedkhanafridi.online</strong> and canonical public terms subpage <a href="https://waleedkhanafridi.online/tos" className="text-amber-400 font-mono underline">waleedkhanafridi.online/tos</a>. We specialize in enterprise website design and full-stack engineering (React, Next.js, Node.js), WordPress &amp; WooCommerce custom e-commerce builds, technical SEO audits and Core Web Vitals optimization, graphic design, verified software sales, AI subscription accounts marketplace, digital downloadable products, and an integrated referral partner portal.
         </p>
         <p>
           These Terms of Service (&quot;Terms&quot;, &quot;ToS&quot;) govern all visitors, clients, software purchasers, and affiliate partners who access our web platforms, mobile applications, APIs, or customer support channels.
