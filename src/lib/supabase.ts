@@ -762,4 +762,71 @@ function saveLocalServiceReview(review: Partial<SupabaseServiceReview>): Supabas
   return fullReview;
 }
 
+export interface SupabaseTodo {
+  id: string;
+  user_id: string;
+  title: string;
+  is_complete: boolean;
+  priority: 'low' | 'medium' | 'high';
+  created_at: string;
+}
+
+export async function fetchTodosSupabase(): Promise<SupabaseTodo[]> {
+  try {
+    const { data, error } = await supabase
+      .from('todos')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) {
+      console.warn('fetchTodosSupabase error:', error.message);
+      return [];
+    }
+    return data || [];
+  } catch (err) {
+    console.error('fetchTodosSupabase exception:', err);
+    return [];
+  }
+}
+
+export async function createTodoSupabase(title: string, priority: string, userId?: string): Promise<SupabaseTodo> {
+  try {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const currentUserId = sessionData?.session?.user?.id || userId;
+    
+    const { data, error } = await supabase
+      .from('todos')
+      .insert([{
+        title,
+        priority,
+        is_complete: false,
+        user_id: currentUserId || null
+      }])
+      .select('*')
+      .single();
+      
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    console.error('createTodoSupabase exception:', err);
+    throw err;
+  }
+}
+
+export async function toggleTodoSupabase(id: string, is_complete: boolean): Promise<void> {
+  try {
+    await supabase.from('todos').update({ is_complete }).eq('id', id);
+  } catch (err) {
+    console.error('toggleTodoSupabase exception:', err);
+  }
+}
+
+export async function deleteTodoSupabase(id: string): Promise<void> {
+  try {
+    await supabase.from('todos').delete().eq('id', id);
+  } catch (err) {
+    console.error('deleteTodoSupabase exception:', err);
+  }
+}
+
+
 
