@@ -271,6 +271,25 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="relative z-10">Home</span>
             </button>
 
+            {/* About AleePay Purpose Link */}
+            <button
+              onClick={() => handleNavClick('about-aleepay')}
+              className={`relative px-4 py-1.5 text-[13px] font-medium tracking-wide rounded-full transition-all duration-200 cursor-pointer select-none ${
+                location.pathname === '/' && activeSection === 'about-aleepay'
+                  ? 'text-white font-semibold'
+                  : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/40'
+              }`}
+            >
+              {location.pathname === '/' && activeSection === 'about-aleepay' && (
+                <motion.div
+                  layoutId="activeNavPill"
+                  className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-slate-800 to-amber-500/20 rounded-full border border-cyan-500/40 shadow-[0_0_12px_rgba(6,182,212,0.2)] -z-10"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+              <span className="relative z-10">About App</span>
+            </button>
+
             {/* Services Dropdown */}
             <div
               className="relative"
@@ -620,6 +639,21 @@ export const Header: React.FC<HeaderProps> = ({
                   }`}
                 >
                   <span>Home</span>
+                </button>
+
+                {/* About App (Platform Purpose) */}
+                <button
+                  onClick={() => handleNavClick('about-aleepay')}
+                  className={`w-full px-4 py-2.5 text-left text-xs sm:text-sm font-semibold rounded-xl flex items-center justify-between transition-colors cursor-pointer ${
+                    location.pathname === '/' && activeSection === 'about-aleepay'
+                      ? 'bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-transparent text-amber-300 border border-amber-500/30 font-bold'
+                      : 'text-slate-300 hover:bg-slate-900'
+                  }`}
+                >
+                  <span>About App (Platform Overview)</span>
+                  <span className="px-2 py-0.5 rounded text-[9px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    Mission
+                  </span>
                 </button>
 
                 {/* Services Accordion */}
