@@ -1,3 +1,5 @@
+import { useRemoteConfig } from "../hooks/useRemoteConfig";
+import { getButtonColorClasses } from "../utils/themeHelper";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight, Zap, ArrowRight, Tag } from 'lucide-react';

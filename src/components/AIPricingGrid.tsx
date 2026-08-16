@@ -1,3 +1,5 @@
+import { useRemoteConfig } from "../hooks/useRemoteConfig";
+import { getButtonColorClasses } from "../utils/themeHelper";
 import React, { useState } from 'react';
 import { CheckCircle2, Zap } from 'lucide-react';
 import { InstantBuyModal, InstantBuyProduct } from './InstantBuyModal';
@@ -53,6 +55,8 @@ const products = [
 ];
 
 export default function AIPricingGrid() {
+  const ctaColor = useRemoteConfig("cta_button_color", "blue");
+  const buttonClasses = getButtonColorClasses(ctaColor);
   const [selectedProduct, setSelectedProduct] = useState<InstantBuyProduct | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 

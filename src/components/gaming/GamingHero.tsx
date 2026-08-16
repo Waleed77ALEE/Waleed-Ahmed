@@ -1,3 +1,5 @@
+import { useRemoteConfig } from "../../hooks/useRemoteConfig";
+import { getButtonColorClasses } from "../../utils/themeHelper";
 import React from 'react';
 import { motion } from 'motion/react';
 import { Search, ShieldCheck, Zap, Star, Sparkles, ChevronRight, Gamepad2 } from 'lucide-react';
@@ -5,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { generateImageAltText } from '../../lib/seo';
 
 export const GamingHero: React.FC = () => {
+  const ctaColor = useRemoteConfig("cta_button_color", "blue");
+  const buttonClasses = getButtonColorClasses(ctaColor);
   const navigate = useNavigate();
 
   const featuredCards = [
@@ -151,7 +155,7 @@ export const GamingHero: React.FC = () => {
                       <span className="text-lg leading-none font-black text-white">{card.price}</span>
                     </div>
                   </div>
-                  <span className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs rounded-xl transition-all shadow-md group-hover:scale-105">
+                  <span className={`px-4 py-2 ${buttonClasses} font-extrabold text-xs rounded-xl transition-all shadow-md group-hover:scale-105 cursor-pointer`}>
                     Buy Now
                   </span>
                 </div>
