@@ -30,6 +30,7 @@ import { ProductGridSkeleton } from './SkeletonLoader';
 import { SoftwareOrderModal } from './SoftwareOrderModal';
 import { SoftwareDetailModal } from './SoftwareDetailModal';
 import { generateImageAltText } from '../lib/seo';
+import { useSoundEffects } from '../hooks/useSoundEffects';
 
 interface SoftwareServicesProps {
   user?: any;
@@ -47,6 +48,7 @@ export const SoftwareServices: React.FC<SoftwareServicesProps> = ({
   const [orderingProduct, setOrderingProduct] = useState<SoftwareProduct | null>(null);
   const [detailProduct, setDetailProduct] = useState<SoftwareProduct | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { playClick, playHover, playTab, playModalOpen } = useSoundEffects();
 
   // Initial load skeleton simulation
   useEffect(() => {
@@ -59,6 +61,7 @@ export const SoftwareServices: React.FC<SoftwareServicesProps> = ({
   // Category or search switch brief skeleton transition
   const handleCategoryChange = (cat: string) => {
     if (cat === selectedCategory) return;
+    playTab();
     setIsLoading(true);
     setSelectedCategory(cat);
     setTimeout(() => setIsLoading(false), 200);
@@ -211,6 +214,7 @@ export const SoftwareServices: React.FC<SoftwareServicesProps> = ({
                   <button
                     key={cat}
                     onClick={() => handleCategoryChange(cat)}
+                    onMouseEnter={() => playHover()}
                     className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 whitespace-nowrap ${
                       isActive
                         ? 'bg-cyan-500 text-slate-950 font-black shadow-lg shadow-cyan-500/20'
@@ -337,6 +341,8 @@ export const SoftwareServices: React.FC<SoftwareServicesProps> = ({
                     <div className="flex items-center gap-2">
                       <a
                         href={`/products/${prod.category.toLowerCase().replace(/ /g, '-')}/${prod.slug}`}
+                        onClick={() => playClick()}
+                        onMouseEnter={() => playHover()}
                         className="px-3.5 py-2.5 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors cursor-pointer flex-1 text-center flex items-center justify-center gap-1.5"
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
@@ -345,8 +351,13 @@ export const SoftwareServices: React.FC<SoftwareServicesProps> = ({
 
                       <button
                         type="button"
-                        onClick={() => setOrderingProduct(prod)}
-                        className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-black text-xs transition-all shadow-md shadow-cyan-500/20 flex items-center justify-center gap-1.5 cursor-pointer flex-1 hover:scale-[1.02]"
+                        onClick={() => {
+                          playClick();
+                          playModalOpen();
+                          setOrderingProduct(prod);
+                        }}
+                        onMouseEnter={() => playHover()}
+                        className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-black text-xs transition-all shadow-md shadow-cyan-500/20 flex items-center justify-center gap-1.5 cursor-pointer flex-1 hover:scale-[1.02] active:scale-[0.98]"
                       >
                         <span>Buy Now</span>
                         <ArrowRight className="w-3.5 h-3.5" />

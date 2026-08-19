@@ -5,11 +5,13 @@ import { motion } from 'motion/react';
 import { Search, ShieldCheck, Zap, Star, Sparkles, ChevronRight, Gamepad2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { generateImageAltText } from '../../lib/seo';
+import { useSoundEffects } from '../../hooks/useSoundEffects';
 
 export const GamingHero: React.FC = () => {
   const ctaColor = useRemoteConfig("cta_button_color", "blue");
   const buttonClasses = getButtonColorClasses(ctaColor);
   const navigate = useNavigate();
+  const { playClick, playHover } = useSoundEffects();
 
   const featuredCards = [
     {
@@ -72,8 +74,12 @@ export const GamingHero: React.FC = () => {
             </div>
           </div>
           <button 
-            onClick={() => navigate('/gaming-market')}
-            className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-black hover:bg-zinc-900 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg shrink-0 cursor-pointer"
+            onClick={() => {
+              playClick();
+              navigate('/gaming-market');
+            }}
+            onMouseEnter={() => playHover()}
+            className="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-black hover:bg-zinc-900 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg shrink-0 cursor-pointer hover:scale-105 active:scale-95"
           >
             <span>Explore Deals</span>
             <ChevronRight className="w-4 h-4" />
@@ -113,7 +119,11 @@ export const GamingHero: React.FC = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 * idx }}
-              onClick={() => navigate('/gaming-market')}
+              onMouseEnter={() => playHover(0.8)}
+              onClick={() => {
+                playClick();
+                navigate('/gaming-market');
+              }}
               className="group relative h-[380px] rounded-3xl overflow-hidden cursor-pointer shadow-2xl border border-zinc-800 bg-zinc-900 transition-all duration-300 hover:-translate-y-2 hover:border-red-500/50 hover:shadow-red-500/20"
             >
               {/* Background Image with Gradient Overlay */}

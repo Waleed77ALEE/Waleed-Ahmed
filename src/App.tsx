@@ -4,10 +4,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
-import { ServiceDetailsModal } from './components/ServiceDetailsModal';
-import { AuthModal } from './components/AuthModal';
-import { AccountModal } from './components/AccountModal';
-import { CartModal } from './components/CartModal';
 import { SeoSchemas } from './components/SeoSchemas';
 import { ServiceItem } from './types';
 
@@ -43,6 +39,11 @@ const CookiePage = lazy(() => import('./pages/legal/CookiePage').then(m => ({ de
 const ReferralTermsPage = lazy(() => import('./pages/legal/ReferralTermsPage').then(m => ({ default: m.ReferralTermsPage })));
 
 // Lazy Loaded Modals
+const ServiceDetailsModal = lazy(() => import('./components/ServiceDetailsModal').then(m => ({ default: m.ServiceDetailsModal })));
+const AuthModal = lazy(() => import('./components/AuthModal').then(m => ({ default: m.AuthModal })));
+const AccountModal = lazy(() => import('./components/AccountModal').then(m => ({ default: m.AccountModal })));
+const CartModal = lazy(() => import('./components/CartModal').then(m => ({ default: m.CartModal })));
+const ArchitecturalPillarsModal = lazy(() => import('./components/ArchitecturalPillarsModal').then(m => ({ default: m.ArchitecturalPillarsModal })));
 const TodoManagerModal = lazy(() => import('./components/TodoManagerModal').then(m => ({ default: m.TodoManagerModal })));
 const SupabaseSqlModal = lazy(() => import('./components/SupabaseSqlModal').then(m => ({ default: m.SupabaseSqlModal })));
 const BinancePayModal = lazy(() => import('./components/BinancePayModal').then(m => ({ default: m.BinancePayModal })));
@@ -103,6 +104,7 @@ export default function App() {
   const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [isAndroidAppModalOpen, setIsAndroidAppModalOpen] = useState(false);
   const [isLegalModalOpen, setIsLegalModalOpen] = useState(false);
+  const [isArchitectureModalOpen, setIsArchitectureModalOpen] = useState(false);
   const [legalActiveTab, setLegalActiveTab] = useState<LegalTabType>('privacy');
 
   // PWA Install Prompt State
@@ -382,6 +384,7 @@ export default function App() {
         onOpenBinancePay={() => setIsBinanceModalOpen(true)}
         onOpenAdmin={() => setIsAdminModalOpen(true)}
         onOpenAndroidApp={() => setIsAndroidAppModalOpen(true)}
+        onOpenArchitecture={() => setIsArchitectureModalOpen(true)}
         onAddToCart={handleAddToCart}
         onBuyNow={handleBuyNow}
       />
@@ -619,56 +622,57 @@ export default function App() {
         onOpenLegal={openLegalModal}
       />
 
-      {/* Service Details Modal */}
-      <ServiceDetailsModal
-        service={selectedService}
-        onClose={() => setSelectedService(null)}
-        whatsappNumber={whatsappNumber}
-        onContactClick={() => scrollToSection('contact')}
-        onBuyNow={handleBuyNow}
-        user={user}
-        onOpenAuthModal={() => setIsAuthModalOpen(true)}
-      />
-
-      {/* Supabase Authentication Modal */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        onAuthSuccess={() => {
-          if (user?.id) {
-            loadUserProfile(user.id);
-            loadCart(user.id);
-          }
-        }}
-      />
-
-      {/* Supabase Account & Orders Modal */}
-      <AccountModal
-        isOpen={isAccountModalOpen}
-        onClose={() => setIsAccountModalOpen(false)}
-        user={user}
-        profile={profile}
-        onProfileUpdate={() => user?.id && loadUserProfile(user.id)}
-        onSignOut={handleSignOut}
-        whatsappNumber={whatsappNumber}
-      />
-
-      {/* Supabase Cart & Checkout Modal */}
-      <CartModal
-        isOpen={isCartModalOpen}
-        onClose={() => setIsCartModalOpen(false)}
-        cart={cart}
-        user={user}
-        onUpdateQty={handleUpdateCartQty}
-        onRemoveItem={handleRemoveCartItem}
-        onClearCart={handleClearCart}
-        whatsappNumber={whatsappNumber}
-        onOrderCompleted={() => {
-          if (user?.id) loadCart(user.id);
-        }}
-      />
-
+      {/* Suspense Container for Lazy-Loaded Modals & Drawers */}
       <Suspense fallback={null}>
+        {/* Service Details Modal */}
+        <ServiceDetailsModal
+          service={selectedService}
+          onClose={() => setSelectedService(null)}
+          whatsappNumber={whatsappNumber}
+          onContactClick={() => scrollToSection('contact')}
+          onBuyNow={handleBuyNow}
+          user={user}
+          onOpenAuthModal={() => setIsAuthModalOpen(true)}
+        />
+
+        {/* Supabase Authentication Modal */}
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+          onAuthSuccess={() => {
+            if (user?.id) {
+              loadUserProfile(user.id);
+              loadCart(user.id);
+            }
+          }}
+        />
+
+        {/* Supabase Account & Orders Modal */}
+        <AccountModal
+          isOpen={isAccountModalOpen}
+          onClose={() => setIsAccountModalOpen(false)}
+          user={user}
+          profile={profile}
+          onProfileUpdate={() => user?.id && loadUserProfile(user.id)}
+          onSignOut={handleSignOut}
+          whatsappNumber={whatsappNumber}
+        />
+
+        {/* Supabase Cart & Checkout Modal */}
+        <CartModal
+          isOpen={isCartModalOpen}
+          onClose={() => setIsCartModalOpen(false)}
+          cart={cart}
+          user={user}
+          onUpdateQty={handleUpdateCartQty}
+          onRemoveItem={handleRemoveCartItem}
+          onClearCart={handleClearCart}
+          whatsappNumber={whatsappNumber}
+          onOrderCompleted={() => {
+            if (user?.id) loadCart(user.id);
+          }}
+        />
+
         {/* Supabase Todo & Task Manager Modal */}
         <TodoManagerModal
           isOpen={isTodoModalOpen}
@@ -710,6 +714,12 @@ export default function App() {
           isOpen={isLegalModalOpen}
           onClose={() => setIsLegalModalOpen(false)}
           defaultTab={legalActiveTab}
+        />
+
+        {/* Master Architecture & Engineering Pillars Modal */}
+        <ArchitecturalPillarsModal
+          isOpen={isArchitectureModalOpen}
+          onClose={() => setIsArchitectureModalOpen(false)}
         />
 
         {/* Floating WhatsApp Contact Button */}

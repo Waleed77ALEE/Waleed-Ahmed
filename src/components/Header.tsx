@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag, ListTodo, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck, Smartphone, Wallet, Search, ChevronDown, Code2, Palette, ShoppingBag as ShopIcon, Cpu, Shield, Bot, TrendingUp, Sun, Moon } from 'lucide-react';
+import { Menu, X, ShoppingBag, ListTodo, Sparkles, MessageSquare, ArrowUpRight, User, KeyRound, Database, ShieldCheck, Smartphone, Wallet, Search, ChevronDown, Code2, Palette, ShoppingBag as ShopIcon, Cpu, Shield, Bot, TrendingUp, Sun, Moon, Layers, Volume2, VolumeX } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { UserProfile } from '../lib/supabase';
 import brandLogoImg from '../assets/images/wka_brand_logo_1785901835661.jpg';
@@ -9,6 +9,7 @@ import { HeaderSearchModal } from './HeaderSearchModal';
 import { GlobalSearchBar } from './GlobalSearchBar';
 import { AiSeoManagerModal } from './AiSeoManagerModal';
 import { ServiceItem } from '../types';
+import { useSoundEffects } from '../hooks/useSoundEffects';
 
 interface HeaderProps {
   activeSection: string;
@@ -25,6 +26,7 @@ interface HeaderProps {
   onOpenBinancePay?: () => void;
   onOpenAdmin?: () => void;
   onOpenAndroidApp?: () => void;
+  onOpenArchitecture?: () => void;
   onAddToCart?: (service: ServiceItem) => void;
   onBuyNow?: (service: ServiceItem) => void;
 }
@@ -44,6 +46,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenBinancePay,
   onOpenAdmin,
   onOpenAndroidApp,
+  onOpenArchitecture,
   onAddToCart,
   onBuyNow
 }) => {
@@ -62,6 +65,8 @@ export const Header: React.FC<HeaderProps> = ({
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     return (localStorage.getItem('theme') as 'dark' | 'light') || 'dark';
   });
+
+  const { isEnabled: isSoundActive, toggleSound, playClick, playHover, playTab } = useSoundEffects();
 
   useEffect(() => {
     if (theme === 'light') {
@@ -470,9 +475,56 @@ export const Header: React.FC<HeaderProps> = ({
 
             <GlobalSearchBar onNavigate={onNavigate} onAddToCart={onAddToCart} onBuyNow={onBuyNow} />
 
+            {/* Tactile Audio Effects Mute / Unmute Toggle */}
+            <button
+              onClick={() => {
+                toggleSound();
+              }}
+              onMouseEnter={() => playHover()}
+              className={`p-2 sm:px-2.5 sm:py-1.5 rounded-full border text-xs font-semibold transition-all duration-300 hover:scale-[1.05] active:scale-[0.95] flex items-center justify-center cursor-pointer shadow-sm ${
+                isSoundActive
+                  ? 'bg-slate-900/80 hover:bg-slate-800/90 border-slate-800/80 hover:border-cyan-500/40 text-cyan-400'
+                  : 'bg-slate-900/50 hover:bg-slate-800/60 border-slate-800/50 text-slate-500 hover:text-slate-400'
+              }`}
+              title={isSoundActive ? 'Sound Effects: ON (Click to mute tactile audio)' : 'Sound Effects: MUTED (Click to enable tactile audio)'}
+              aria-label="Toggle tactile sound effects"
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                {isSoundActive ? (
+                  <motion.div
+                    key="sound-on"
+                    initial={{ scale: 0.7, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.7, opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="flex items-center gap-1.5"
+                  >
+                    <Volume2 className="w-3.5 h-3.5 text-cyan-400" />
+                    <span className="hidden 2xl:inline text-[11px] font-medium text-slate-300">Audio</span>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="sound-off"
+                    initial={{ scale: 0.7, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.7, opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="flex items-center gap-1.5"
+                  >
+                    <VolumeX className="w-3.5 h-3.5 text-slate-500" />
+                    <span className="hidden 2xl:inline text-[11px] font-medium text-slate-500">Muted</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
+
             {/* Persistent Dark/Light Theme Toggle */}
             <button
-              onClick={toggleTheme}
+              onClick={() => {
+                playClick();
+                toggleTheme();
+              }}
+              onMouseEnter={() => playHover()}
               className="p-2 sm:px-2.5 sm:py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800/80 hover:border-amber-500/40 text-slate-300 hover:text-amber-400 transition-all duration-300 hover:scale-[1.05] active:scale-[0.95] flex items-center justify-center cursor-pointer shadow-sm group"
               title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               aria-label="Toggle dark/light theme"
@@ -509,7 +561,11 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Wallet Balance Button */}
             {(user || wallet.balance > 0 || wallet.userId !== 'guest') && (
               <button
-                onClick={onOpenAccount}
+                onClick={() => {
+                  playClick();
+                  onOpenAccount();
+                }}
+                onMouseEnter={() => playHover()}
                 className={`px-3 py-1.5 text-xs font-extrabold rounded-full transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] flex items-center gap-1.5 shadow-sm shrink-0 cursor-pointer ${
                   balanceHighlight
                     ? 'bg-emerald-400 text-slate-950 scale-105 shadow-lg shadow-emerald-400/40 ring-2 ring-emerald-300 font-black animate-pulse'
@@ -524,7 +580,11 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Cart Button */}
             <button
-              onClick={onOpenCart}
+              onClick={() => {
+                playClick();
+                onOpenCart();
+              }}
+              onMouseEnter={() => playHover()}
               className="relative p-2 sm:px-2.5 sm:py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800/80 hover:border-cyan-500/40 text-slate-300 hover:text-white transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] flex items-center justify-center cursor-pointer shadow-sm"
               title="Cart"
             >
@@ -538,7 +598,15 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Account / Profile Icon Button */}
             <button
-              onClick={user ? onOpenAccount : onOpenAuth}
+              onClick={() => {
+                playClick();
+                if (user) {
+                  onOpenAccount();
+                } else {
+                  onOpenAuth();
+                }
+              }}
+              onMouseEnter={() => playHover()}
               className="px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800/80 hover:border-amber-500/40 text-xs font-semibold text-slate-200 transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] flex items-center gap-1.5 shadow-sm cursor-pointer"
               title={user ? 'Account Settings' : 'Sign In'}
             >
@@ -549,7 +617,11 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Supabase Todos Button */}
             {onOpenTodos && (
               <button
-                onClick={onOpenTodos}
+                onClick={() => {
+                  playClick();
+                  onOpenTodos();
+                }}
+                onMouseEnter={() => playHover()}
                 className="px-2.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800/80 hover:border-emerald-500/40 text-slate-300 hover:text-emerald-400 text-xs font-semibold transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] hidden lg:flex items-center gap-1.5 shadow-sm cursor-pointer"
                 title="Supabase Tasks & Todos Hub"
               >
@@ -558,10 +630,30 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
             )}
 
+            {/* Master Architecture Button */}
+            {onOpenArchitecture && (
+              <button
+                onClick={() => {
+                  playClick();
+                  onOpenArchitecture();
+                }}
+                onMouseEnter={() => playHover()}
+                className="px-2.5 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800/80 hover:border-amber-500/40 text-slate-300 hover:text-amber-400 text-xs font-semibold transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] hidden lg:flex items-center gap-1.5 shadow-sm cursor-pointer"
+                title="Master Architecture & Engineering Pillars"
+              >
+                <Layers className="w-3.5 h-3.5 text-amber-400" />
+                <span className="text-[11px] font-bold">Architecture</span>
+              </button>
+            )}
+
             {/* Admin Portal Button */}
             {onOpenAdmin && (
               <button
-                onClick={onOpenAdmin}
+                onClick={() => {
+                  playClick();
+                  onOpenAdmin();
+                }}
+                onMouseEnter={() => playHover()}
                 className="p-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800/80 text-slate-400 hover:text-cyan-400 transition-all duration-300 hover:scale-105 hidden xl:flex items-center justify-center cursor-pointer"
                 title="Admin Portal"
               >
@@ -571,7 +663,11 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Mobile Menu Toggle Button */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => {
+                playClick();
+                setMobileMenuOpen(!mobileMenuOpen);
+              }}
+              onMouseEnter={() => playHover()}
               className="md:hidden p-2 rounded-full bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white hover:border-slate-700 transition-all active:scale-95 cursor-pointer"
               aria-label="Toggle navigation menu"
             >
@@ -610,9 +706,34 @@ export const Header: React.FC<HeaderProps> = ({
                 </span>
               </button>
 
+              {/* Mobile Audio Effects Toggle */}
+              <button
+                onClick={() => {
+                  toggleSound();
+                }}
+                className="w-full px-4 py-2.5 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-cyan-500/40 text-slate-300 text-xs font-semibold flex items-center justify-between transition-all cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  {isSoundActive ? (
+                    <Volume2 className="w-4 h-4 text-cyan-400" />
+                  ) : (
+                    <VolumeX className="w-4 h-4 text-slate-500" />
+                  )}
+                  <span>Tactile Audio Effects: <strong className={isSoundActive ? 'text-cyan-300' : 'text-slate-500'}>{isSoundActive ? 'Enabled' : 'Muted'}</strong></span>
+                </span>
+                <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase ${
+                  isSoundActive ? 'bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-400'
+                }`}>
+                  {isSoundActive ? 'ON' : 'MUTE'}
+                </span>
+              </button>
+
               {/* Mobile Theme Toggle Button */}
               <button
-                onClick={toggleTheme}
+                onClick={() => {
+                  playClick();
+                  toggleTheme();
+                }}
                 className="w-full px-4 py-2.5 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-amber-500/40 text-slate-300 text-xs font-semibold flex items-center justify-between transition-all cursor-pointer"
               >
                 <span className="flex items-center gap-2">

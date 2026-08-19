@@ -20,6 +20,7 @@ export interface UserProfile {
   full_name: string;
   whatsapp?: string;
   phone?: string;
+  availability_status?: 'Available' | 'Away' | string;
   created_at?: string;
 }
 
@@ -104,6 +105,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   full_name TEXT DEFAULT '',
   whatsapp TEXT DEFAULT '',
   phone TEXT DEFAULT '',
+  availability_status TEXT DEFAULT 'Available',
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 

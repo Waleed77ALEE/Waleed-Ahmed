@@ -19,12 +19,15 @@ export default defineConfig(() => {
       minify: 'esbuild' as const,
       cssMinify: true,
       sourcemap: false,
+      chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {
           manualChunks: {
             'react-vendor': ['react', 'react-dom', 'react-router-dom'],
             'icons-vendor': ['lucide-react'],
             'motion-vendor': ['motion/react'],
+            'supabase-vendor': ['@supabase/supabase-js'],
+            'firebase-vendor': ['firebase/app', 'firebase/auth', 'firebase/firestore'],
           },
         },
       },

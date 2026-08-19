@@ -1,11 +1,5 @@
 import React from 'react';
 import { GamingHero } from '../components/gaming/GamingHero';
-import { WaleedStorePurposeSection } from '../components/WaleedStorePurposeSection';
-import { OffersSlider } from '../components/OffersSlider';
-import { TrustBanner } from '../components/TrustBanner';
-import { PopularGames } from '../components/gaming/PopularGames';
-import { MarketplaceFeatures } from '../components/gaming/MarketplaceFeatures';
-import { TestimonialSlider } from '../components/TestimonialSlider';
 import AIPricingGrid from '../components/AIPricingGrid';
 import { SoftwareServices } from '../components/SoftwareServices';
 import { UserProfile } from '../lib/supabase';
@@ -26,37 +20,20 @@ interface HomePageProps {
 
 export const HomePage: React.FC<HomePageProps> = ({ user, profile, onOpenAccount, whatsappNumber }) => {
   return (
-    <div className="bg-[#0b0e14] min-h-screen">
-      {/* 1. Hero with Prominent WALEEDKHANAFRIDI.ONLINE Branding */}
+    <div className="bg-[#0b0e14] min-h-screen pt-16">
+      {/* 1. SEO Optimized Hero & Search Catalog */}
       <GamingHero />
 
-      {/* 2. Clear Application Purpose Section (Explains what WALEEDKHANAFRIDI.ONLINE is & why authentication is used) */}
-      <WaleedStorePurposeSection />
-
-      {/* 3. Promotional Offers Slider */}
-      <OffersSlider />
-
-      {/* 4. Trust & Security Banner */}
-      <TrustBanner />
-
-      {/* 5. Popular Games & Marketplace Keys */}
-      <PopularGames />
-            
-      {/* 6. AI Accounts Subscriptions */}
-      <div id="ai-accounts">
+      {/* 2. AI Accounts Subscriptions Catalog */}
+      <div id="ai-accounts" className="py-8">
         <AIPricingGrid />
       </div>
 
-      {/* 7. Software Services */}
-      <div id="softwares">
+      {/* 3. Software Services Catalog */}
+      <div id="softwares" className="py-8">
         <SoftwareServices user={user} profile={profile} onOpenAccount={onOpenAccount} />
       </div>
-
-      {/* 8. Marketplace Features & Guarantee */}
-      <MarketplaceFeatures />
-
-      {/* 9. Reviews & Testimonials */}
-      <TestimonialSlider />
     </div>
   );
 };
+

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { CheckCircle2, Zap } from 'lucide-react';
 import { InstantBuyModal, InstantBuyProduct } from './InstantBuyModal';
 import { generateImageAltText } from '../lib/seo';
+import { useSoundEffects } from '../hooks/useSoundEffects';
 
 const products = [
   {
@@ -59,8 +60,10 @@ export default function AIPricingGrid() {
   const buttonClasses = getButtonColorClasses(ctaColor);
   const [selectedProduct, setSelectedProduct] = useState<InstantBuyProduct | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { playClick, playHover, playModalOpen } = useSoundEffects();
 
   const handleBuy = (prod: typeof products[0]) => {
+    playClick();
     setSelectedProduct({
       id: String(prod.id),
       title: `${prod.platform} - ${prod.tier}`,
@@ -68,6 +71,7 @@ export default function AIPricingGrid() {
       subscriptionPeriod: prod.duration.replace('/', '').trim(),
       features: prod.features,
     });
+    playModalOpen();
     setIsModalOpen(true);
   };
 
@@ -132,6 +136,7 @@ export default function AIPricingGrid() {
 
               <button
                 onClick={() => handleBuy(product)}
+                onMouseEnter={() => playHover()}
                 className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 cursor-pointer relative z-10 ${
                   product.highlighted
                     ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg hover:shadow-emerald-500/25'

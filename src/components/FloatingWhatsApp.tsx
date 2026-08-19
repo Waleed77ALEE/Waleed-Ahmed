@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageSquare, Copy, Check, Sparkles, Send } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { supabase } from '../lib/supabase';
 
 interface FloatingWhatsAppProps {
   whatsappNumber: string;
@@ -9,6 +10,68 @@ interface FloatingWhatsAppProps {
 export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ whatsappNumber }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [availabilityStatus, setAvailabilityStatus] = useState<string>('Available');
+  const [peshawarTime, setPeshawarTime] = useState<string>('');
+
+  useEffect(() => {
+    const updateTime = () => {
+      try {
+        const options: Intl.DateTimeFormatOptions = {
+          timeZone: 'Asia/Karachi',
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true
+        };
+        const timeStr = new Intl.DateTimeFormat('en-US', options).format(new Date());
+        setPeshawarTime(timeStr);
+      } catch (e) {
+        setPeshawarTime('');
+      }
+    };
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const fetchAvailability = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('availability_status')
+          .limit(1)
+          .maybeSingle();
+
+        if (data && data.availability_status) {
+          setAvailabilityStatus(data.availability_status);
+        }
+      } catch (err) {
+        console.warn('Failed to fetch profile availability status from Supabase:', err);
+      }
+    };
+
+    fetchAvailability();
+
+    // Supabase Real-time subscription for profiles table
+    const channel = supabase
+      .channel('public:profiles_floating_whatsapp')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'profiles' },
+        (payload: any) => {
+          if (payload.new && payload.new.availability_status) {
+            setAvailabilityStatus(payload.new.availability_status);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const isAvailable = availabilityStatus.toLowerCase() === 'available';
 
   const playSound = (type: 'hover' | 'click') => {
     try {
@@ -72,10 +135,17 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ whatsappNumb
             {/* Header Badge */}
             <motion.div 
               layout
-              className="bg-slate-900/95 backdrop-blur-xl text-white text-xs font-semibold px-4 py-2.5 rounded-2xl shadow-2xl border border-slate-800 flex items-center gap-2"
+              className="bg-slate-900/95 backdrop-blur-xl text-white text-xs font-semibold px-4 py-2.5 rounded-2xl shadow-2xl border border-slate-800 flex items-center justify-between gap-3"
             >
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Online • Instant Reply</span>
+              <div className="flex items-center gap-2">
+                <span className={`w-2 h-2 rounded-full ${isAvailable ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+                <span>{isAvailable ? 'Available • Instant Reply' : 'Away • Back Soon'}</span>
+              </div>
+              {peshawarTime && (
+                <span className="text-[11px] font-mono text-slate-400 border-l border-slate-800 pl-2">
+                  {peshawarTime} PKT
+                </span>
+              )}
             </motion.div>
 
             {/* Quick Actions Panel */}
@@ -133,7 +203,7 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ whatsappNumb
         whileTap={{ scale: 0.92 }}
         transition={springTransition}
         className="p-4 rounded-full bg-gradient-to-tr from-emerald-500 via-emerald-400 to-teal-400 text-white shadow-xl flex items-center justify-center relative cursor-pointer group"
-        title="Chat on WhatsApp"
+        title={`WhatsApp — ${availabilityStatus}`}
       >
         {/* Glow Ring */}
         <motion.div 
@@ -148,10 +218,10 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ whatsappNumb
           <MessageSquare className="w-6 h-6 fill-white text-white drop-shadow" />
         </motion.div>
 
-        {/* Pulse Indicator */}
+        {/* Pulse Indicator Badge (Green for Available, Amber for Away) */}
         <span className="absolute top-0 right-0 flex h-3.5 w-3.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75" />
-          <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-400 border-2 border-slate-900" />
+          {isAvailable && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-300 opacity-75" />}
+          <span className={`relative inline-flex rounded-full h-3.5 w-3.5 ${isAvailable ? 'bg-emerald-400' : 'bg-amber-400'} border-2 border-slate-900`} />
         </span>
       </motion.a>
     </motion.div>
