@@ -26,6 +26,7 @@ const JazzCashPaymentPage = lazy(() => import('./pages/JazzCashPaymentPage').the
 const AiSeoManagerPage = lazy(() => import('./pages/AiSeoManagerPage').then(m => ({ default: m.AiSeoManagerPage })));
 const SuperGrokPage = lazy(() => import('./pages/SuperGrokPage').then(m => ({ default: m.SuperGrokPage })));
 const ClaudeMaxPage = lazy(() => import('./pages/ClaudeMaxPage').then(m => ({ default: m.ClaudeMaxPage })));
+const Cgpt20xPage = lazy(() => import('./pages/Cgpt20xPage').then(m => ({ default: m.Cgpt20xPage })));
 const SingleProductPage = lazy(() => import('./pages/products/SingleProductPage').then(m => ({ default: m.SingleProductPage })));
 const GamingMarketplacePage = lazy(() => import('./pages/GamingMarketplacePage').then(m => ({ default: m.GamingMarketplacePage })));
 const SoftwareServicesPage = lazy(() => import('./pages/SoftwareServicesPage').then(m => ({ default: m.SoftwareServicesPage })));
@@ -580,6 +581,10 @@ export default function App() {
               <Route path="/claudem" element={<ClaudeMaxPage />} />
               <Route path="/claude-max" element={<ClaudeMaxPage />} />
               <Route path="/claudemax" element={<ClaudeMaxPage />} />
+
+              {/* Dedicated ChatGPT 20x Private Route */}
+              <Route path="/cgpt20x" element={<Cgpt20xPage />} />
+              <Route path="/chatgpt-20x" element={<Cgpt20xPage />} />
 
               {/* Terms of Service canonical /tos, subpages and aliases */}
               <Route path="/tos" element={<TermsPage />} />

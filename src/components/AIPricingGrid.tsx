@@ -63,8 +63,15 @@ export default function AIPricingGrid() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { playClick, playHover, playModalOpen } = useSoundEffects();
 
+  const navigate = useNavigate();
+
   const handleBuy = (prod: typeof products[0]) => {
     playClick();
+    if (prod.id === 4) {
+      navigate('/cgpt20x');
+      return;
+    }
+    
     setSelectedProduct({
       id: String(prod.id),
       title: `${prod.platform} - ${prod.tier}`,
