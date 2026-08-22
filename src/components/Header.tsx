@@ -473,7 +473,32 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="hidden xl:inline px-1 py-0.2 rounded bg-cyan-500 text-slate-950 text-[9px] font-black">PRO</span>
             </button>
 
-            <GlobalSearchBar onNavigate={onNavigate} onAddToCart={onAddToCart} onBuyNow={onBuyNow} />
+            {/* Global Search Component */}
+            <GlobalSearchBar 
+              onNavigate={onNavigate} 
+              onAddToCart={onAddToCart} 
+              onBuyNow={onBuyNow}
+              onOpenArchitecture={onOpenArchitecture}
+              onOpenTodos={onOpenTodos}
+              onOpenBinancePay={onOpenBinancePay}
+              onOpenSeoManager={() => setIsSeoManagerOpen(true)}
+              isMobileModalOpen={isSearchOpen}
+              onCloseMobileModal={() => setIsSearchOpen(false)}
+            />
+
+            {/* Mobile Search Button */}
+            <button
+              onClick={() => {
+                playClick();
+                setIsSearchOpen(true);
+              }}
+              onMouseEnter={() => playHover()}
+              className="md:hidden p-2 rounded-full bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800/80 hover:border-cyan-500/40 text-cyan-400 transition-all duration-300 hover:scale-[1.05] active:scale-[0.95] flex items-center justify-center cursor-pointer shadow-sm"
+              title="Search marketplace, services & pages (Ctrl+K)"
+              aria-label="Search"
+            >
+              <Search className="w-3.5 h-3.5 text-cyan-400" />
+            </button>
 
             {/* Tactile Audio Effects Mute / Unmute Toggle */}
             <button
