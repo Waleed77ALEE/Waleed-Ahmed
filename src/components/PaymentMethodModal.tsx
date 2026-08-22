@@ -5,6 +5,8 @@ import { loadUserWallet, deductWalletBalance, subscribeWallet, UserWallet } from
 import { submitPaymentProofDB } from '../lib/supabase';
 import { JazzCashPaymentSection } from './JazzCashPaymentSection';
 
+import { CryptoPaymentSection } from './CryptoPaymentSection';
+
 export interface PaymentMethodModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -212,6 +214,8 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
                       ? 'bg-gradient-to-r from-red-500 via-orange-500 to-amber-500 text-white font-black shadow-lg shadow-orange-500/20'
                       : method.id === 'whatsapp_direct'
                       ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
+                      : method.id === 'crypto_wallets'
+                      ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-slate-950 font-black shadow-lg shadow-teal-500/20'
                       : 'bg-amber-500 text-slate-950 font-black shadow-lg shadow-amber-500/20'
                     : 'bg-slate-800/80 text-slate-400 hover:text-white'
                 }`}
@@ -219,6 +223,7 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
                 {method.id === 'jazzcash' && <Smartphone className="w-4 h-4 text-white" />}
                 {method.id === 'payoneer' && <Sparkles className="w-4 h-4 text-amber-300" />}
                 {method.id === 'binance_pay' && <ShieldCheck className="w-4 h-4" />}
+                {method.id === 'crypto_wallets' && <QrCode className="w-4 h-4" />}
                 {method.id === 'whatsapp_direct' && <MessageSquare className="w-4 h-4" />}
                 {method.id === 'qr_code' && <QrCode className="w-4 h-4" />}
                 {method.id === 'api_keys' && <Key className="w-4 h-4" />}
@@ -458,6 +463,11 @@ export const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({
           )}
 
 
+
+          {/* Crypto Wallets Tab */}
+          {activeTab === 'crypto_wallets' && (
+            <CryptoPaymentSection />
+          )}
 
           {/* QR Code Tab */}
           {activeTab === 'qr_code' && (

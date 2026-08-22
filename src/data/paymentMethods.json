@@ -99,6 +99,21 @@
       "instructions": [
         "Enter Merchant API Key and Secret Key for local automated callback verification."
       ]
+    },
+    {
+      "id": "crypto_wallets",
+      "tabName": "Crypto Wallets",
+      "title": "Direct Crypto Deposit",
+      "badge": "USDT / BTC / ETH",
+      "icon": "shield-check",
+      "fee": "Network Fees Apply",
+      "currencies": ["USDT", "BTC", "ETH", "BNB", "USDC", "LTC"],
+      "instructions": [
+        "Select your preferred cryptocurrency and network.",
+        "Copy the wallet address or scan the QR code.",
+        "Send the exact amount from your wallet or exchange.",
+        "Submit the Transaction Hash (TxID) below for verification."
+      ]
     }
   ]
 }
