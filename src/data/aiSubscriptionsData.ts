@@ -962,28 +962,28 @@ export const INITIAL_AI_SUBSCRIPTIONS: AiSubscriptionPlan[] = [
     id: 'chatgpt-plus',
     platformName: 'ChatGPT / OpenAI',
     platformKey: 'openai',
-    planName: 'ChatGPT Plus',
+    planName: 'ChatGPT 20x (Private)',
     category: 'AI Assistant',
-    shortDescription: 'GPT-4o, OpenAI o1 reasoning model, DALL-E 3 image generation, and Voice Mode access.',
-    detailedDescription: 'ChatGPT Plus unlocks unlimited standard access to GPT-4o, OpenAI o1 mini & preview reasoning models, custom GPTs builder, DALL-E 3 high-resolution art, and real-time voice mode.',
+    shortDescription: 'Private ChatGPT account with 20x usage limits. Available for 1 Month, 3 Months, or 1 Year.',
+    detailedDescription: 'Get a private ChatGPT account featuring unmetered 20x usage limits for GPT-4o and OpenAI o1 reasoning models. Enjoy uninterrupted access to DALL-E 3 image generation, advanced data analysis, real-time voice mode, and the custom GPT store without limits. 100% private and guaranteed.',
     prices: {
-      Monthly: 20.00,
-      '3 Months': 60.00,
+      Monthly: 42.00,
+      '3 Months': 80.00,
       '6 Months': 120.00,
-      Yearly: 240.00
+      Yearly: 160.00
     },
     features: [
-      'Access to GPT-4o & GPT-4o mini',
+      'Private Account (100% Yours)',
+      'Unmetered 20x Usage Limits',
       'OpenAI o1 Reasoning Models',
       'DALL-E 3 High-Res Image Generator',
-      'Advanced Data Analysis & Python Code Execution',
       'Real-Time Advanced Voice Mode',
       'Custom GPT Store & Builder Access'
     ],
     supportedDevices: ['Web Browser', 'iOS', 'Android', 'macOS', 'Windows'],
-    badge: 'Best Seller',
+    badge: 'Popular',
     rating: 4.98,
-    reviewsCount: 380,
+    reviewsCount: 420,
     ordersCount: 920,
     featured: true,
     status: 'Active',
@@ -998,8 +998,8 @@ export const INITIAL_AI_SUBSCRIPTIONS: AiSubscriptionPlan[] = [
         name: 'Tariq Mehmood',
         rating: 5,
         date: '1 day ago',
-        comment: 'GPT-4o and o1 reasoning model works flawlessly! Handover in less than 5 minutes.',
-        plan: 'ChatGPT Plus (Monthly)'
+        comment: 'GPT-4o and o1 reasoning model works flawlessly! Handover in less than 5 minutes. The 20x limits are amazing.',
+        plan: 'ChatGPT 20x (Private) - 3 Months'
       }
     ]
   },

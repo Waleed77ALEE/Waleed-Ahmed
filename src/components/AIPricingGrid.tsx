@@ -44,14 +44,15 @@ const products = [
   },
   {
     id: 4,
-    platform: 'ChatGPT Shared',
-    tier: 'Pro (5x) Access',
-    price: '35.00',
-    duration: '/month',
-    description: 'Perfect for power users needing flagship models without the $100 price tag.',
-    features: ['Access to Sol, Terra, Luna', '5x standard usage limits', 'Agent Mode enabled', 'Instant auto-delivery'],
-    image: 'https://images.unsplash.com/photo-1684496291993-3d92fc89d9ab?q=80&w=500&auto=format&fit=crop',
-    highlighted: false,
+    platform: 'ChatGPT / OpenAI',
+    tier: 'ChatGPT 20x',
+    price: '42.00',
+    duration: '/ 1 month',
+    description: 'Private ChatGPT account with 20x limits. Available options: 1 Month ($42), 3 Months ($80) & 1 Year ($160).',
+    features: ['Private Account Guarantee', '1 Mo: $42 | 3 Mo: $80 | 1 Yr: $160', 'GPT-4o & o1 Reasoning Models', 'Unmetered 20x Usage Limits'],
+    image: 'https://images.unsplash.com/photo-1676299081847-824916de030a?q=80&w=500&auto=format&fit=crop',
+    highlighted: true,
+    badge: 'Trending',
   }
 ];
 
